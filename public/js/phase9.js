@@ -1,400 +1,169 @@
-/* X-Streamify — Phase 10 Step 6 (Bulk select fix)
-   - Preserve multiple selections while in Select mode
-   - Show selection count on the Select button
+/* X-Streamify – Phase 9 safe script
+   - Vault key normalizer (runs once)
+   - Null-safe event wiring (no $)
+   - Render from localStorage 'xsf_vault_v10'
+   - Export / Import JSON
 */
-
 (() => {
-  // ---------- State ----------
-  const LS_KEY = "xsf_library_v1";
-  const $ = (sel, el = document) => el.querySelector(sel);
-  const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
+  // ---------- Vault Key Normalizer (before state/UI) ----------
+  (function normalizeKeys() {
+    const PREFERRED = 'xsf_vault_v10';
+    const FALLBACKS = ['xsf_vault_v9', 'xsf_vault_v1', 'xsf_movies', 'movies', 'vault'];
 
-  /** @type {{id:string,title:string,year?:number,poster?:string,tags?:string[],fav?:boolean,addedAt:number}[]} */
-  let library = load() || [];
-  let view = "all"; // all | recent | favs
-  let query = "";
-  let sort = "added_desc";
-  let bulkMode = false;
-  let selectedIds = new Set();
-  let editingId = null;
+    const parse = raw => { try { return JSON.parse(raw); } catch { return null; } };
 
-  // ---------- Elements ----------
-  const grid = $("#grid");
-  const emptyState = $("#emptyState");
-  const searchInput = $("#search");
-  const sortSelect = $("#sort");
-  const tabBtns = $$(".tab-btn");
-  const addBtn = $("#addMovieBtn");
-  const exportBtn = $("#exportBtn");
-  const importFile = $("#importFile");
-  const bulkSelectBtn = $("#bulkSelect");
-  const bulkFavBtn = $("#bulkFavorite");
-  const bulkDeleteBtn = $("#bulkDelete");
-  const modal = $("#modal");
-  const movieForm = $("#movieForm");
-  const modalTitle = $("#modalTitle");
-  const toastHost = $("#toastHost");
+    const v10Raw = localStorage.getItem(PREFERRED);
+    const v10 = parse(v10Raw);
+    if (Array.isArray(v10)) return;
 
-  // ---------- Utils ----------
-  function save() {
-    localStorage.setItem(LS_KEY, JSON.stringify(library));
-  }
-  function load() {
-    try {
-      const raw = localStorage.getItem(LS_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
+    for (const k of FALLBACKS) {
+      const raw = localStorage.getItem(k);
+      const parsed = parse(raw);
+      if (Array.isArray(parsed) && parsed.length) {
+        localStorage.setItem(PREFERRED, JSON.stringify(parsed));
+        break;
+      }
     }
-  }
-  function uid() {
-    return Math.random().toString(36).slice(2, 10);
-  }
-  function showToast(msg) {
-    const el = document.createElement("div");
-    el.className =
-      "pointer-events-auto max-w-[92vw] sm:max-w-md rounded-xl border border-neutral-700 bg-neutral-900 px-4 py-2 text-sm shadow";
-    el.textContent = msg;
-    toastHost.appendChild(el);
-    setTimeout(() => {
-      el.classList.add("opacity-0");
-      el.style.transition = "opacity .4s";
-      setTimeout(() => el.remove(), 400);
-    }, 1600);
-  }
-  function confirmBox(message) {
-    return window.confirm(message);
-  }
-  function fmtCount(n) {
-    return n === 1 ? "1 item" : `${n} items`;
-  }
-  function normalize(str) {
-    return (str || "").toLowerCase().trim();
-  }
+  })();
 
-  // ---------- Rendering ----------
-  function applyFilters(items) {
-    let out = items;
+  // ---------- Helpers ----------
+  const PRIMARY_KEY = 'xsf_vault_v10';
 
-    // View filter
-    if (view === "recent") {
-      const cutoff = Date.now() - 14 * 24 * 3600 * 1000;
-      out = out.filter(m => m.addedAt >= cutoff);
-    } else if (view === "favs") {
-      out = out.filter(m => !!m.fav);
-    }
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+  const parse = (s, fallback = []) => { try { return JSON.parse(s ?? ''); } catch { return fallback; } };
+  const getVault = () => parse(localStorage.getItem(PRIMARY_KEY), []);
+  const setVault = (arr) => localStorage.setItem(PRIMARY_KEY, JSON.stringify(arr ?? []));
 
-    // Search
-    if (query) {
-      const q = normalize(query);
-      out = out.filter(m => {
-        const inTitle = normalize(m.title).includes(q);
-        const inYear = String(m.year || "").includes(q);
-        const inTags = (m.tags || []).some(t => normalize(t).includes(q));
-        return inTitle || inYear || inTags;
-      });
-    }
+  // ---------- Elements (may not exist – that’s fine) ----------
+  const els = {
+    grid: $('#grid'),
+    empty: $('#emptyState'),
+    search: $('#search'),
+    sort: $('#sort'),
 
-    // Sort
-    out = out.slice();
-    switch (sort) {
-      case "title_asc": out.sort((a,b) => a.title.localeCompare(b.title)); break;
-      case "title_desc": out.sort((a,b) => b.title.localeCompare(a.title)); break;
-      case "year_asc": out.sort((a,b) => (a.year||0) - (b.year||0)); break;
-      case "year_desc": out.sort((a,b) => (b.year||0) - (a.year||0)); break;
-      default: out.sort((a,b) => b.addedAt - a.addedAt);
-    }
-    return out;
-  }
+    // optional buttons/controls your page may or may not have
+    addBtn: $('#addBtn'),
+    addBtn2: $('#addBtn2'),
+    modal: $('#modal'),
+    movieForm: $('#movieForm'),
 
-  function posterSrc(m) {
-    if (m.poster && m.poster.startsWith("http")) return m.poster;
-    const initials = encodeURIComponent((m.title||"?").slice(0,1).toUpperCase());
-    return `https://dummyimage.com/300x450/0a0a0a/ffffff.png&text=${initials}`;
-  }
+    exportBtn: $('#export-json') || $('#btnExport') || $$('button,a').find(el => /export\s*json/i.test((el.textContent || '').trim())),
+    importFile: $('#import-json') || $('#fileImport'),
+  };
 
+  // ---------- Render ----------
   function render() {
-    const items = applyFilters(library);
-    grid.innerHTML = "";
-    emptyState.classList.toggle("hidden", items.length > 0);
+    const movies = getVault();
 
-    items.forEach(m => {
-      const card = document.createElement("div");
-      card.className = "group relative rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-950";
-      card.setAttribute("data-id", m.id);
+    if (!els.grid) return;           // page has no grid (nothing to do)
+    if (!movies.length) {
+      els.grid.innerHTML = '';
+      els.empty && els.empty.classList.remove('hidden');
+      return;
+    }
 
-      if (selectedIds.has(m.id)) {
-        card.classList.add("ring-2", "ring-red-500");
-      }
+    els.empty && els.empty.classList.add('hidden');
 
-      const img = document.createElement("img");
-      img.src = posterSrc(m);
-      img.alt = `${m.title} poster`;
-      img.className = "w-full aspect-[2/3] object-cover bg-neutral-900";
-      img.onerror = () => { img.src = posterSrc({title:m.title}); };
-      card.appendChild(img);
-
-      const overlay = document.createElement("div");
-      overlay.className = "pointer-events-none absolute inset-0 p-2 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity";
-      overlay.innerHTML = `
-        <div class="flex justify-end gap-1">
-          <button title="Delete" data-act="delete" class="pointer-events-auto rounded-lg px-2 py-1 text-sm bg-neutral-950/80 border border-neutral-800 hover:bg-neutral-900">✕</button>
-        </div>
-        <div class="flex justify-between items-end">
-          <button title="Select" data-act="select" class="pointer-events-auto rounded-lg px-2 py-1 text-sm bg-neutral-950/80 border border-neutral-800 hover:bg-neutral-900">☐</button>
-          <div class="flex gap-1">
-            <button title="${m.fav ? "Unfavorite" : "Favorite"}" data-act="fav" class="pointer-events-auto rounded-lg px-2 py-1 text-sm ${m.fav ? "text-red-400 border-red-700" : "text-neutral-200 border-neutral-800"} bg-neutral-950/80 border hover:bg-neutral-900">♥</button>
-            <button title="Edit" data-act="edit" class="pointer-events-auto rounded-lg px-2 py-1 text-sm bg-neutral-950/80 border border-neutral-800 hover:bg-neutral-900">✎</button>
-          </div>
-        </div>
-      `;
-      card.appendChild(overlay);
-
-      const meta = document.createElement("div");
-      meta.className = "px-2 py-2";
-      meta.innerHTML = `
-        <div class="flex items-center gap-2">
-          <h3 class="font-medium truncate" title="${m.title}">${m.title}</h3>
-          ${m.year ? `<span class="text-xs text-neutral-400">${m.year}</span>` : ""}
-          ${m.fav ? `<span class="ml-auto text-xs text-red-400">♥</span>` : ""}
-        </div>
-        ${m.tags?.length ? `<p class="mt-1 text-xs text-neutral-500 truncate">${m.tags.join(", ")}</p>` : ""}
-      `;
-      card.appendChild(meta);
-
-      grid.appendChild(card);
-    });
-
-    updateBulkButtons();
-  }
-
-  function updateBulkButtons() {
-    const hasSel = selectedIds.size > 0;
-    bulkFavBtn.disabled = !hasSel;
-    bulkDeleteBtn.disabled = !hasSel;
-    bulkSelectBtn.textContent = bulkMode
-      ? (hasSel ? `Exit Select (${selectedIds.size})` : "Exit Select")
-      : "Select";
-  }
-
-  // ---------- Modal ----------
-  function openModal(mode, movie = null) {
-    modal.classList.remove("hidden");
-    document.body.classList.add("overflow-hidden");
-
-    if (mode === "add") {
-      editingId = null;
-      modalTitle.textContent = "Add Movie";
-      movieForm.title.value = "";
-      movieForm.year.value = "";
-      movieForm.poster.value = "";
-      movieForm.tags.value = "";
+    // simple sort if you have a <select id="sort">
+    let items = movies.slice();
+    const sort = els.sort?.value || 'recent';
+    if (sort === 'az') {
+      items.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+    } else if (sort === 'za') {
+      items.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
     } else {
-      editingId = movie.id;
-      modalTitle.textContent = "Edit Movie";
-      movieForm.title.value = movie.title || "";
-      movieForm.year.value = movie.year || "";
-      movieForm.poster.value = movie.poster || "";
-      movieForm.tags.value = (movie.tags || []).join(", ");
+      items.sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
     }
-    setTimeout(() => movieForm.title.focus(), 0);
-  }
-  function closeModal() {
-    modal.classList.add("hidden");
-    document.body.classList.remove("overflow-hidden");
-  }
 
-  // ---------- Actions ----------
-  function addMovie(data) {
-    library.push({
-      id: uid(),
-      title: (data.title || "").trim(),
-      year: data.year ? Number(data.year) : undefined,
-      poster: (data.poster || "").trim(),
-      tags: data.tags ? data.tags.split(",").map(s => s.trim()).filter(Boolean) : [],
-      fav: false,
-      addedAt: Date.now(),
-    });
-    save(); render(); showToast("Movie added.");
+    // simple search if you have <input id="search">
+    const q = (els.search?.value || '').trim().toLowerCase();
+    if (q) items = items.filter(m => (m.title || '').toLowerCase().includes(q));
+
+    els.grid.innerHTML = items.map(m => `
+      <article class="p-3">
+        <div class="rounded-2xl overflow-hidden">
+          <img src="${m.poster}" alt="${m.title}" class="block w-full" />
+        </div>
+        <h3 class="card-title mt-2">${m.title}</h3>
+      </article>
+    `).join('');
   }
 
-  function updateMovie(id, data) {
-    const idx = library.findIndex(m => m.id === id);
-    if (idx >= 0) {
-      library[idx] = {
-        ...library[idx],
-        title: (data.title || "").trim(),
-        year: data.year ? Number(data.year) : undefined,
-        poster: (data.poster || "").trim(),
-        tags: data.tags ? data.tags.split(",").map(s => s.trim()).filter(Boolean) : [],
-      };
-      save(); render(); showToast("Movie updated.");
-    }
+  // ---------- Safe listeners (all null-safe) ----------
+  els.search?.addEventListener('input', () => render());
+  els.sort?.addEventListener('change', () => render());
+
+  // Optional “Add” modal wiring (only if these exist on your page)
+  els.addBtn?.addEventListener('click', () => openModal('add'));
+  if (typeof els.addBtn2 !== 'undefined' && els.addBtn2) {
+    els.addBtn2.addEventListener('click', () => openModal('add'));
   }
-
-  function deleteMovie(id) {
-    const m = library.find(x => x.id === id);
-    const name = m?.title ? ` “${m.title}”` : "";
-    if (!confirmBox(`Delete${name} from your vault?`)) return;
-    library = library.filter(m => m.id !== id);
-    selectedIds.delete(id);
-    save(); render(); showToast("Movie deleted.");
-  }
-
-  function toggleFav(id, quiet = false) {
-    const m = library.find(x => x.id === id);
-    if (!m) return;
-    m.fav = !m.fav;
-    save(); render();
-    if (!quiet) showToast(m.fav ? "Added to Favorites." : "Removed from Favorites.");
-  }
-
-  // ---------- Bulk ----------
-  function setBulkMode(on) {
-    // Only clear selections when toggling the mode,
-    // not when repeatedly clicking "select" on cards.
-    if (on === bulkMode) return;
-    bulkMode = on;
-    selectedIds.clear();
-    document.body.classList.toggle("select-mode", bulkMode);
-    render();
-  }
-
-  function bulkFavorite() {
-    if (selectedIds.size === 0) return;
-    selectedIds.forEach(id => toggleFav(id, true));
-    showToast("Favorites updated for " + fmtCount(selectedIds.size) + ".");
-    render();
-  }
-
-  function bulkDelete() {
-    if (selectedIds.size === 0) return;
-    if (!confirmBox(`Delete ${fmtCount(selectedIds.size)} from your vault? This cannot be undone.`)) return;
-    library = library.filter(m => !selectedIds.has(m.id));
-    selectedIds.clear();
-    save(); render(); showToast("Deleted selected items.");
-  }
-
-  // ---------- Import / Export ----------
-  function exportJSON() {
-    const blob = new Blob([JSON.stringify(library, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "xstreamify-library.json";
-    a.click();
-    URL.revokeObjectURL(a.href);
-    showToast("Exported library JSON.");
-  }
-
-  function importJSON(file) {
-    if (!file) return;
-    const replacing = library.length > 0;
-    const msg = replacing ? "Importing will REPLACE your current library. Continue?" : "Import this library?";
-    if (!confirmBox(msg)) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const data = JSON.parse(reader.result);
-        if (!Array.isArray(data)) throw new Error("Invalid format");
-        library = data.map(x => ({
-          id: x.id || uid(),
-          title: String(x.title || "").trim(),
-          year: x.year ? Number(x.year) : undefined,
-          poster: String(x.poster || "").trim(),
-          tags: Array.isArray(x.tags) ? x.tags.map(t => String(t)) : [],
-          fav: !!x.fav,
-          addedAt: x.addedAt ? Number(x.addedAt) : Date.now(),
-        }));
-        save(); render(); showToast("Import complete.");
-      } catch (e) {
-        alert("Import failed: " + e.message);
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  // ---------- Events ----------
-  // Tabs
-  tabBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      view = btn.dataset.tab;
-      tabBtns.forEach(b => {
-        if (b === btn) {
-          b.classList.add("bg-neutral-800","border-neutral-600");
-        } else {
-          b.classList.remove("bg-neutral-800","border-neutral-600");
-        }
-      });
-      render();
-    });
-  });
-
-  // Search / Sort
-  searchInput.addEventListener("input", () => { query = searchInput.value; render(); });
-  sortSelect.addEventListener("change", () => { sort = sortSelect.value; render(); });
-
-  // Keyboard — focus search with "/"
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "/" && document.activeElement !== searchInput) { e.preventDefault(); searchInput.focus(); }
-  });
-
-  // Add
-  addBtn.addEventListener("click", () => openModal("add"));
-  $("[data-close]", modal).addEventListener("click", closeModal);
-  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
-  movieForm.addEventListener("submit", (e) => {
+  els.modal?.addEventListener('click', (e) => { if (e.target === els.modal) closeModal(); });
+  els.movieForm?.addEventListener('submit', (e) => {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(movieForm).entries());
-    if (editingId) updateMovie(editingId, data); else addMovie(data);
+    const data = Object.fromEntries(new FormData(els.movieForm).entries());
+    // You can hook your own add/update here; for safety we just add with an id
+    const list = getVault();
+    const id = data.id || (data.title ? data.title.toLowerCase().replace(/\s+/g,'-') : String(Date.now()));
+    const idx = list.findIndex(x => x.id === id);
+    const item = { id, title: data.title || 'Untitled', poster: data.poster || '', addedAt: Date.now() };
+    if (idx >= 0) list[idx] = item; else list.push(item);
+    setVault(list);
+    render();
     closeModal();
   });
 
-  // Grid delegation
-  grid.addEventListener("click", (e) => {
-    const btn = e.target.closest("button[data-act]");
-    if (!btn) return;
-    const card = e.target.closest("[data-id]");
-    if (!card) return;
-    const id = card.getAttribute("data-id");
-    const act = btn.dataset.act;
+  // Stubs so the optional calls above don’t throw if you don’t have them implemented
+  function openModal() { els.modal && els.modal.classList.remove('hidden'); }
+  function closeModal() { els.modal && els.modal.classList.add('hidden'); }
 
-    if (act === "delete") deleteMovie(id);
-    if (act === "fav") toggleFav(id);
-    if (act === "edit") {
-      const m = library.find(x => x.id === id);
-      if (m) openModal("edit", m);
-    }
-    if (act === "select") {
-      // Enter select mode only once; keep existing selections.
-      if (!bulkMode) setBulkMode(true);
-      if (selectedIds.has(id)) selectedIds.delete(id);
-      else selectedIds.add(id);
-      // Apply visual ring according to current state
-      card.classList.toggle("ring-2", selectedIds.has(id));
-      card.classList.toggle("ring-red-500", selectedIds.has(id));
-      updateBulkButtons();
-    }
+  // ---------- Export (no $ and no double listeners) ----------
+  (function wireExport() {
+    if (!els.exportBtn) return;
+    const clone = els.exportBtn.cloneNode(true);
+    els.exportBtn.replaceWith(clone);
+    clone.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      try {
+        const data = getVault();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `xsf_vault_backup_${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      } catch (err) {
+        console.error(err);
+        alert('Export failed');
+      }
+    });
+  })();
+
+  // ---------- Import (file input change) ----------
+  els.importFile?.addEventListener('change', (e) => {
+    const file = e.target?.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        if (!Array.isArray(parsed)) throw new Error('Invalid format');
+        if (!confirm('Import this library? This will replace your current list.')) return;
+        localStorage.setItem(PRIMARY_KEY, JSON.stringify(parsed));
+        alert(`Imported ${parsed.length} items`);
+        location.reload();
+      } catch (err) {
+        console.error(err);
+        alert('Import failed: Invalid format');
+      }
+    };
+    reader.readAsText(file);
+    // clear the input so the same file can be selected again later
+    e.target.value = '';
   });
 
-  // Bulk
-  bulkSelectBtn.addEventListener("click", () => {
-    if (bulkMode) {
-      setBulkMode(false);
-    } else {
-      setBulkMode(true);
-      showToast("Tap posters (☐) to select multiple.");
-    }
-  });
-  bulkFavBtn.addEventListener("click", bulkFavorite);
-  bulkDeleteBtn.addEventListener("click", bulkDelete);
-
-  // Export / Import
-  exportBtn.addEventListener("click", exportJSON);
-  importFile.addEventListener("change", (e) => importJSON(e.target.files[0]));
-
-  // ---------- First render ----------
-  tabBtns.forEach(b => b.classList.toggle("bg-neutral-800", b.dataset.tab === "all"));
-  tabBtns.forEach(b => b.classList.toggle("border-neutral-600", b.dataset.tab === "all"));
+  // ---------- Initial render ----------
   render();
 })();
