@@ -2,68 +2,208 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Phase 7 Sandbox</title>
-  <link rel="stylesheet" href="/tailwind.css" />
-  <!-- Remove this line if you want to silence the 404 for now -->
-  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>X-Streamify — Phase 10 Merge</title>
+
+  <link rel="stylesheet" href="tailwind.css" />
+  <style>
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+    .shadow-soft { box-shadow: 0 10px 20px rgba(0,0,0,.15); }
+  </style>
+
+  <script type="module" defer src="./js/phase10.js"></script>
 </head>
-<body class="bg-black text-white min-h-screen">
+<body class="bg-neutral-950 text-neutral-100 antialiased">
   <!-- Header -->
-  <header class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <!-- Red square with bold, rounded X -->
-      <div class="h-8 w-8 rounded bg-red-600 grid place-items-center">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
-          <rect x="4" y="10.5" width="16" height="3.2" rx="1.6" transform="rotate(45 4 10.5)" fill="white"/>
-          <rect x="4" y="10.5" width="16" height="3.2" rx="1.6" transform="rotate(-45 4 10.5)" fill="white"/>
-        </svg>
+  <header class="w-full border-b border-neutral-800 sticky top-0 bg-neutral-950/80 backdrop-blur z-50">
+    <div class="container flex items-center justify-between py-3">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-lg bg-red-600 grid place-items-center font-black text-xl leading-none">X</div>
+        <span class="text-xl md:text-2xl font-semibold tracking-tight">X-Streamify</span>
       </div>
-      <div class="text-xl font-bold tracking-tight">X-Streamify — Phase 7</div>
-    </div>
-    <div class="flex items-center gap-3">
-      <input id="fileInput" type="file" accept=".mp4,.mkv,.avi,.mov,.m4v,.jpg,.jpeg,.png" class="hidden" />
-      <label for="fileInput" class="cursor-pointer px-3 py-2 rounded-xl border border-white/20 hover:bg-white/10 transition">
-        ➕ Add New Movie
-      </label>
+
+      <nav class="hidden md:flex items-center gap-2 text-sm">
+        <button data-nav="featured" class="nav-btn px-3 py-2 rounded-xl border border-red-600 text-red-400">Featured</button>
+        <button data-nav="library"  class="nav-btn px-3 py-2 rounded-xl border border-neutral-700">My Library</button>
+        <button data-nav="how"      class="nav-btn px-3 py-2 rounded-xl border border-neutral-700">How It Works</button>
+        <button data-nav="add"      class="nav-btn px-3 py-2 rounded-xl border border-neutral-700">Add Movie</button>
+        <button data-nav="vault"    class="nav-btn px-3 py-2 rounded-xl border border-neutral-700">Your Vault</button>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-export" class="px-3 py-2 text-sm rounded-xl border border-neutral-700">Export JSON</button>
+        <label for="import-input" class="px-3 py-2 text-sm rounded-xl border border-neutral-700 cursor-pointer">
+          Import JSON
+          <input id="import-input" type="file" accept="application/json" class="hidden" />
+        </label>
+        <button data-nav="add" class="px-3 py-2 text-sm rounded-xl bg-red-600 hover:opacity-90">Add Movies</button>
+      </div>
     </div>
   </header>
 
   <!-- Main -->
-  <main class="max-w-7xl mx-auto px-4 pb-12">
-    <!-- Search + Pills -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
-      <div class="flex items-center gap-3 flex-1">
-        <input
-          id="searchInput"
-          type="text"
-          placeholder="Search…"
-          class="w-full md:w-96 px-3 py-2 rounded-xl bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-red-500"
-        />
-        <span id="resultCount" class="text-sm text-white/70">0</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <!-- All pills start with the same base look -->
-        <button id="pillAll"    class="px-3 py-1 rounded-full border border-red-500/70 text-red-200 ring-1 ring-red-500/40 hover:bg-red-500/10">All</button>
-        <button id="pillRecent" class="px-3 py-1 rounded-full border border-red-500/70 text-red-200 ring-1 ring-red-500/40 hover:bg-red-500/10">Recently Added</button>
-        <button id="pillFav"    class="px-3 py-1 rounded-full border border-red-500/70 text-red-200 ring-1 ring-red-500/40 hover:bg-red-500/10">Favorites</button>
-      </div>
-    </div>
+  <main class="container space-y-12 py-8">
+    <!-- Hero -->
+    <section id="hero" class="grid md:grid-cols-2 gap-8 items-center">
+      <div>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
+          Build your personal streaming library.
+        </h1>
+        <p class="mt-3 text-neutral-300">
+          Import your DVDs and files, organize your vault, and stream your own collection anytime.
+        </p>
 
-    <!-- Featured -->
-    <section class="mb-10">
-      <h2 class="mb-3 font-semibold tracking-wide text-white/80">Featured</h2>
-      <div id="featuredRow" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+        <div class="mt-6 space-y-3">
+          <div class="flex gap-2">
+            <input id="global-search" class="w-full px-4 py-3 rounded-xl bg-neutral-900 border border-neutral-800"
+                   placeholder="Search your library…" />
+            <button id="search-clear" class="px-3 py-2 rounded-xl border border-neutral-700">Clear</button>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button data-quick="recent" class="px-3 py-2 text-sm rounded-xl border border-neutral-700">Recently Added</button>
+            <button data-quick="fav"    class="px-3 py-2 text-sm rounded-xl border border-neutral-700">Favorites</button>
+            <button data-quick="all"    class="px-3 py-2 text-sm rounded-xl border border-neutral-700">All</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-neutral-800 p-4 shadow-soft">
+        <div class="aspect-video rounded-xl bg-neutral-900 grid place-items-center">
+          <span class="opacity-60">Your Hero Poster</span>
+        </div>
+        <div class="mt-4">
+          <h3 class="text-xl font-semibold">Feature Highlight</h3>
+          <p class="text-neutral-400 text-sm">Keep, organize, and stream your owned media in one beautiful place.</p>
+        </div>
+      </div>
     </section>
 
-    <!-- Sandbox -->
-    <section>
-      <h2 class="mb-3 font-semibold tracking-wide text-white/80">Sandbox</h2>
-      <div id="emptyState" class="hidden text-white/60 text-sm px-2 py-8 text-center">No matches. Try a different search.</div>
-      <div id="sandboxRow" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+    <!-- Featured -->
+    <section id="section-featured" class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-bold">Featured</h2>
+        <div class="text-sm text-neutral-400">Hand-picked highlights</div>
+      </div>
+      <div id="featured-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+    </section>
+
+    <!-- My Library -->
+    <section id="section-library" class="space-y-4 hidden">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-bold">My Library</h2>
+        <div class="flex items-center gap-2 text-sm">
+          <button data-filter="all"    class="lib-filter px-3 py-1 rounded-lg border border-neutral-700">All</button>
+          <button data-filter="recent" class="lib-filter px-3 py-1 rounded-lg border border-neutral-700">Recently Added</button>
+          <button data-filter="fav"    class="lib-filter px-3 py-1 rounded-lg border border-neutral-700">Favorites</button>
+        </div>
+      </div>
+      <div id="library-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="section-how" class="space-y-6 hidden">
+      <h2 class="text-2xl font-bold">How It Works</h2>
+      <ol class="grid md:grid-cols-3 gap-4 text-neutral-300">
+        <li class="rounded-2xl border border-neutral-800 p-4">
+          <h3 class="font-semibold mb-2">1) Add Your Movies</h3>
+          <p>Use <em>Add Movies</em> to enter title, poster URL, and (optionally) a stream URL.</p>
+        </li>
+        <li class="rounded-2xl border border-neutral-800 p-4">
+          <h3 class="font-semibold mb-2">2) Organize &amp; Favorite</h3>
+          <p>Switch views, use filters, and tap the heart to favorite any title.</p>
+        </li>
+        <li class="rounded-2xl border border-neutral-800 p-4">
+          <h3 class="font-semibold mb-2">3) Backup / Restore</h3>
+          <p>Use <em>Export JSON</em> to back up; use <em>Import JSON</em> to restore or move to another device.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- Add a New Movie -->
+    <section id="section-add" class="space-y-4 hidden">
+      <h2 class="text-2xl font-bold">Add a New Movie</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <form id="add-form" class="rounded-2xl border border-neutral-800 p-4 space-y-3">
+          <div>
+            <label class="block text-sm mb-1">Title</label>
+            <input name="title" required class="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-800" placeholder="e.g., Inception" />
+          </div>
+          <div>
+            <label class="block text-sm mb-1">Poster URL</label>
+            <input name="poster" class="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-800" placeholder="https://…" />
+          </div>
+          <div>
+            <label class="block text-sm mb-1">Stream URL (optional)</label>
+            <input name="url" class="w-full px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-800" placeholder="https://…" />
+          </div>
+          <div class="flex gap-2">
+            <button class="px-4 py-2 rounded-xl bg-red-600" type="submit">Add</button>
+            <button id="add-reset" class="px-4 py-2 rounded-xl border border-neutral-700" type="button">Reset</button>
+          </div>
+          <p id="add-msg" class="text-sm text-neutral-400"></p>
+        </form>
+
+        <div class="rounded-2xl border border-neutral-800 p-4">
+          <div class="aspect-video rounded-xl bg-neutral-900 grid place-items-center">
+            <span class="opacity-60">Poster preview appears in your grids</span>
+          </div>
+          <p class="text-neutral-400 text-sm mt-3">
+            Tip: You can always back up everything via <em>Export JSON</em>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Your Vault -->
+    <section id="section-vault" class="space-y-6 hidden">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-bold">Your Vault</h2>
+        <div class="flex items-center gap-2 text-sm">
+          <button data-vtab="movies" class="vault-tab px-3 py-1 rounded-lg border border-neutral-700">Movies</button>
+          <button data-vtab="docs"   class="vault-tab px-3 py-1 rounded-lg border border-neutral-700">Docs</button>
+          <button data-vtab="pics"   class="vault-tab px-3 py-1 rounded-lg border border-neutral-700">Pictures</button>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-[220px_1fr] gap-6">
+        <aside class="rounded-2xl border border-neutral-800 p-4 h-fit">
+          <h3 class="font-semibold mb-3">Folders</h3>
+          <ul class="space-y-1 text-sm">
+            <li><button data-vfolder="all"        class="w-full text-left px-2 py-1 rounded-lg border border-neutral-800">All</button></li>
+            <li><button data-vfolder="genre"      class="w-full text-left px-2 py-1 rounded-lg border border-neutral-800">By Genre</button></li>
+            <li><button data-vfolder="recent"     class="w-full text-left px-2 py-1 rounded-lg border border-neutral-800">Recently Added</button></li>
+            <li><button data-vfolder="favorites"  class="w-full text-left px-2 py-1 rounded-lg border border-neutral-800">Favorites</button></li>
+          </ul>
+        </aside>
+
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 id="vault-heading" class="font-semibold">Movies / All</h3>
+            <div class="text-sm text-neutral-400"><span id="vault-count">0</span> items</div>
+          </div>
+          <div id="vault-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+        </div>
+      </div>
     </section>
   </main>
 
-  <script src="/js/phase7.js" defer></script>
+  <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-xl bg-neutral-900 border border-neutral-800 shadow-soft text-sm hidden"></div>
+
+  <!-- Card template -->
+  <template id="card-tpl">
+    <div class="group relative rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900">
+      <!-- We DO NOT rely on tailwind-aspect. We create a fixed 2:3 box using padding-top -->
+      <div class="poster relative bg-neutral-950">
+        <div class="pt-[150%]"></div> <!-- 2:3 ratio (height = 150% of width) -->
+        <span class="absolute inset-0 grid place-items-center opacity-50 text-xs">No Poster</span>
+      </div>
+      <div class="absolute top-2 right-2">
+        <button class="fav-btn h-8 w-8 rounded-full bg-neutral-950/70 border border-neutral-800 grid place-items-center focus:outline-none">♡</button>
+      </div>
+      <div class="p-2">
+        <div class="title line-clamp-1 text-sm font-medium">Title</div>
+      </div>
+    </div>
+  </template>
 </body>
 </html>
