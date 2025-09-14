@@ -3,67 +3,48 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Phase 7 Sandbox</title>
-  <link rel="stylesheet" href="/tailwind.css" />
-  <!-- Remove this line if you want to silence the 404 for now -->
-  <link rel="icon" href="/favicon.ico" />
+  <title>X-Streamify — Phase 10</title>
+
+  <!-- Tailwind (CDN ok for local sandbox) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* small helpers */
+    .pill { @apply px-3 py-1 rounded-full border border-red-500/70 text-red-200 ring-1 ring-red-500/40 hover:bg-red-500/10; }
+    .pill.active { @apply bg-red-500/20 text-red-50; }
+    .card { @apply bg-neutral-900/60 rounded-xl overflow-hidden shadow-lg border border-white/5; }
+    .poster { aspect-ratio: 2/3; width: 100%; object-fit: cover; background: #0b1324; }
+    .star { @apply absolute right-2 top-2 text-yellow-300/70 hover:text-yellow-200 cursor-pointer select-none; }
+    .star.fav { @apply text-yellow-300; }
+  </style>
 </head>
-<body class="bg-black text-white min-h-screen">
-  <!-- Header -->
-  <header class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <!-- Red square with bold, rounded X -->
-      <div class="h-8 w-8 rounded bg-red-600 grid place-items-center">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
-          <rect x="4" y="10.5" width="16" height="3.2" rx="1.6" transform="rotate(45 4 10.5)" fill="white"/>
-          <rect x="4" y="10.5" width="16" height="3.2" rx="1.6" transform="rotate(-45 4 10.5)" fill="white"/>
-        </svg>
+<body class="bg-black text-neutral-200">
+  <main class="max-w-6xl mx-auto px-4 py-6 space-y-4">
+    <header class="flex items-center justify-between">
+      <h1 class="text-xl sm:text-2xl font-semibold">X-Streamify — Phase 10</h1>
+      <div id="adminBtns" class="hidden space-x-2">
+        <button id="btnImport" class="px-3 py-1 rounded-md bg-emerald-600 hover:bg-emerald-500">Import</button>
+        <button id="btnExport" class="px-3 py-1 rounded-md bg-sky-600 hover:bg-sky-500">Export</button>
+        <button id="btnClear"  class="px-3 py-1 rounded-md bg-rose-700 hover:bg-rose-600">Clear</button>
+        <input id="filePicker" type="file" accept="application/json" class="hidden" />
       </div>
-      <div class="text-xl font-bold tracking-tight">X-Streamify — Phase 7</div>
-    </div>
-    <div class="flex items-center gap-3">
-      <input id="fileInput" type="file" accept=".mp4,.mkv,.avi,.mov,.m4v,.jpg,.jpeg,.png" class="hidden" />
-      <label for="fileInput" class="cursor-pointer px-3 py-2 rounded-xl border border-white/20 hover:bg-white/10 transition">
-        ➕ Add New Movie
-      </label>
-    </div>
-  </header>
+    </header>
 
-  <!-- Main -->
-  <main class="max-w-7xl mx-auto px-4 pb-12">
-    <!-- Search + Pills -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
-      <div class="flex items-center gap-3 flex-1">
-        <input
-          id="searchInput"
-          type="text"
-          placeholder="Search…"
-          class="w-full md:w-96 px-3 py-2 rounded-xl bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-red-500"
-        />
-        <span id="resultCount" class="text-sm text-white/70">0</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <!-- All pills start with the same base look -->
-        <button id="pillAll"    class="px-3 py-1 rounded-full border border-red-500/70 text-red-200 ring-1 ring-red-500/40 hover:bg-red-500/10">All</button>
-        <button id="pillRecent" class="px-3 py-1 rounded-full border border-red-500/70 text-red-200 ring-1 ring-red-500/40 hover:bg-red-500/10">Recently Added</button>
-        <button id="pillFav"    class="px-3 py-1 rounded-full border border-red-500/70 text-red-200 ring-1 ring-red-500/40 hover:bg-red-500/10">Favorites</button>
-      </div>
+    <div class="relative">
+      <input id="searchInput" class="w-full bg-neutral-900/60 border border-white/10 rounded-xl py-3 pl-4 pr-10 outline-none focus:ring-2 ring-rose-500"
+             placeholder="Search..." />
+      <span id="count" class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-neutral-400">0</span>
     </div>
 
-    <!-- Featured -->
-    <section class="mb-10">
-      <h2 class="mb-3 font-semibold tracking-wide text-white/80">Featured</h2>
-      <div id="featuredRow" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
-    </section>
+    <div class="flex items-center gap-2">
+      <button id="pillAll"     class="pill active">All</button>
+      <button id="pillRecent"  class="pill">Recently Added</button>
+      <button id="pillFav"     class="pill">Favorites</button>
+    </div>
 
-    <!-- Sandbox -->
-    <section>
-      <h2 class="mb-3 font-semibold tracking-wide text-white/80">Sandbox</h2>
-      <div id="emptyState" class="hidden text-white/60 text-sm px-2 py-8 text-center">No matches. Try a different search.</div>
-      <div id="sandboxRow" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
-    </section>
+    <section id="grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"></section>
   </main>
 
-  <script src="/js/phase7.js" defer></script>
+  <script defer src="/js/phase10.js"></script>
 </body>
 </html>

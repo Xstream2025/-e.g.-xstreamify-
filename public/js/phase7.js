@@ -1,99 +1,174 @@
-/* Phase 7 — merged with Phase 6 behaviors (favorites + filters + search) */
+/* Phase 7 web app – robust, null-safe version */
 
-/* ----- Data ----- */
-const movies = [
-  { title: "Spirited Away", year: 2001, poster: "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg" },
-  { title: "Interstellar", year: 2014, poster: "https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg" },
-  { title: "The Dark Knight", year: 2008, poster: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg" },
-  { title: "Arrival", year: 2016, poster: "https://image.tmdb.org/t/p/w500/x2FJsf1ElAgr63Y3PNPtJrcmpoe.jpg" },
-  { title: "Whiplash", year: 2014, poster: "" },
-  { title: "Blade Runner 2049", year: 2017, poster: "" }
-];
+(() => {
+  "use strict";
 
-const PLACEHOLDER = "/img/placeholder-2x3.png";
+  // --- DOM
+  const grid = document.getElementById("grid");
+  const searchInput = document.getElementById("searchInput");
+  const resultCount = document.getElementById("resultCount");
 
-/* ----- DOM ----- */
-const grid = document.getElementById("grid");
-const btnAll = document.getElementById("filter-all");
-const btnRecent = document.getElementById("filter-recent");
-const btnFavs = document.getElementById("filter-favs");
-const searchInput = document.getElementById("search");
+  const btnAll = document.getElementById("pillAll");
+  const btnRecent = document.getElementById("pillRecent");
+  const btnFav = document.getElementById("pillFav");
 
-/* ----- Storage helpers (Phase 6 style) ----- */
-const FAV_KEY = "xstreamify:favs";
-const favSet = new Set(JSON.parse(localStorage.getItem(FAV_KEY) || "[]"));
-function saveFavs() { localStorage.setItem(FAV_KEY, JSON.stringify([...favSet])); }
+  // --- Data (use existing window.movies if present, else fallback demo list)
+  window.movies =
+    Array.isArray(window.movies) && window.movies.length
+      ? window.movies
+      : [
+          {
+            id: "m1",
+            title: "The Dark Knight",
+            year: 2008,
+            poster:
+              "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+            addedAt: Date.now() - 1_000_000,
+          },
+          {
+            id: "m2",
+            title: "Avatar (Picture)",
+            year: 2009,
+            poster:
+              "https://image.tmdb.org/t/p/w500/jRXYjXNq0Cs2tcJjLkki24Mlp7u.jpg",
+            addedAt: Date.now() - 2_000_000,
+          },
+          {
+            id: "m3",
+            title: "Interstellar",
+            year: 2014,
+            poster:
+              "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+            addedAt: Date.now() - 3_000_000,
+          },
+        ];
 
-/* ----- Render ----- */
-function render(list) {
-  grid.innerHTML = "";
-  list.forEach(movie => {
-    const id = `${movie.title}-${movie.year}`;
+  // --- Favorites (persist to localStorage)
+  const FAV_KEY = "xsf-favs";
+  let favIds = new Set(
+    JSON.parse(localStorage.getItem(FAV_KEY) || "[]").filter(Boolean)
+  );
+  function saveFavs() {
+    localStorage.setItem(FAV_KEY, JSON.stringify([...favIds]));
+  }
 
-    const tile = document.createElement("article");
-    tile.className = "tile-card";
-    tile.dataset.year = movie.year;
-    tile.dataset.id = id;
+  // --- Helpers
 
-    const poster = (movie.poster && movie.poster.trim() ? movie.poster : PLACEHOLDER);
+  /** remove 'active' from all pills, then add to btn (if provided) */
+  function setActive(btn) {
+    document
+      .querySelectorAll("#pillAll,#pillRecent,#pillFav")
+      .forEach((el) => el.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+  }
 
-    const heartBtn = document.createElement("button");
-    heartBtn.className = "heart-btn" + (favSet.has(id) ? " is-liked" : "");
-    heartBtn.innerHTML = `
-      <svg class="heart-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
-          2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
-          C13.09 3.81 14.76 3 16.5 3
-          19.58 3 22 5.42 22 8.5
-          c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-      </svg>
-    `;
+  /** returns the id of the active pill, or 'pillAll' if none is active yet */
+  function activePillId() {
+    return (
+      document.querySelector(
+        "#pillAll.active,#pillRecent.active,#pillFav.active"
+      )?.id || "pillAll"
+    );
+  }
 
-    heartBtn.addEventListener("click", () => {
-      if (favSet.has(id)) { favSet.delete(id); heartBtn.classList.remove("is-liked"); }
-      else { favSet.add(id); heartBtn.classList.add("is-liked"); }
-      saveFavs();
-    });
+  function isFav(id) {
+    return favIds.has(id);
+  }
 
-    tile.innerHTML = `
-      <img class="poster"
-           src="${poster}"
-           alt="${movie.title}"
-           onerror="this.onerror=null;this.src='${PLACEHOLDER}'" />
-      <div class="tile-title">${movie.title} <span>${movie.year}</span></div>
-    `;
+  function toggleFav(id) {
+    if (favIds.has(id)) favIds.delete(id);
+    else favIds.add(id);
+    saveFavs();
+  }
 
-    tile.appendChild(heartBtn);
-    grid.appendChild(tile);
+  /** render the grid from a list of movie objects */
+  function renderGrid(list) {
+    const html = list
+      .map((m) => {
+        const fav = isFav(m.id);
+        return `
+          <div class="aspect-[2/3] rounded bg-white/5 ring-1 ring-white/10 overflow-hidden relative"
+               data-id="${m.id}">
+            <img src="${m.poster}" alt="${m.title}"
+                 class="w-full h-64 sm:h-72 object-cover" />
+            <div class="p-2 text-xs">
+              <div class="font-semibold truncate">${m.title}</div>
+              <div class="text-white/60">${m.year ?? ""}</div>
+            </div>
+            <button class="fav absolute top-2 right-2 text-lg leading-none"
+                    aria-label="Favorite" title="Favorite">
+              ${fav ? "★" : "☆"}
+            </button>
+          </div>
+        `;
+      })
+      .join("");
+
+    grid.innerHTML = html;
+    resultCount.textContent = list.length.toString();
+  }
+
+  /** compute filtered/sorted results and render */
+  function applyFilters() {
+    const q = (searchInput.value || "").trim().toLowerCase();
+    const mode = activePillId(); // 'pillAll' | 'pillRecent' | 'pillFav'
+
+    // 1) search
+    let list = window.movies.filter((m) =>
+      (m.title || "").toLowerCase().includes(q)
+    );
+
+    // 2) mode
+    if (mode === "pillFav") {
+      list = list.filter((m) => isFav(m.id));
+    } else if (mode === "pillRecent") {
+      list = list
+        .slice()
+        .sort(
+          (a, b) =>
+            (b.addedAt ?? 0) - (a.addedAt ?? 0) || (b.year ?? 0) - (a.year ?? 0)
+        );
+    }
+
+    renderGrid(list);
+  }
+
+  // --- Events
+
+  // clicks on the pills
+  btnAll.addEventListener("click", () => {
+    setActive(btnAll);
+    applyFilters();
   });
-}
+  btnRecent.addEventListener("click", () => {
+    setActive(btnRecent);
+    applyFilters();
+  });
+  btnFav.addEventListener("click", () => {
+    setActive(btnFav);
+    applyFilters();
+  });
 
-/* ----- Filters (Phase 6 behaviors) ----- */
-function setActive(btn) {
-  [btnAll, btnRecent, btnFavs].forEach(b => b.classList.remove("pill--active"));
-  btn.classList.add("pill--active");
-}
+  // typing in the search box
+  searchInput.addEventListener("input", () => applyFilters());
 
-function applyFilters() {
-  const q = (searchInput?.value || "").trim().toLowerCase();
-  let list = movies.filter(m => m.title.toLowerCase().includes(q));
+  // toggle favorites (event delegation on the grid)
+  grid.addEventListener("click", (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLElement)) return;
+    if (!t.classList.contains("fav")) return;
 
-  if (btnRecent.classList.contains("pill--active")) {
-    // "Recently Added" = newest first (last 3 by year)
-    list = [...list].sort((a,b) => b.year - a.year).slice(0, 3);
-  }
-  if (btnFavs.classList.contains("pill--active")) {
-    list = list.filter(m => favSet.has(`${m.title}-${m.year}`));
-  }
-  render(list);
-}
+    const card = t.closest("[data-id]");
+    if (!card) return;
+    const id = card.getAttribute("data-id");
+    if (!id) return;
 
-/* Events */
-btnAll?.addEventListener("click", () => { setActive(btnAll); applyFilters(); });
-btnRecent?.addEventListener("click", () => { setActive(btnRecent); applyFilters(); });
-btnFavs?.addEventListener("click", () => { setActive(btnFavs); applyFilters(); });
-searchInput?.addEventListener("input", () => applyFilters());
+    toggleFav(id);
+    // re-render current view to reflect the change
+    applyFilters();
+  });
 
-/* Initial load */
-setActive(btnAll);
-applyFilters();
+  // --- First render (ensure a pill is selected to avoid nulls)
+  setActive(btnAll);
+  applyFilters();
+})();
