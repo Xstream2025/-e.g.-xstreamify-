@@ -1,0 +1,50 @@
+/* public/profiles.css — styles for the Profiles overlay (Option B) */
+.no-scroll { overflow: hidden; }
+
+#profileOverlay { z-index: 60; }
+
+.profile-tile {
+  position: relative; text-align: center; padding: 1rem; cursor: pointer;
+  background: rgba(23,23,23,.6); border: 1px solid rgba(64,64,64,.6);
+  border-radius: 1rem; transition: border-color .15s ease, transform .15s ease, opacity .15s ease;
+  /* droplet feel: round the bottom more */
+  border-bottom-left-radius: 9999px; border-bottom-right-radius: 9999px;
+}
+.profile-tile:hover { border-color: rgba(239,68,68,.6); }
+
+.profile-tile .avatar{
+  width: 7rem; height: 7rem; margin: 0 auto .75rem;
+  background: rgba(38,38,38,.8); border: 1px solid rgba(82,82,82,.6);
+  background-size: cover; background-position: center; border-radius: 24px;
+  /* droplet bottom */
+  border-bottom-left-radius: 9999px; border-bottom-right-radius: 9999px;
+}
+.profile-tile .avatar.has-img { border-color: rgba(120,120,120,.7); }
+
+.profile-tile .name { color: rgba(255,255,255,.9); font-weight: 600; }
+
+.profile-tile .upload {
+  position: absolute; top: .5rem; right: .5rem; font-size: .75rem;
+  padding: .2rem .5rem; border-radius: 9999px;
+  color: rgba(255,255,255,.75); background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+}
+.profile-tile .upload:hover { color: #fff; }
+
+.profile-tile.dimmed { opacity: .6; }
+
+.profile-dock {
+  display: flex; gap: 1rem; padding: .5rem; border-radius: 9999px;
+  background: rgba(23,23,23,.7); border: 1px solid rgba(64,64,64,.5);
+}
+.dock-dot {
+  width: 52px; height: 52px;
+  background-color: rgba(255,255,255,0.06);
+  background-size: cover; background-position: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(255,255,255,.12);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.dock-dot:hover { transform: translateY(-2px); border-color: rgba(239,68,68,.6); }
+.dock-dot.active { box-shadow: 0 0 0 2px rgba(239,68,68,.7) inset; border-color: rgba(239,68,68,.8); }

@@ -6,6 +6,7 @@
   <title>X-Streamify — Phase 10 Merge</title>
 
   <link rel="stylesheet" href="tailwind.css" />
+  <link rel="stylesheet" href="profiles.css" />
   <style>
     .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
     .shadow-soft { box-shadow: 0 10px 20px rgba(0,0,0,.15); }
@@ -205,5 +206,23 @@
       </div>
     </div>
   </template>
+  <!-- Profiles Overlay -->
+<div id="profileOverlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden">
+  <div class="mx-auto max-w-4xl h-full flex flex-col items-center justify-center px-6">
+    <h2 class="text-3xl md:text-4xl font-bold mb-8 text-white/90">Who’s watching?</h2>
+    <div id="profileGrid" class="grid grid-cols-2 md:grid-cols-4 gap-6 w-full"></div>
+    <div class="mt-10 flex items-center justify-center w-full">
+      <div id="profileDock" class="profile-dock"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick switch button -->
+<button id="switchProfileBtn" class="fixed bottom-5 right-5 px-3 py-2 rounded-full bg-white/10 text-white/80 hover:bg-white/20 border border-white/10">
+  Switch Profile
+</button>
+
+<!-- Profiles logic -->
+<script type="module" src="./js/profiles.js"></script>
 </body>
 </html>
