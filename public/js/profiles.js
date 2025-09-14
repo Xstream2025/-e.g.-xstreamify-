@@ -75,12 +75,20 @@ function renderGrid(){
     tile.innerHTML = `
       <div class="avatar ${p.avatar?'has-img':''}" style="${p.avatar?`background-image:url('${p.avatar}')`:''}"></div>
       <div class="name">${p.name}</div>
-      <button class="upload">Edit</button>
+
+      <!-- Pencil icon button -->
+      <button class="upload" aria-label="Edit avatar" title="Edit avatar">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path fill="currentColor"
+            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm18.71-10.04a1.003 1.003 0 0 0 0-1.42l-2.5-2.5a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.99-1.66z"/>
+        </svg>
+      </button>
       <input type="file" class="uploader" accept="image/*" hidden>
     `;
 
     // avatar edit
-    tile.querySelector(".upload").addEventListener("click", ()=>{
+    tile.querySelector(".upload").addEventListener("click", (ev)=>{
+      ev.stopPropagation();
       tile.querySelector(".uploader").click();
     });
     tile.querySelector(".uploader").addEventListener("change", (e)=>{
@@ -95,9 +103,9 @@ function renderGrid(){
       reader.readAsDataURL(f);
     });
 
-    // select profile
+    // select profile (ignore clicks on the upload button)
     tile.addEventListener("click", (ev)=>{
-      if (ev.target.closest(".upload")) return; // ignore clicks on Edit
+      if (ev.target.closest(".upload")) return;
       selectProfile(tile, p.id);
     });
 
@@ -105,7 +113,7 @@ function renderGrid(){
   });
 }
 
-// Dock now shows ONLY the active profile (single circle). Hidden until selected.
+// Dock: show ONLY the active profile (single circle). Hidden until selected.
 function renderDock(activeId){
   if(!dock) return;
   dock.innerHTML = "";
