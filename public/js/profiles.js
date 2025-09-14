@@ -69,11 +69,14 @@ function renderGrid(){
   if(!grid) return;
   grid.innerHTML = "";
   profiles.forEach(p=>{
+    const hasAvatar = !!p.avatar;
+
     const tile = document.createElement("div");
-    tile.className = "profile-tile optionB";
+    tile.className = `profile-tile optionB ${hasAvatar ? "" : "empty"}`; // <-- empty if no avatar
     tile.dataset.id = p.id;
+
     tile.innerHTML = `
-      <div class="avatar ${p.avatar?'has-img':''}" style="${p.avatar?`background-image:url('${p.avatar}')`:''}"></div>
+      <div class="avatar ${hasAvatar?'has-img':''}" style="${hasAvatar?`background-image:url('${p.avatar}')`:''}"></div>
       <div class="name">${p.name}</div>
 
       <!-- Pencil icon button -->
@@ -127,7 +130,6 @@ function renderDock(activeId){
   dot.className = "dock-dot active";
   dot.style.backgroundImage = p.avatar ? `url('${p.avatar}')` : "none";
   dot.title = p.name;
-  // Click the circle to reopen chooser (for switching)
   dot.addEventListener("click", ()=>{
     if(overlay){
       overlay.classList.remove("hidden");
