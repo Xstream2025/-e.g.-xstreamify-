@@ -1,4 +1,4 @@
-/* public/profiles.css — styles for the Profiles overlay (Option B) */
+/* public/profiles.css — Profiles with real background removal and themed backdrops */
 .no-scroll { overflow: hidden; }
 #profileOverlay { z-index: 60; }
 
@@ -7,38 +7,49 @@
   position: relative; text-align: center; padding: 1rem; cursor: pointer;
   background: rgba(23,23,23,.6); border: 1px solid rgba(64,64,64,.6);
   border-radius: 1rem; transition: border-color .15s ease, transform .15s ease, opacity .15s ease;
-  /* droplet feel: round the bottom more */
   border-bottom-left-radius: 9999px; border-bottom-right-radius: 9999px;
 }
 .profile-tile:hover { border-color: rgba(239,68,68,.6); }
 
 .profile-tile .avatar{
+  position: relative; overflow: hidden;
   width: 7rem; height: 7rem; margin: 0 auto .75rem;
-  background: rgba(38,38,38,.8); border: 1px solid rgba(82,82,82,.6);
-  background-size: cover; background-position: center; border-radius: 24px;
+  border: 1px solid rgba(82,82,82,.6); border-radius: 24px;
   border-bottom-left-radius: 9999px; border-bottom-right-radius: 9999px;
 }
-.profile-tile .avatar.has-img { border-color: rgba(120,120,120,.7); }
+
+/* Background theme behind the cutout */
+.profile-tile .avatar .bg {
+  position:absolute; inset:0; border-radius: inherit; z-index: 0;
+  background:
+    radial-gradient(80% 80% at 30% 30%, rgba(255,255,255,.06), transparent 60%),
+    radial-gradient(90% 90% at 70% 70%, rgba(239,68,68,.20), transparent 60%),
+    conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,.1), rgba(255,255,255,0) 60%);
+  animation: xsf-dvd-spin 10s linear infinite;
+  filter: saturate(1.05);
+}
+@keyframes xsf-dvd-spin { to { transform: rotate(360deg); } }
+
+/* Cutout image on top */
+.profile-tile .avatar .cut{
+  position:absolute; inset:0; z-index: 1;
+  width: 100%; height: 100%; object-fit: contain;
+}
+
+/* Name */
 .profile-tile .name { color: rgba(255,255,255,.9); font-weight: 600; }
 
-/* Pencil button — default hidden */
+/* Pencil button — hidden unless hover/focus; ALWAYS visible for empty avatars */
 .profile-tile .upload{
   position: absolute; top: .5rem; right: .5rem;
-  width: 28px; height: 28px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 8px;
-  color: rgba(255,255,255,.85);
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.14);
-  opacity: 0;
-  transition: opacity .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+  width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; color: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14);
+  opacity: 0; transition: opacity .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
 }
-/* Show when tile is hovered/focused… */
 .profile-tile:hover .upload,
 .profile-tile:focus-within .upload { opacity: 1; }
-/* …but if the profile is EMPTY (no avatar), keep it ALWAYS visible */
 .profile-tile.empty .upload { opacity: 1; }
-
 .profile-tile .upload:hover { background: rgba(255,255,255,.12); color: #fff; }
 
 .profile-tile.dimmed { opacity: .6; }
@@ -55,10 +66,8 @@
   width: 52px; height: 52px;
   background-color: rgba(255,255,255,0.06);
   background-size: cover; background-position: center;
-  border-radius: 9999px;
-  border: 1px solid rgba(255,255,255,.12);
-  cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  border-radius: 9999px; border: 1px solid rgba(255,255,255,.12);
+  cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
 .dock-dot:hover { transform: translateY(-2px); border-color: rgba(239,68,68,.6); }
 .dock-dot.active { box-shadow: 0 0 0 2px rgba(239,68,68,.7) inset; border-color: rgba(239,68,68,.8); }
