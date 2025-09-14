@@ -105,21 +105,28 @@ function renderGrid(){
   });
 }
 
+// Dock now shows ONLY the active profile (single circle). Hidden until selected.
 function renderDock(activeId){
   if(!dock) return;
   dock.innerHTML = "";
-  profiles.forEach(p=>{
-    const dot = document.createElement("button");
-    dot.className = "dock-dot" + (p.id===activeId ? " active" : "");
-    dot.style.backgroundImage = p.avatar?`url('${p.avatar}')`:"none";
-    dot.title = p.name;
-    dot.addEventListener("click", ()=>{
-      setActive(p.id);
-      renderDock(p.id);
-      if(overlay){ overlay.classList.add("hidden"); document.body.classList.remove("no-scroll"); }
-    });
-    dock.appendChild(dot);
+  if(!activeId){
+    dock.classList.add("hidden");
+    return;
+  }
+  dock.classList.remove("hidden");
+  const p = profiles.find(x => x.id === activeId) || { name: "Active" };
+  const dot = document.createElement("button");
+  dot.className = "dock-dot active";
+  dot.style.backgroundImage = p.avatar ? `url('${p.avatar}')` : "none";
+  dot.title = p.name;
+  // Click the circle to reopen chooser (for switching)
+  dot.addEventListener("click", ()=>{
+    if(overlay){
+      overlay.classList.remove("hidden");
+      document.body.classList.add("no-scroll");
+    }
   });
+  dock.appendChild(dot);
 }
 
 function showOverlayIfNeeded(){
@@ -135,10 +142,8 @@ function showOverlayIfNeeded(){
 function selectProfile(tile, id){
   if(!dock) return;
 
-  // play select sound
-  plop();
+  plop(); // initial select sound
 
-  // clone for animation
   const rect = tile.getBoundingClientRect();
   const dockRect = dock.getBoundingClientRect();
   const targetX = dockRect.left + dockRect.width/2;
@@ -169,16 +174,15 @@ function selectProfile(tile, id){
   ], timing).addEventListener("finish", ()=>{
     ghost.remove();
     setActive(id);
-    renderDock(id);
+    renderDock(id); // shows the single circle
     if(overlay){ overlay.classList.add("hidden"); document.body.classList.remove("no-scroll"); }
   });
 
-  // timed boings
   setTimeout(()=>boing(), 320);
   setTimeout(()=>boing(), 610);
 }
 
-// ---------- Re-open chooser ----------
+// ---------- Re-open chooser via button ----------
 if (switchBtn){
   switchBtn.addEventListener("click", ()=>{
     if(overlay){
