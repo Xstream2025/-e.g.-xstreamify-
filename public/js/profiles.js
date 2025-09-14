@@ -1,7 +1,8 @@
 // public/js/profiles.js
-// Profiles with background removal (compact WebP + quota-safe saving)
+// Profiles with background removal (compact WebP) + Reset (sounds always ON)
 
 import { createCutoutFromImage, downscaleImageToDataURL } from "./segmentation.js";
+import { playPlop, playBoing } from "./sound.js";
 
 const LS_PROFILES = "xsf_profiles_v1";
 const LS_ACTIVE   = "xsf_active_profile_v1";
@@ -13,28 +14,7 @@ const DEFAULT_PROFILES = [
   { id: "allison", name: "Allison", avatarOrig: null, avatarCut: null },
 ];
 
-// tiny sounds
-let audioCtx;
-function ensureCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
-function plop(v=0.2,start=650,end=200,ms=160){ ensureCtx(); const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-  o.type="sine"; o.frequency.setValueAtTime(start,audioCtx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(end,audioCtx.currentTime+ms/1000);
-  g.gain.setValueAtTime(0.0001,audioCtx.currentTime);
-  g.gain.exponentialRampToValueAtTime(v,audioCtx.currentTime+0.01);
-  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+ms/1000);
-  o.connect(g).connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+ms/1000);
-}
-function boing(v=0.15,base=220,ms=220){ ensureCtx(); const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-  o.type="triangle"; o.frequency.setValueAtTime(base,audioCtx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(base*1.8,audioCtx.currentTime+ms/2000);
-  o.frequency.exponentialRampToValueAtTime(base*0.9,audioCtx.currentTime+ms/1000);
-  g.gain.setValueAtTime(0.0001,audioCtx.currentTime);
-  g.gain.exponentialRampToValueAtTime(v,audioCtx.currentTime+0.01);
-  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+ms/1000);
-  o.connect(g).connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+ms/800);
-}
-
-// storage
+// ---- storage ----
 function loadProfiles(){
   const raw = localStorage.getItem(LS_PROFILES);
   if(!raw) return DEFAULT_PROFILES.slice();
@@ -44,33 +24,27 @@ function loadProfiles(){
   } catch { return DEFAULT_PROFILES.slice(); }
 }
 function saveProfiles(list){
-  // Quota-safe save: try, and if quota is exceeded, shrink and retry once
   try {
     localStorage.setItem(LS_PROFILES, JSON.stringify(list));
-  } catch (e) {
-    console.warn("Save failed (likely quota). Retrying smaller…", e);
-    // shrink any large images further
-    list.forEach(p=>{
-      if (p.avatarCut && p.avatarCut.length > 3000000) {
-        // nothing to do here; avatarCut already compact; could clear avatarOrig
-        p.avatarOrig = null; // drop original to save space
-      }
-    });
+  } catch {
+    // free space: drop originals if needed (cutouts are compact)
+    list.forEach(p => { p.avatarOrig = null; });
     localStorage.setItem(LS_PROFILES, JSON.stringify(list));
   }
 }
 function getActive(){ return localStorage.getItem(LS_ACTIVE); }
 function setActive(id){ localStorage.setItem(LS_ACTIVE, id); }
 
-// DOM
+// ---- DOM ----
 const overlay   = document.getElementById("profileOverlay");
 const grid      = document.getElementById("profileGrid");
 const dock      = document.getElementById("profileDock");
 const switchBtn = document.getElementById("switchProfileBtn");
+const resetBtn  = document.getElementById("resetProfilesBtn");
 
 let profiles = loadProfiles();
 
-// render
+// ---- render ----
 function renderGrid(){
   if(!grid) return;
   grid.innerHTML = "";
@@ -97,7 +71,7 @@ function renderGrid(){
       <input type="file" class="uploader" accept="image/*" hidden>
     `;
 
-    // upload flow (with compacting & cutout)
+    // upload flow
     tile.querySelector(".upload").addEventListener("click", (ev)=>{
       ev.stopPropagation();
       tile.querySelector(".uploader").click();
@@ -108,15 +82,10 @@ function renderGrid(){
       reader.onload = async () => {
         const img = new Image();
         img.onload = async () => {
-          // compact original as fallback
           const compactOrig = downscaleImageToDataURL(img, 384);
-          // make cutout
           const cut = (await createCutoutFromImage(img, 384)) || compactOrig;
-
-          // assign to THIS profile only
           p.avatarOrig = compactOrig;
           p.avatarCut  = cut;
-
           saveProfiles(profiles);
           renderGrid();
           renderDock(getActive());
@@ -160,10 +129,10 @@ function showOverlayIfNeeded(){
   renderDock(act);
 }
 
-// bounce
+// ---- selection animation (with sounds) ----
 function selectProfile(tile, id){
   if(!dock) return;
-  plop();
+  playPlop();
 
   const rect = tile.getBoundingClientRect();
   const dockRect = dock.getBoundingClientRect();
@@ -194,11 +163,22 @@ function selectProfile(tile, id){
     document.body.classList.remove("no-scroll");
   });
 
-  setTimeout(()=>boing(),320);
-  setTimeout(()=>boing(),610);
+  setTimeout(()=>playBoing(),320);
+  setTimeout(()=>playBoing(),610);
 }
 
+// ---- quick actions ----
 switchBtn?.addEventListener("click", ()=>{
+  overlay?.classList.remove("hidden");
+  document.body.classList.add("no-scroll");
+});
+
+resetBtn?.addEventListener("click", ()=>{
+  localStorage.removeItem(LS_PROFILES);
+  localStorage.removeItem(LS_ACTIVE);
+  profiles = loadProfiles();
+  renderGrid();
+  renderDock(null);
   overlay?.classList.remove("hidden");
   document.body.classList.add("no-scroll");
 });

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>X-Streamify — Sign In</title>
+  <link rel="icon" href="./favicon.ico">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="./profiles.css">
+  <style>
+    :root{--card-bg:#0e0e12;--fg:#e8e8ee;--muted:#9aa0a6;--accent:#ef4444;--ok:#22c55e}
+    body{margin:0;background:#0a0a0f;color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{min-height:100dvh;display:grid;place-items:center;padding:24px}
+    .card{width:100%;max-width:420px;background:var(--card-bg);border:1px solid #1c1c24;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    .hd{padding:24px 24px 8px;font-weight:700;font-size:22px}
+    .sub{padding:0 24px 8px;color:var(--muted);font-size:14px}
+    form{padding:16px 24px 0}
+    .row{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+    label{font-size:13px;color:var(--muted)}
+    input{background:#0b0b12;border:1px solid #232331;border-radius:12px;color:var(--fg);padding:12px}
+    button{width:100%;border:0;border-radius:12px;padding:12px 14px;cursor:pointer;font-weight:600}
+    .btn-primary{background:var(--accent);color:white}
+    .btn-ghost{background:transparent;color:var(--fg);border:1px solid #242436}
+    .row-inline{display:flex;gap:10px}
+    .muted{color:var(--muted);font-size:13px;text-align:center;padding:12px 24px}
+    .msg{padding:10px 14px;margin:10px 24px;border-radius:10px;font-size:14px;display:none}
+    .msg.ok{display:block;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);color:#d1fae5}
+    .msg.err{display:block;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.35);color:#fecaca}
+    .link{color:#fff;text-decoration:underline;cursor:pointer}
+    .sep{height:1px;background:#1b1b25;margin:12px 24px}
+    .foot{display:flex;justify-content:center;gap:8px;padding:16px 24px 24px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="hd">Welcome back</div>
+      <div class="sub">Sign in or create an account to continue.</div>
+
+      <!-- Sign In / Sign Up -->
+      <form id="auth-form">
+        <div class="row">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="row">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="row-inline">
+          <button id="btn-signin" class="btn-primary" type="submit">Sign In</button>
+          <button id="btn-signup" class="btn-ghost" type="button">Create Account</button>
+        </div>
+      </form>
+
+      <div class="muted">
+        Forgot your password? <span id="show-reset" class="link">Reset it</span>
+      </div>
+
+      <div class="sep"></div>
+
+      <!-- Reset password request -->
+      <form id="reset-form" style="display:none;">
+        <div class="row">
+          <label for="reset-email">Email</label>
+          <input id="reset-email" type="email" autocomplete="email">
+        </div>
+        <button id="btn-reset" class="btn-ghost" type="submit">Send reset email</button>
+      </form>
+
+      <!-- New password (after email link opens this page) -->
+      <form id="newpass-form" style="display:none;">
+        <div class="row">
+          <label for="new-password">New password</label>
+          <input id="new-password" type="password" autocomplete="new-password">
+        </div>
+        <button id="btn-update-pass" class="btn-primary" type="submit">Update password</button>
+      </form>
+
+      <div id="msg" class="msg"></div>
+
+      <div class="foot">
+        <a class="link" href="./index.html">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1) Paste your keys here (from Supabase → Project Settings → API)
+    window.__SUPABASE_URL__  = "https://toaunopxummaartcvrtp.supabase.co";
+    window.__SUPABASE_ANON__ = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvYXVub3B4dW1tYWFydGN2cnRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4ODg4OTcsImV4cCI6MjA3MzQ2NDg5N30.1Gp9qL-gA_ue_TSRXVyE7ZCLZo2_Oaf7_FBDuRVwkF8";
+  </script>
+  <script src="./js/auth.js" type="module"></script>
+</body>
+</html>

@@ -1,6 +1,5 @@
 // public/js/segmentation.js
-// Load MediaPipe Selfie Segmentation and export a helper that returns
-// a transparent cutout as a compact WebP data URL.
+// Background removal → transparent cutout (compact WebP) + downscale helper.
 
 const MP_SRC =
   "https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js";
@@ -22,54 +21,42 @@ async function ensureMediaPipe() {
   if (!window.SelfieSegmentation) await loadScriptOnce(MP_SRC);
 }
 
-// Utility: draw <img> to canvas with max width and return the canvas
 function drawToCanvas(img, maxW = 384) {
-  const scale = Math.min(1, maxW / (img.naturalWidth || img.width || maxW));
-  const w = Math.max(1, Math.round((img.naturalWidth || img.width) * scale));
-  const h = Math.max(1, Math.round((img.naturalHeight || img.height) * scale));
+  const w0 = img.naturalWidth || img.width, h0 = img.naturalHeight || img.height;
+  const scale = Math.min(1, maxW / Math.max(1, w0));
+  const w = Math.max(1, Math.round(w0 * scale));
+  const h = Math.max(1, Math.round(h0 * scale));
   const c = document.createElement("canvas");
   c.width = w; c.height = h;
   c.getContext("2d").drawImage(img, 0, 0, w, h);
   return c;
 }
-
-// Convert canvas to WebP (alpha) and fall back to PNG if needed
-function canvasToAlphaDataURL(c, target = "image/webp", quality = 0.85) {
+function canvasToAlphaDataURL(c, type = "image/webp", q = 0.85) {
   try {
-    const webp = c.toDataURL(target, quality);
-    if (webp && webp.startsWith("data:image/webp")) return webp;
+    const webp = c.toDataURL(type, q);
+    if (webp.startsWith("data:image/webp")) return webp;
   } catch {}
   return c.toDataURL("image/png");
 }
 
-/**
- * Returns a transparent cutout (data URL) from an <img>.
- * - Downscales large images first for speed/size.
- * - Produces WebP with alpha when supported.
- */
 export async function createCutoutFromImage(img, maxW = 384) {
   try {
     await ensureMediaPipe();
-
-    // Downscale first
     const srcCanvas = drawToCanvas(img, maxW);
 
-    // Init MediaPipe
     const segmenter = new window.SelfieSegmentation({
       locateFile: (f) =>
         `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${f}`,
     });
     segmenter.setOptions({ modelSelection: 1 });
 
-    const segmentationMask = await new Promise((resolve, reject) => {
+    const segmentationMask = await new Promise((resolve) => {
       segmenter.onResults((res) => resolve(res.segmentationMask));
       segmenter.send({ image: srcCanvas });
     });
 
-    // Compose cutout with transparency
     const out = document.createElement("canvas");
-    out.width = srcCanvas.width;
-    out.height = srcCanvas.height;
+    out.width = srcCanvas.width; out.height = srcCanvas.height;
     const ctx = out.getContext("2d");
     ctx.save();
     ctx.drawImage(segmentationMask, 0, 0, out.width, out.height);
@@ -79,12 +66,11 @@ export async function createCutoutFromImage(img, maxW = 384) {
 
     return canvasToAlphaDataURL(out, "image/webp", 0.85);
   } catch (e) {
-    console.warn("[segmentation] failed:", e);
+    console.warn("[segmentation] failed, using fallback:", e);
     return null;
   }
 }
 
-// Also export a helper to downscale the original as a compact fallback
 export function downscaleImageToDataURL(img, maxW = 384) {
   const c = drawToCanvas(img, maxW);
   return canvasToAlphaDataURL(c, "image/webp", 0.85);
