@@ -1,67 +1,41 @@
-// public/js/profiles.js
-// Renders the user pill (sign in link when logged out; name/email + sign out when logged in)
+// profiles.js
+import { XSF_DB } from "./db.js";
 
-import { supabase, getUser, fetchProfile, upsertMyProfile } from "./db.js";
+// DOM elements
+const profileForm = document.querySelector("#profile-form");
+const usernameInput = document.querySelector("#username");
+const profileMsg = document.querySelector("#profile-msg");
 
-const pill = document.getElementById("user-pill");
+// Save profile
+profileForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  profileMsg.textContent = "Saving profile...";
 
-function renderSignedOut() {
-  if (!pill) return;
-  pill.innerHTML = `<a href="./signin.html" style="color:#e5e7eb;text-decoration:none">Sign in</a>`;
-}
-
-function renderSignedIn({ user, profile }) {
-  if (!pill) return;
-  const name = profile?.display_name || user.email || "Account";
-  pill.innerHTML = `
-    <span style="opacity:.9">${escapeHtml(name)}</span>
-    <button id="xsf-signout"
-      style="background:#1f2937;color:#e5e7eb;border:1px solid #374151;border-radius:10px;padding:.35rem .6rem;cursor:pointer">
-      Sign out
-    </button>
-  `;
-  const btn = document.getElementById("xsf-signout");
-  if (btn) {
-    btn.onclick = async () => {
-      await supabase.auth.signOut();
-      location.href = "./signin.html";
-    };
-  }
-}
-
-function escapeHtml(s = "") {
-  return s.replace(/[&<>"']/g, (c) =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
-  );
-}
-
-async function init() {
   try {
-    const user = await getUser();
-    if (!user) { renderSignedOut(); return; }
-
-    let profile = null;
-    try { profile = await fetchProfile(); } catch (_) {}
-    renderSignedIn({ user, profile });
-
-    if (!profile) {
-      try { await upsertMyProfile({ display_name: user.email }); } catch (_) {}
+    const username = usernameInput.value.trim();
+    if (!username) {
+      profileMsg.textContent = "Username required.";
+      return;
     }
-  } catch (e) {
-    console.error("profiles init error", e);
-    renderSignedOut();
-  }
-}
 
-// update pill when auth state changes
-supabase.auth.onAuthStateChange(async (_ev, session) => {
-  if (session?.user) {
-    let profile = null;
-    try { profile = await fetchProfile(); } catch (_) {}
-    renderSignedIn({ user: session.user, profile });
-  } else {
-    renderSignedOut();
+    // Save to Supabase via db.js helper
+    await XSF_DB.saveProfile({ username });
+    profileMsg.textContent = "Profile saved!";
+  } catch (err) {
+    console.error("Save profile error:", err);
+    profileMsg.textContent = err.message || "Failed to save profile.";
   }
 });
 
-init();
+// Load profile (if exists)
+window.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const profile = await XSF_DB.loadProfile();
+    if (profile && profile.username) {
+      usernameInput.value = profile.username;
+      profileMsg.textContent = "Profile loaded.";
+    }
+  } catch (err) {
+    console.warn("No profile loaded:", err.message);
+  }
+});

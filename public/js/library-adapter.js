@@ -1,9 +1,64 @@
-// public/js/library-adapter.js
-// Renders the Add-a-Movie form + "My Library" grid
-
+// UI-polished library adapter: grid cards, hover lift, tidy actions
 import XSF_DB, { supabase } from "./db.js";
 
-function $(id) { return document.getElementById(id); }
+const $ = (id) => document.getElementById(id);
+
+function card({ title, poster_url, year, id }) {
+  const wrap = document.createElement("article");
+  wrap.className =
+    "group rounded-2xl border bg-white shadow-sm overflow-hidden transition hover:-translate-y-0.5 hover:shadow-md";
+
+  const posterBox = document.createElement("div");
+  posterBox.className = "aspect-[2/3] bg-gray-200 relative";
+  if (poster_url) {
+    const img = document.createElement("img");
+    img.src = poster_url;
+    img.alt = title;
+    img.className = "absolute inset-0 w-full h-full object-cover";
+    img.onerror = () => (posterBox.innerHTML = `<div class="w-full h-full grid place-items-center text-gray-500">No Poster</div>`);
+    posterBox.appendChild(img);
+  } else {
+    posterBox.innerHTML = `<div class="w-full h-full grid place-items-center text-gray-500">No Poster</div>`;
+  }
+
+  const body = document.createElement("div");
+  body.className = "p-4 space-y-2";
+
+  const titleEl = document.createElement("h3");
+  titleEl.className = "font-semibold leading-tight";
+  titleEl.textContent = title;
+
+  const sub = document.createElement("div");
+  sub.className = "text-sm text-gray-500";
+  sub.textContent = year ? `Year: ${year}` : "";
+
+  const actions = document.createElement("div");
+  actions.className = "pt-2 flex items-center gap-4 text-sm";
+
+  const btnRename = document.createElement("button");
+  btnRename.className = "text-blue-600 hover:underline";
+  btnRename.textContent = "Rename";
+  btnRename.onclick = async () => {
+    const val = prompt("New title:", title);
+    if (!val || !val.trim()) return;
+    await XSF_DB.renameLibraryItem(id, val.trim());
+    await renderLibrary();
+  };
+
+  const btnDelete = document.createElement("button");
+  btnDelete.className = "text-red-600 hover:underline";
+  btnDelete.textContent = "Delete";
+  btnDelete.onclick = async () => {
+    if (!confirm(`Delete “${title}”?`)) return;
+    await XSF_DB.deleteLibraryItem(id);
+    await renderLibrary();
+  };
+
+  actions.append(btnRename, btnDelete);
+  body.append(titleEl, sub, actions);
+  wrap.append(posterBox, body);
+  return wrap;
+}
 
 async function renderLibrary() {
   const list = $("library-list");
@@ -16,12 +71,14 @@ async function renderLibrary() {
     list.innerHTML = "";
 
     const items = await XSF_DB.listLibraryItems();
-    console.log("[library] items:", items);
 
     if (!items || items.length === 0) {
       empty.classList.remove("hidden");
-    } else {
-      for (const item of items) list.appendChild(renderCard(item));
+      return;
+    }
+
+    for (const it of items) {
+      list.appendChild(card(it));
     }
   } catch (err) {
     console.error("[library] render error:", err);
@@ -31,73 +88,15 @@ async function renderLibrary() {
   }
 }
 
-function renderCard(item) {
-  const card = document.createElement("div");
-  card.className = "flex gap-4 items-center p-4 rounded-xl border bg-white shadow-sm";
-
-  // Poster
-  const posterWrap = document.createElement("div");
-  posterWrap.className = "w-40 h-60 rounded bg-gray-200 flex items-center justify-center overflow-hidden shrink-0";
-  if (item.poster_url) {
-    const img = document.createElement("img");
-    img.src = item.poster_url;
-    img.alt = item.title;
-    img.className = "w-full h-full object-cover";
-    img.onerror = () => { posterWrap.textContent = "No Poster"; };
-    posterWrap.appendChild(img);
-  } else {
-    posterWrap.textContent = "No Poster";
-    posterWrap.className += " text-gray-500 font-semibold";
-  }
-
-  // Info
-  const right = document.createElement("div");
-  right.className = "flex-1";
-
-  const title = document.createElement("div");
-  title.className = "text-lg font-semibold mb-1";
-  title.textContent = item.title;
-
-  const meta = document.createElement("div");
-  meta.className = "text-sm text-gray-500 mb-3";
-  meta.textContent = item.year ? `Year: ${item.year}` : "";
-
-  const actions = document.createElement("div");
-  actions.className = "text-sm";
-  const rename = document.createElement("button");
-  rename.className = "text-blue-600 hover:underline mr-3";
-  rename.textContent = "Rename";
-  rename.onclick = async () => {
-    const val = prompt("New title:", item.title);
-    if (!val || !val.trim()) return;
-    await XSF_DB.renameLibraryItem(item.id, val.trim());
-    await renderLibrary();
-  };
-
-  const del = document.createElement("button");
-  del.className = "text-red-600 hover:underline";
-  del.textContent = "Delete";
-  del.onclick = async () => {
-    if (!confirm(`Delete “${item.title}”?`)) return;
-    await XSF_DB.deleteLibraryItem(item.id);
-    await renderLibrary();
-  };
-
-  actions.append(rename, del);
-  right.append(title, meta, actions);
-  card.append(posterWrap, right);
-  return card;
-}
-
-async function onAddClick() {
+async function onAdd() {
   const titleEl = $("add-title");
   const posterEl = $("add-poster");
   const yearEl = $("add-year");
   const btn = $("add-btn");
 
-  const title = titleEl.value.trim();
-  const poster = posterEl.value.trim();
-  const yearStr = yearEl.value.trim();
+  const title = (titleEl.value || "").trim();
+  const poster = (posterEl.value || "").trim();
+  const yearStr = (yearEl.value || "").trim();
 
   if (!title) {
     alert("Please enter a title.");
@@ -113,17 +112,10 @@ async function onAddClick() {
   try {
     btn.disabled = true;
     btn.textContent = "Adding…";
-
-    await XSF_DB.addLibraryItem({
-      title,
-      poster_url: poster || null,
-      year,
-    });
-
+    await XSF_DB.addLibraryItem({ title, poster_url: poster || null, year });
     titleEl.value = "";
     posterEl.value = "";
     yearEl.value = "";
-
     await renderLibrary();
   } catch (err) {
     console.error("[library] add error:", err);
@@ -134,16 +126,14 @@ async function onAddClick() {
   }
 }
 
-function wireUp() {
-  $("add-btn")?.addEventListener("click", onAddClick);
+function init() {
+  $("add-btn")?.addEventListener("click", onAdd);
   renderLibrary();
-
   supabase.auth.onAuthStateChange(() => renderLibrary());
 }
 
-// Init
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", wireUp, { once: true });
+  document.addEventListener("DOMContentLoaded", init, { once: true });
 } else {
-  wireUp();
+  init();
 }

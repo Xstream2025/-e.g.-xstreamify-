@@ -1,0 +1,72 @@
+/* Floating DVD background behind the sign-in form
+   Safe: pointer-events: none; so it never blocks clicks. */
+
+:root{
+  --dvd-count: 26;           /* how many discs */
+  --dvd-min: 90px;           /* smallest diameter */
+  --dvd-max: 180px;          /* largest  diameter */
+}
+
+.dvd-bg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;               /* background layer */
+  pointer-events: none;     /* let clicks pass through */
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,0.04), rgba(0,0,0,0.06)),
+    linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.05));
+  backdrop-filter: blur(0.5px);
+}
+
+/* each disc */
+.dvd {
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.25),
+    inset 0 0 0 1px rgba(255,255,255,0.18);
+  filter: saturate(1.05) contrast(1.05);
+  animation: move var(--dur) ease-in-out infinite alternate;
+  opacity: 0.9;
+}
+
+/* little inner hub to sell the DVD look */
+.dvd::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: calc(var(--size) * 0.18);
+  height: calc(var(--size) * 0.18);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 40% 40%, rgba(255,255,255,0.9), rgba(220,220,220,0.6) 40%, rgba(0,0,0,0.25) 60%, transparent 61%);
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.35);
+}
+
+/* glossy sweep */
+.dvd::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.22), transparent 45%);
+  mix-blend-mode: screen;
+}
+
+/* smooth drifting between two random points */
+@keyframes move {
+  from { transform: translate(var(--x1), var(--y1)) rotate(var(--r1)); }
+  to   { transform: translate(var(--x2), var(--y2)) rotate(var(--r2)); }
+}
+
+/* put your form above the background */
+.page-wrap {
+  position: relative;
+  z-index: 1;
+}

@@ -1,61 +1,32 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>X-Streamify</title>
-  <link rel="stylesheet" href="./tailwind.css" />
-
-  <!-- 1) Shared keys -->
-  <script src="./js/keys.js"></script>
-  <!-- 2) Supabase client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X-Streamify — Phase 14</title>
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
-<body class="bg-gray-100 text-gray-900">
-  <!-- Top bar -->
-  <header class="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
-    <h1 class="text-2xl font-bold">X-Streamify</h1>
-    <div id="user-pill" class="text-sm"></div>
+<body>
+  <header style="padding:16px;">
+    <h1 style="margin:0;">X-Streamify</h1>
+    <button id="addToLibraryBtn" class="button">Add to Library</button>
   </header>
 
-  <main class="max-w-6xl mx-auto px-4 pb-12">
-    <!-- Add a Movie -->
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold mb-3">Add a Movie</h2>
-      <div class="rounded-2xl bg-white border shadow-sm p-4 flex gap-4 items-center">
-        <input id="add-title" type="text" placeholder="Title (e.g., Braveheart)"
-               class="flex-1 px-3 py-2 border rounded-lg" autofocus />
-        <input id="add-poster" type="url" placeholder="Poster URL (optional)"
-               class="flex-1 px-3 py-2 border rounded-lg" />
-        <input id="add-year" type="text" placeholder="Year (optional)"
-               class="w-32 px-3 py-2 border rounded-lg" />
-        <button id="add-btn"
-                class="px-4 py-2 rounded-lg bg-black/80 text-white hover:bg-black">
-          Add to Library
-        </button>
-      </div>
-    </section>
+  <main id="content"></main>
 
-    <!-- My Library -->
-    <section>
-      <h2 class="text-xl font-semibold mb-3">My Library</h2>
+  <!-- IMPORTANT: /public is the web root. Do NOT include '/public' in the paths. -->
+  <script defer src="/js/db.js"></script>
+  <!-- render helpers BEFORE buttons so window.renderLibrary exists -->
+  <script defer src="/js/dbcodes.js"></script>
+  <!-- button wiring AFTER render helpers -->
+  <script defer src="/js/buttons.js"></script>
 
-      <!-- Loading + Empty States -->
-      <div id="library-loading" class="text-sm text-gray-500 mb-3 hidden">
-        Loading your movies…
-      </div>
-      <div id="library-empty" class="text-sm text-gray-500 mb-3 hidden">
-        No movies yet. Add your first!
-      </div>
-
-      <!-- Library List -->
-      <div id="library-list" class="flex flex-col gap-4"></div>
-    </section>
-  </main>
-
-  <!-- Scripts -->
-  <script defer src="./js/db.js" type="module"></script>
-  <script defer src="./js/profiles.js" type="module"></script>
-  <script defer src="./js/library-adapter.js" type="module"></script>
+  <script>
+    // quick boot check so we can see if db.js is loaded
+    (function () {
+      const ok = !!(window.DB || window.db);
+      console.log(ok ? "db.js loaded OK" : "db.js missing — no DB/db on window");
+    })();
+  </script>
 </body>
 </html>
