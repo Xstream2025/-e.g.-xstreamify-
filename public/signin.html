@@ -1,95 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>X-Streamify — Sign In</title>
-  <link rel="icon" href="./favicon.ico">
-  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="./profiles.css">
-  <style>
-    :root{--card-bg:#0e0e12;--fg:#e8e8ee;--muted:#9aa0a6;--accent:#ef4444;--ok:#22c55e}
-    body{margin:0;background:#0a0a0f;color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    .wrap{min-height:100dvh;display:grid;place-items:center;padding:24px}
-    .card{width:100%;max-width:420px;background:var(--card-bg);border:1px solid #1c1c24;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-    .hd{padding:24px 24px 8px;font-weight:700;font-size:22px}
-    .sub{padding:0 24px 8px;color:var(--muted);font-size:14px}
-    form{padding:16px 24px 0}
-    .row{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
-    label{font-size:13px;color:var(--muted)}
-    input{background:#0b0b12;border:1px solid #232331;border-radius:12px;color:var(--fg);padding:12px}
-    button{width:100%;border:0;border-radius:12px;padding:12px 14px;cursor:pointer;font-weight:600}
-    .btn-primary{background:var(--accent);color:white}
-    .btn-ghost{background:transparent;color:var(--fg);border:1px solid #242436}
-    .row-inline{display:flex;gap:10px}
-    .muted{color:var(--muted);font-size:13px;text-align:center;padding:12px 24px}
-    .msg{padding:10px 14px;margin:10px 24px;border-radius:10px;font-size:14px;display:none}
-    .msg.ok{display:block;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);color:#d1fae5}
-    .msg.err{display:block;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.35);color:#fecaca}
-    .link{color:#fff;text-decoration:underline;cursor:pointer}
-    .sep{height:1px;background:#1b1b25;margin:12px 24px}
-    .foot{display:flex;justify-content:center;gap:8px;padding:16px 24px 24px}
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign in — X-Streamify</title>
+
+  <!-- 1) Shared keys (must be first) -->
+  <script src="./js/keys.js"></script>
+
+  <!-- 2) Supabase client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+
+  <link rel="stylesheet" href="./tailwind.css" />
 </head>
-<body>
-  <div class="wrap">
-    <div class="card">
-      <div class="hd">X-Streamify</div>
-<div class="sub">Your Movies. Your Stream. Anytime.</div>>
+<body class="bg-gray-50 text-gray-900">
+  <main class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-2xl bg-white shadow p-6 space-y-4">
+      <h1 class="text-xl font-bold text-center">Welcome to X-Streamify</h1>
 
-      <!-- Sign In / Sign Up -->
-      <form id="auth-form">
-        <div class="row">
-          <label for="email">Email</label>
-          <input id="email" type="email" autocomplete="email" required>
-        </div>
-        <div class="row">
-          <label for="password">Password</label>
-          <input id="password" type="password" autocomplete="current-password" required>
-        </div>
-        <div class="row-inline">
-          <button id="btn-signin" class="btn-primary" type="submit">Sign In</button>
-          <button id="btn-signup" class="btn-ghost" type="button">Create Account</button>
-        </div>
+      <form id="signin-form" class="space-y-3">
+        <input id="email" type="email" placeholder="Email" required class="w-full border rounded-xl px-3 py-2" />
+        <input id="password" type="password" placeholder="Password" required class="w-full border rounded-xl px-3 py-2" />
+        <button type="submit" class="w-full rounded-xl border px-4 py-2 hover:bg-gray-50">Sign in</button>
       </form>
 
-      <div class="muted">
-        Forgot your password? <span id="show-reset" class="link">Reset it</span>
+      <div class="flex items-center justify-between text-sm">
+        <a id="signup-link" href="#" class="underline">Create account</a>
+        <a id="reset-link" href="#" class="underline">Forgot password?</a>
       </div>
 
-      <div class="sep"></div>
-
-      <!-- Reset password request -->
-      <form id="reset-form" style="display:none;">
-        <div class="row">
-          <label for="reset-email">Email</label>
-          <input id="reset-email" type="email" autocomplete="email">
-        </div>
-        <button id="btn-reset" class="btn-ghost" type="submit">Send reset email</button>
-      </form>
-
-      <!-- New password (after email link opens this page) -->
-      <form id="newpass-form" style="display:none;">
-        <div class="row">
-          <label for="new-password">New password</label>
-          <input id="new-password" type="password" autocomplete="new-password">
-        </div>
-        <button id="btn-update-pass" class="btn-primary" type="submit">Update password</button>
-      </form>
-
-      <div id="msg" class="msg"></div>
-
-      <div class="foot">
-        <a class="link" href="./index.html">← Back to Home</a>
-      </div>
+      <p id="msg" class="text-sm text-center text-gray-600"></p>
     </div>
-  </div>
+  </main>
 
-  <script>
-    // 1) Paste your keys here (from Supabase → Project Settings → API)
-    window.__SUPABASE_URL__  = "https://toaunopxummaartcvrtp.supabase.co";
-    window.__SUPABASE_ANON__ = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvYXVub3B4dW1tYWFydGN2cnRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4ODg4OTcsImV4cCI6MjA3MzQ2NDg5N30.1Gp9qL-gA_ue_TSRXVyE7ZCLZo2_Oaf7_FBDuRVwkF8";
+  <!-- Inline module to wire up the form -->
+  <script type="module">
+    import { XSF_DB } from "./js/db.js";
+
+    const msg = document.querySelector("#msg");
+    const form = document.querySelector("#signin-form");
+    const email = document.querySelector("#email");
+    const password = document.querySelector("#password");
+    const signup = document.querySelector("#signup-link");
+    const reset = document.querySelector("#reset-link");
+
+    const note = (t) => (msg.textContent = t);
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      note("Signing in…");
+      try {
+        await XSF_DB.signIn({ email: email.value.trim(), password: password.value });
+        note("Success! Redirecting…");
+        setTimeout(() => (location.href = "./index.html"), 400);
+      } catch (err) {
+        console.error(err);
+        note(err.message || "Sign in failed");
+      }
+    });
+
+    signup.addEventListener("click", async (e) => {
+      e.preventDefault();
+      note("Creating account…");
+      try {
+        await XSF_DB.signUp({ email: email.value.trim(), password: password.value });
+        note("Account created. Check your email if confirmations are required, then sign in.");
+      } catch (err) {
+        console.error(err);
+        note(err.message || "Sign up failed");
+      }
+    });
+
+    reset.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const em = email.value.trim();
+      if (!em) { note("Enter your email above first."); return; }
+      note("Sending reset email…");
+      try {
+        await XSF_DB.resetPassword(em);
+        note("Reset email sent. Check your inbox.");
+      } catch (err) {
+        console.error(err);
+        note(err.message || "Reset failed");
+      }
+    });
   </script>
-  <script src="./js/auth.js" type="module"></script>
+
+  <!-- Load db.js AFTER the inline module references it -->
+  <script defer src="./js/db.js" type="module"></script>
 </body>
 </html>
