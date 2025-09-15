@@ -1,102 +1,140 @@
-// public/js/db.js
-// Phase 13 helpers: Supabase client + simple profile & library CRUD
+// db.js — Supabase client + reusable helpers (profiles, library)
 
-const SUPABASE_URL  = window.__SUPABASE_URL__;
-const SUPABASE_ANON = window.__SUPABASE_ANON__;
-if (!SUPABASE_URL || !SUPABASE_ANON) {
-  console.error("Supabase keys missing. Make sure keys.js sets window.__SUPABASE_* values.");
+if (!window.__SUPABASE_URL__ || !window.__SUPABASE_ANON__) {
+  console.error("Missing Supabase keys. Set them in public/js/keys.js");
 }
 
-export const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
-/** Session helpers */
-export async function getSession() {
-  const { data } = await supabase.auth.getSession();
-  return data?.session || null;
-}
-export async function getUser() {
-  const s = await getSession();
-  return s?.user || null;
-}
-
-/** PROFILE */
-export async function fetchProfile() {
-  const user = await getUser();
-  if (!user) return null;
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-  if (error && error.code !== "PGRST116") { // not found
-    console.error(error);
-    throw error;
+export const supabase = window.supabase.createClient(
+  window.__SUPABASE_URL__,
+  window.__SUPABASE_ANON__,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
   }
-  return data || null;
-}
+);
 
-export async function upsertMyProfile({ display_name, avatar_url } = {}) {
-  const user = await getUser();
-  if (!user) throw new Error("Not signed in");
-  const payload = {
-    id: user.id,
-    display_name: display_name ?? null,
-    avatar_url: avatar_url ?? null,
-    updated_at: new Date().toISOString(),
-  };
-  const { data, error } = await supabase.from("profiles").upsert(payload).select().single();
-  if (error) { console.error(error); throw error; }
-  return data;
-}
+export const XSF_DB = {
+  // ---------- Auth ----------
+  async getUser() {
+    const { data, error } = await supabase.auth.getUser();
+    if (error) {
+      console.error("getUser error:", error);
+      return null;
+    }
+    return data.user ?? null;
+  },
+  async signIn({ email, password }) {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    await XSF_DB.ensureProfile();
+    return data.user;
+  },
+  async signUp({ email, password }) {
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
+    return data.user;
+  },
+  async resetPassword(email) {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${location.origin}/signin.html#reset`,
+    });
+    if (error) throw error;
+    return data;
+  },
+  async signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    return true;
+  },
 
-/** LIBRARY (minimal API) */
-export async function addLibraryItem({ title, meta = {} }) {
-  const user = await getUser();
-  if (!user) throw new Error("Not signed in");
-  const row = { user_id: user.id, title, meta, updated_at: new Date().toISOString() };
-  const { data, error } = await supabase.from("library_items").insert(row).select().single();
-  if (error) { console.error(error); throw error; }
-  return data;
-}
+  // ---------- Profiles ----------
+  async ensureProfile() {
+    const user = await XSF_DB.getUser();
+    if (!user) return;
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (error) {
+      console.warn("ensureProfile select error:", error);
+      return;
+    }
+    if (!data) {
+      const { error: insErr } = await supabase.from("profiles").insert({
+        id: user.id,
+        email: user.email || null,
+        display_name: null,
+        avatar_url: null,
+      });
+      if (insErr) console.warn("ensureProfile insert error:", insErr);
+    }
+  },
+  async getProfile() {
+    const user = await XSF_DB.getUser();
+    if (!user) return null;
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("id,email,display_name,avatar_url")
+      .eq("id", user.id)
+      .single();
+    if (error) throw error;
+    return data;
+  },
+  async updateProfile(partial) {
+    const user = await XSF_DB.getUser();
+    if (!user) throw new Error("No user");
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({ ...partial })
+      .eq("id", user.id)
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  },
 
-export async function listLibraryItems() {
-  const user = await getUser();
-  if (!user) return [];
-  const { data, error } = await supabase
-    .from("library_items")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
-  if (error) { console.error(error); throw error; }
-  return data || [];
-}
+  // ---------- Library (CRUD) ----------
+  async listLibraryItems() {
+    const { data, error } = await supabase
+      .from("library_items")
+      .select("id,title,poster_url,year,created_at")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data || [];
+  },
+  async addLibraryItem({ title, poster_url = null, year = null }) {
+    const { data, error } = await supabase
+      .from("library_items")
+      .insert([{ title, poster_url, year }])
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  },
+  async renameLibraryItem(id, newTitle) {
+    const { data, error } = await supabase
+      .from("library_items")
+      .update({ title: newTitle })
+      .eq("id", id)
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  },
+  async deleteLibraryItem(id) {
+    const { error } = await supabase
+      .from("library_items")
+      .delete()
+      .eq("id", id);
+    if (error) throw error;
+    return true;
+  },
+};
 
-export async function updateLibraryItem(id, patch) {
-  const user = await getUser();
-  if (!user) throw new Error("Not signed in");
-  const { data, error } = await supabase
-    .from("library_items")
-    .update({ ...patch, updated_at: new Date().toISOString() })
-    .eq("id", id)
-    .eq("user_id", user.id)
-    .select()
-    .single();
-  if (error) { console.error(error); throw error; }
-  return data;
-}
-
-export async function deleteLibraryItem(id) {
-  const user = await getUser();
-  if (!user) throw new Error("Not signed in");
-  const { error } = await supabase
-    .from("library_items")
-    .delete()
-    .eq("id", id)
-    .eq("user_id", user.id);
-  if (error) { console.error(error); throw error; }
-  return true;
-}
-
-// Optional: simple debug hook in console
-window.XSF_DB = { getSession, getUser, fetchProfile, upsertMyProfile, addLibraryItem, listLibraryItems, updateLibraryItem, deleteLibraryItem };
-console.info("XSF_DB ready: try XSF_DB.getUser() in the console.");
+// Expose for console diagnostics (optional)
+window.XSF_DB = XSF_DB;
+export default XSF_DB;

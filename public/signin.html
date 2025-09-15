@@ -1,41 +1,40 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign in — X-Streamify</title>
+  <link rel="stylesheet" href="./tailwind.css" />
 
-  <!-- 1) Shared keys (must be first) -->
+  <!-- 1) Shared keys -->
   <script src="./js/keys.js"></script>
 
   <!-- 2) Supabase client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-
-  <link rel="stylesheet" href="./tailwind.css" />
 </head>
-<body class="bg-gray-50 text-gray-900">
-  <main class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md rounded-2xl bg-white shadow p-6 space-y-4">
-      <h1 class="text-xl font-bold text-center">Welcome to X-Streamify</h1>
-
-      <form id="signin-form" class="space-y-3">
-        <input id="email" type="email" placeholder="Email" required class="w-full border rounded-xl px-3 py-2" />
-        <input id="password" type="password" placeholder="Password" required class="w-full border rounded-xl px-3 py-2" />
-        <button type="submit" class="w-full rounded-xl border px-4 py-2 hover:bg-gray-50">Sign in</button>
-      </form>
-
-      <div class="flex items-center justify-between text-sm">
-        <a id="signup-link" href="#" class="underline">Create account</a>
-        <a id="reset-link" href="#" class="underline">Forgot password?</a>
-      </div>
-
-      <p id="msg" class="text-sm text-center text-gray-600"></p>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+  <div class="bg-white p-8 rounded-xl shadow-md w-96">
+    <h1 class="text-2xl font-bold text-center mb-6">Welcome to X-Streamify</h1>
+    <form id="signin-form" class="space-y-4">
+      <input id="email" type="email" placeholder="Email"
+        class="w-full px-3 py-2 border rounded-lg" required />
+      <input id="password" type="password" placeholder="Password"
+        class="w-full px-3 py-2 border rounded-lg" required />
+      <button type="submit"
+        class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
+        Sign in
+      </button>
+    </form>
+    <div class="flex justify-between mt-4 text-sm">
+      <a href="#" id="signup-link" class="text-blue-600">Create account</a>
+      <a href="#" id="reset-link" class="text-blue-600">Forgot password?</a>
     </div>
-  </main>
+    <p id="msg" class="mt-4 text-center text-gray-700 text-sm"></p>
+  </div>
 
-  <!-- Inline module to wire up the form -->
+  <!-- Inline script to handle auth -->
   <script type="module">
-    import { XSF_DB } from "./js/db.js";
+    import XSF_DB from "./js/db.js?v=6";
 
     const msg = document.querySelector("#msg");
     const form = document.querySelector("#signin-form");
@@ -46,6 +45,7 @@
 
     const note = (t) => (msg.textContent = t);
 
+    // Sign in
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       note("Signing in…");
@@ -59,6 +59,7 @@
       }
     });
 
+    // Sign up
     signup.addEventListener("click", async (e) => {
       e.preventDefault();
       note("Creating account…");
@@ -71,6 +72,7 @@
       }
     });
 
+    // Reset password
     reset.addEventListener("click", async (e) => {
       e.preventDefault();
       const em = email.value.trim();
@@ -85,8 +87,5 @@
       }
     });
   </script>
-
-  <!-- Load db.js AFTER the inline module references it -->
-  <script defer src="./js/db.js" type="module"></script>
 </body>
 </html>
