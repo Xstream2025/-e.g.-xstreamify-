@@ -1,43 +1,63 @@
-﻿<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>X-Streamify</title>
+  <link rel="stylesheet" href="./tailwind.css" />
 
   <!-- 1) Shared keys (must be first) -->
   <script src="./js/keys.js"></script>
 
   <!-- 2) Supabase client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-
-  <link rel="stylesheet" href="./tailwind.css" />
 </head>
-<body class="bg-gray-50 text-gray-900">
-  <header class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-    <div class="text-xl font-bold">X-Streamify</div>
-    <div id="user-pill"></div>
+
+<body class="bg-gray-100 text-gray-900">
+  <!-- Top bar -->
+  <header class="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
+    <h1 class="text-2xl font-bold">X-Streamify</h1>
+    <!-- profiles.js will render here -->
+    <div id="user-pill" class="text-sm"></div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-4 py-4 space-y-8">
-    <section class="rounded-2xl bg-white shadow p-4">
-      <h2 class="text-lg font-semibold mb-3">Add a Movie</h2>
-      <form id="add-form" class="grid gap-3 md:grid-cols-4">
-        <input id="add-title" type="text" placeholder="Title (e.g., Braveheart)" class="border rounded-xl px-3 py-2" required />
-        <input id="add-poster" type="url" placeholder="Poster URL (optional)" class="border rounded-xl px-3 py-2" />
-        <input id="add-year" type="number" min="1888" max="2100" placeholder="Year (optional)" class="border rounded-xl px-3 py-2" />
-        <button type="submit" class="rounded-xl border px-4 py-2 hover:bg-gray-50">Add to Library</button>
-      </form>
+  <main class="max-w-6xl mx-auto px-4 pb-12">
+    <!-- Add a Movie -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold mb-3">Add a Movie</h2>
+      <div class="rounded-2xl bg-white border shadow-sm p-4 flex gap-4 items-center">
+        <!-- These IDs are what library-adapter.js expects -->
+        <input id="add-title" type="text" placeholder="Title (e.g., Braveheart)"
+               class="flex-1 px-3 py-2 border rounded-lg" autofocus />
+        <input id="add-poster" type="url" placeholder="Poster URL (optional)"
+               class="flex-1 px-3 py-2 border rounded-lg" />
+        <input id="add-year" type="text" placeholder="Year (optional)"
+               class="w-44 px-3 py-2 border rounded-lg" />
+        <button id="add-btn"
+                class="px-4 py-2 rounded-lg bg-black/80 text-white hover:bg-black">
+          Add to Library
+        </button>
+      </div>
     </section>
 
+    <!-- My Library -->
     <section>
-      <h2 class="text-lg font-semibold mb-3">My Library</h2>
-      <p id="empty-state" class="text-gray-500 hidden">No items yet. Add your first movie above.</p>
-      <div id="library-grid" class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"></div>
+      <h2 class="text-xl font-semibold mb-3">My Library</h2>
+
+      <!-- Optional states used by library-adapter.js -->
+      <div id="library-loading" class="text-sm text-gray-500 hidden mb-3">
+        Loading…
+      </div>
+      <div id="library-empty" class="text-sm text-gray-500 mb-3 hidden">
+        Your library is empty. Add your first movie above.
+      </div>
+
+      <!-- The list/grid container the script will populate -->
+      <div id="library-list" class="flex flex-col gap-4"></div>
     </section>
   </main>
 
-  <!-- Keep only these, in this order -->
+  <!-- 3) App scripts (order matters) -->
   <script defer src="./js/db.js" type="module"></script>
   <script defer src="./js/profiles.js" type="module"></script>
   <script defer src="./js/library-adapter.js" type="module"></script>
