@@ -1,8 +1,7 @@
 // public/js/library-adapter.js
-// Safe, chatty version: waits for DOM, binds handlers, logs steps.
+// Renders the Add-a-Movie form + "My Library" grid
 
-import XSF_DB from "./db.js";
-import { supabase } from "./db.js";
+import XSF_DB, { supabase } from "./db.js";
 
 function $(id) { return document.getElementById(id); }
 
@@ -12,24 +11,23 @@ async function renderLibrary() {
   const loading = $("library-loading");
 
   try {
-    loading && loading.classList.remove("hidden");
-    console.log("[library] loading…");
+    loading.classList.remove("hidden");
+    empty.classList.add("hidden");
+    list.innerHTML = "";
+
     const items = await XSF_DB.listLibraryItems();
     console.log("[library] items:", items);
 
-    list.innerHTML = "";
-
     if (!items || items.length === 0) {
-      empty && empty.classList.remove("hidden");
+      empty.classList.remove("hidden");
     } else {
-      empty && empty.classList.add("hidden");
       for (const item of items) list.appendChild(renderCard(item));
     }
   } catch (err) {
     console.error("[library] render error:", err);
     alert(err.message || "Failed to load your library.");
   } finally {
-    loading && loading.classList.add("hidden");
+    loading.classList.add("hidden");
   }
 }
 
@@ -39,7 +37,7 @@ function renderCard(item) {
 
   // Poster
   const posterWrap = document.createElement("div");
-  posterWrap.className = "w-64 h-80 rounded-xl bg-gray-200 flex items-center justify-center overflow-hidden shrink-0";
+  posterWrap.className = "w-40 h-60 rounded bg-gray-200 flex items-center justify-center overflow-hidden shrink-0";
   if (item.poster_url) {
     const img = document.createElement("img");
     img.src = item.poster_url;
@@ -48,13 +46,11 @@ function renderCard(item) {
     img.onerror = () => { posterWrap.textContent = "No Poster"; };
     posterWrap.appendChild(img);
   } else {
-    const t = document.createElement("div");
-    t.className = "text-gray-500 font-semibold text-xl";
-    t.textContent = "No Poster";
-    posterWrap.appendChild(t);
+    posterWrap.textContent = "No Poster";
+    posterWrap.className += " text-gray-500 font-semibold";
   }
 
-  // Right side
+  // Info
   const right = document.createElement("div");
   right.className = "flex-1";
 
@@ -74,13 +70,8 @@ function renderCard(item) {
   rename.onclick = async () => {
     const val = prompt("New title:", item.title);
     if (!val || !val.trim()) return;
-    try {
-      await XSF_DB.renameLibraryItem(item.id, val.trim());
-      await renderLibrary();
-    } catch (err) {
-      console.error(err);
-      alert(err.message || "Rename failed");
-    }
+    await XSF_DB.renameLibraryItem(item.id, val.trim());
+    await renderLibrary();
   };
 
   const del = document.createElement("button");
@@ -88,13 +79,8 @@ function renderCard(item) {
   del.textContent = "Delete";
   del.onclick = async () => {
     if (!confirm(`Delete “${item.title}”?`)) return;
-    try {
-      await XSF_DB.deleteLibraryItem(item.id);
-      await renderLibrary();
-    } catch (err) {
-      console.error(err);
-      alert(err.message || "Delete failed");
-    }
+    await XSF_DB.deleteLibraryItem(item.id);
+    await renderLibrary();
   };
 
   actions.append(rename, del);
@@ -127,7 +113,6 @@ async function onAddClick() {
   try {
     btn.disabled = true;
     btn.textContent = "Adding…";
-    console.log("[library] add click →", { title, poster, year });
 
     await XSF_DB.addLibraryItem({
       title,
@@ -150,35 +135,15 @@ async function onAddClick() {
 }
 
 function wireUp() {
-  // Make sure elements exist
-  const required = ["add-title", "add-poster", "add-year", "add-btn", "library-list"];
-  for (const id of required) {
-    if (!$(id)) console.warn(`[library] missing element #${id}`);
-  }
-
-  const btn = $("add-btn");
-  if (btn) {
-    btn.addEventListener("click", onAddClick);
-    console.log("[library] bound click handler to #add-btn");
-  } else {
-    console.error("[library] no #add-btn found, cannot bind");
-  }
-
-  // Render on load
+  $("add-btn")?.addEventListener("click", onAddClick);
   renderLibrary();
 
-  // Optional: refresh on auth changes
-  supabase.auth.onAuthStateChange(() => {
-    console.log("[library] auth state changed → reloading library");
-    renderLibrary();
-  });
+  supabase.auth.onAuthStateChange(() => renderLibrary());
 }
 
-// Wait for DOM, then wire up
+// Init
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", wireUp, { once: true });
 } else {
   wireUp();
 }
-
-console.log("[library] adapter loaded");

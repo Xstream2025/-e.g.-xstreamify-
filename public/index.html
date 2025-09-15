@@ -6,18 +6,15 @@
   <title>X-Streamify</title>
   <link rel="stylesheet" href="./tailwind.css" />
 
-  <!-- 1) Shared keys (must be first) -->
+  <!-- 1) Shared keys -->
   <script src="./js/keys.js"></script>
-
   <!-- 2) Supabase client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 </head>
-
 <body class="bg-gray-100 text-gray-900">
   <!-- Top bar -->
   <header class="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
     <h1 class="text-2xl font-bold">X-Streamify</h1>
-    <!-- profiles.js will render here -->
     <div id="user-pill" class="text-sm"></div>
   </header>
 
@@ -26,13 +23,12 @@
     <section class="mb-8">
       <h2 class="text-xl font-semibold mb-3">Add a Movie</h2>
       <div class="rounded-2xl bg-white border shadow-sm p-4 flex gap-4 items-center">
-        <!-- These IDs are what library-adapter.js expects -->
         <input id="add-title" type="text" placeholder="Title (e.g., Braveheart)"
                class="flex-1 px-3 py-2 border rounded-lg" autofocus />
         <input id="add-poster" type="url" placeholder="Poster URL (optional)"
                class="flex-1 px-3 py-2 border rounded-lg" />
         <input id="add-year" type="text" placeholder="Year (optional)"
-               class="w-44 px-3 py-2 border rounded-lg" />
+               class="w-32 px-3 py-2 border rounded-lg" />
         <button id="add-btn"
                 class="px-4 py-2 rounded-lg bg-black/80 text-white hover:bg-black">
           Add to Library
@@ -44,20 +40,20 @@
     <section>
       <h2 class="text-xl font-semibold mb-3">My Library</h2>
 
-      <!-- Optional states used by library-adapter.js -->
-      <div id="library-loading" class="text-sm text-gray-500 hidden mb-3">
-        Loading…
+      <!-- Loading + Empty States -->
+      <div id="library-loading" class="text-sm text-gray-500 mb-3 hidden">
+        Loading your movies…
       </div>
       <div id="library-empty" class="text-sm text-gray-500 mb-3 hidden">
-        Your library is empty. Add your first movie above.
+        No movies yet. Add your first!
       </div>
 
-      <!-- The list/grid container the script will populate -->
+      <!-- Library List -->
       <div id="library-list" class="flex flex-col gap-4"></div>
     </section>
   </main>
 
-  <!-- 3) App scripts (order matters) -->
+  <!-- Scripts -->
   <script defer src="./js/db.js" type="module"></script>
   <script defer src="./js/profiles.js" type="module"></script>
   <script defer src="./js/library-adapter.js" type="module"></script>
