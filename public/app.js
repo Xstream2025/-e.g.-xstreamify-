@@ -1,87 +1,45 @@
-import { XSF_DB } from "./js/db.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 
-const titleInput = document.getElementById("add-title");
-const posterInput = document.getElementById("add-poster");
-const yearInput = document.getElementById("add-year");
-const addBtn = document.getElementById("add-btn");
-const list = document.getElementById("library-list");
-const empty = document.getElementById("library-empty");
-const loading = document.getElementById("library-loading");
+const firebaseConfig = {
+  apiKey: "AIzaSyDFXRlF20221g5tYWypyrfQf58C0S0wMBfU",
+  authDomain: "xstreamify-auth.firebaseapp.com",
+  projectId: "xstreamify-auth",
+  storageBucket: "xstreamify-auth.appspot.com",
+  messagingSenderId: "868454287241",
+  appId: "1:868454287241:web:fc3eef7bf0ddaef2cc5358",
+};
 
-async function refreshLibrary() {
-  list.innerHTML = "";
-  empty.style.display = "none";
-  loading.style.display = "block";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-  try {
-    const items = await XSF_DB.getLibrary();
-    loading.style.display = "none";
+// 👇 Attempt login from sign-in page
+const loginForm = document.getElementById("login-form");
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = loginForm["email"].value;
+    const password = loginForm["password"].value;
 
-    if (!items || items.length === 0) {
-      empty.style.display = "block";
-      return;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = "/users.html"; // ✅ redirect on login
+    } catch (err) {
+      alert(err.message);
     }
-
-    items.forEach(item => {
-      const card = document.createElement("div");
-      card.className = "movie-card";
-
-      const poster = document.createElement("img");
-      poster.src = item.poster_url || "./img/placeholder-2x3.png";
-      poster.alt = item.title;
-
-      const title = document.createElement("h3");
-      title.textContent = item.title;
-
-      const year = document.createElement("p");
-      year.textContent = item.year ? `Year: ${item.year}` : "";
-
-      const del = document.createElement("button");
-      del.textContent = "Delete";
-      del.onclick = async () => {
-        await XSF_DB.deleteLibraryItem(item.id);
-        refreshLibrary();
-      };
-
-      card.appendChild(poster);
-      card.appendChild(title);
-      card.appendChild(year);
-      card.appendChild(del);
-
-      list.appendChild(card);
-    });
-  } catch (err) {
-    console.error(err);
-    loading.textContent = "Error loading library.";
-  }
+  });
 }
 
-addBtn.addEventListener("click", async () => {
-  const title = titleInput.value.trim();
-  if (!title) return;
-
-  addBtn.disabled = true;
-  addBtn.textContent = "Adding...";
-
-  try {
-    await XSF_DB.addLibraryItem({
-      title,
-      poster_url: posterInput.value.trim(),
-      year: yearInput.value.trim(),
-    });
-
-    titleInput.value = "";
-    posterInput.value = "";
-    yearInput.value = "";
-
-    await refreshLibrary();
-  } catch (err) {
-    console.error(err);
-    alert("Error adding movie: " + err.message);
-  } finally {
-    addBtn.disabled = false;
-    addBtn.textContent = "Add to Library";
+// 👇 Redirect signed-in users automatically
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const currentPath = window.location.pathname;
+    if (currentPath === "/signin.html") {
+      window.location.href = "/users.html";
+    }
   }
 });
-
-refreshLibrary();

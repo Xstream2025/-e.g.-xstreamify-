@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Who’s Watching?</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <style>
+    body {
+      margin:0;
+      background:#0a0a0a;
+      color:#fff;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+    }
+    h1 {
+      font-size: clamp(28px, 3.4vw, 44px);
+      margin:0 0 8px;
+      font-weight:700;
+      text-align:center;
+    }
+    p.sub {
+      color:#bbb;
+      margin:0 0 32px;
+      text-align:center;
+    }
+    .grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 32px;
+      justify-items:center;
+      max-width:800px;
+      width:90%;
+    }
+    .card {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-decoration:none;
+      color:#fff;
+      transition:transform 0.2s ease;
+    }
+    .avatar {
+      width:160px;
+      height:160px;
+      border-radius:16px;
+      object-fit:cover;
+      background:#111;
+      box-shadow:0 0 12px rgba(255,0,0,0.6);
+    }
+    .card:hover .avatar,
+    .card:focus .avatar {
+      transform:scale(1.05);
+      box-shadow:0 0 18px rgba(255,0,0,0.9);
+    }
+    .name {
+      margin-top:12px;
+      font-weight:600;
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Who’s watching?</h1>
+  <p class="sub">Choose a profile to continue.</p>
+
+  <ul class="grid" id="profiles-grid">
+    <li>
+      <a class="card" href="/browse.html" data-profile-id="emma">
+        <img class="avatar" src="/img/emma.png" alt="Emma">
+        <span class="name">Emma</span>
+      </a>
+    </li>
+    <li>
+      <a class="card" href="/browse.html" data-profile-id="jordan">
+        <img class="avatar" src="/img/jordan.png" alt="Jordan">
+        <span class="name">Jordan</span>
+      </a>
+    </li>
+    <li>
+      <a class="card" href="/browse.html" data-profile-id="dad">
+        <img class="avatar" src="/img/dad.png" alt="Dad">
+        <span class="name">Dad</span>
+      </a>
+    </li>
+    <li>
+      <a class="card" href="/browse.html" data-profile-id="allison">
+        <img class="avatar" src="/img/allison.png" alt="Allison">
+        <span class="name">Allison</span>
+      </a>
+    </li>
+  </ul>
+
+  <script defer src="/js/profiles.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X-Streamify – Who’s watching?</title>
+  <link rel="stylesheet" href="/css/profiles.css?v=1" />
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>Who’s watching?</h1>
+      <p>Choose a profile to continue.</p>
+
+      <div class="profiles">
+        <div class="profile" data-profile="dad">
+          <img src="/dad.png" alt="Dad" />
+          <div>Dad</div>
+        </div>
+        <div class="profile" data-profile="allison">
+  <img src="/allison.png" alt="Allison" />
+  <div>Allison</div>
+</div>
+        <div class="profile" data-profile="jordan">
+  <img src="/jordan.png" alt="Jordan" />
+  <div>Jordan</div>
+</div>
+        <div class="profile" data-profile="emma">
+  <img src="/emma.png" alt="Emma" />
+  <div>Emma</div>
+</div>
+      </div>
+
+      <footer>Manage profiles coming soon.</footer>
+    </section>
+  </main>
+
+  <!-- Firebase + DB init -->
+  <script type="module" src="/js/keys.v3.js?v=2"></script>
+  <script type="module" src="/js/firebase-db.js?v=3"></script>
+
+  <!-- Supabase config -->
+  <script src="/js/supabase-keys.js?v=1"></script>
+
+  <!-- Page logic -->
+  <script type="module" src="/js/profiles.js?v=7"></script>
+</body>
+</html>

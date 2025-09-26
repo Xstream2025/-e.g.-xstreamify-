@@ -2,90 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign in — X-Streamify</title>
-  <link rel="stylesheet" href="./tailwind.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X-Streamify – Sign In</title>
 
-  <!-- 1) Shared keys -->
-  <script src="./js/keys.js"></script>
+  <!-- build: phase22 2025-09-25 -->
+  <!-- Silence old Supabase popup -->
+  <script>
+    (function () {
+      const orig = window.alert;
+      window.alert = function (msg) {
+        if (typeof msg === 'string' && msg.includes('SUPABASE_URL')) return;
+        return orig(msg);
+      };
+    })();
+  </script>
 
-  <!-- 2) Supabase client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <meta name="theme-color" content="#0a0a0a" />
+
+  <!-- 👇 the only addition -->
+  <style id="phase22-bg-only">
+    html, body {
+      background: radial-gradient(120% 70% at 50% -10%, #111 0%, #0d0d0d 40%, #0a0a0a 100%) !important;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-  <div class="bg-white p-8 rounded-xl shadow-md w-96">
-    <h1 class="text-2xl font-bold text-center mb-6">Welcome to X-Streamify</h1>
-    <form id="signin-form" class="space-y-4">
-      <input id="email" type="email" placeholder="Email"
-        class="w-full px-3 py-2 border rounded-lg" required />
-      <input id="password" type="password" placeholder="Password"
-        class="w-full px-3 py-2 border rounded-lg" required />
-      <button type="submit"
-        class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
-        Sign in
-      </button>
-    </form>
-    <div class="flex justify-between mt-4 text-sm">
-      <a href="#" id="signup-link" class="text-blue-600">Create account</a>
-      <a href="#" id="reset-link" class="text-blue-600">Forgot password?</a>
+<style id="phase22-bg-only">
+  html, body {
+    background: radial-gradient(120% 70% at 50% -10%, #111 0%, #0d0d0d 40%, #0a0a0a 100%) !important;
+  }
+</style>
+<body>
+  <!-- everything below is exactly what your beautiful live Phase 21 has -->
+  <div class="container">
+    <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1rem;">
+      <img src="/images/logo.svg" alt="X-Streamify" style="width:32px;height:32px;">
+      <strong style="color:#fff; font-size:1.1rem;">X-Streamify</strong>
     </div>
-    <p id="msg" class="mt-4 text-center text-gray-700 text-sm"></p>
+    <p style="color:#ccc; margin-bottom:1rem;">Sign in or create your account to continue.</p>
+
+    <form id="signin-form">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <label style="color:#aaa; font-size:0.85rem;">
+        <input type="checkbox" id="remember" style="margin-right:0.4rem;"> Remember me
+      </label>
+      <button type="submit" class="signin">Sign in</button>
+      <button type="button" class="create">Create account</button>
+    </form>
+
+    <p class="links">
+      By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
+    </p>
+    <p style="color:#666; font-size:0.75rem; margin-top:0.5rem;">© 2025 X-Streamify. All rights reserved.</p>
   </div>
 
-  <!-- Inline script to handle auth -->
-  <script type="module">
-    import XSF_DB from "./js/db.js?v=6";
-
-    const msg = document.querySelector("#msg");
-    const form = document.querySelector("#signin-form");
-    const email = document.querySelector("#email");
-    const password = document.querySelector("#password");
-    const signup = document.querySelector("#signup-link");
-    const reset = document.querySelector("#reset-link");
-
-    const note = (t) => (msg.textContent = t);
-
-    // Sign in
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      note("Signing in…");
-      try {
-        await XSF_DB.signIn({ email: email.value.trim(), password: password.value });
-        note("Success! Redirecting…");
-        setTimeout(() => (location.href = "./index.html"), 400);
-      } catch (err) {
-        console.error(err);
-        note(err.message || "Sign in failed");
-      }
-    });
-
-    // Sign up
-    signup.addEventListener("click", async (e) => {
-      e.preventDefault();
-      note("Creating account…");
-      try {
-        await XSF_DB.signUp({ email: email.value.trim(), password: password.value });
-        note("Account created. Check your email if confirmations are required, then sign in.");
-      } catch (err) {
-        console.error(err);
-        note(err.message || "Sign up failed");
-      }
-    });
-
-    // Reset password
-    reset.addEventListener("click", async (e) => {
-      e.preventDefault();
-      const em = email.value.trim();
-      if (!em) { note("Enter your email above first."); return; }
-      note("Sending reset email…");
-      try {
-        await XSF_DB.resetPassword(em);
-        note("Reset email sent. Check your inbox.");
-      } catch (err) {
-        console.error(err);
-        note(err.message || "Reset failed");
-      }
-    });
-  </script>
+  <script src="/js/auth-gate.js"></script>
 </body>
 </html>

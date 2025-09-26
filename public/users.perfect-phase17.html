@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Users</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
+
+  <h1 class="text-4xl font-bold mb-6">🔥 User Management 🔥</h1>
+  <p class="text-xl mb-8">This page will be used for listing users and managing access.</p>
+  <p class="text-sm text-gray-400">More features coming soon...</p>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-10 px-4">
+    <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center">
+  <img src="/img/jordan.png" alt="Jordan" class="w-40 h-40 object-cover rounded-full border-4 border-red-500 shadow-lg mb-4" />
+  <h2 class="text-xl font-semibold text-black">Jordan</h2>
+  <p class="text-gray-600">Team Lead</p>
+</div>
+
+    <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center"
+     data-name="Emma"
+     data-avatar="/img/emma.png">
+  <img src="/img/emma.png?v=4" alt="Emma"
+       class="w-40 h-40 object-cover rounded-full border-4 border-blue-500 shadow-lg mb-4" />
+  <h2 class="text-xl font-semibold text-black">Emma</h2>
+  <p class="text-gray-600">Designer</p>
+</div>
+
+    <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center"
+     data-name="Allison"
+     data-avatar="/img/allison.png">
+      <img src="/img/allison.png" alt="Allison" class="w-40 h-40 object-cover rounded-full border-4 border-green-500 shadow-lg mb-4" />
+      <h2 class="text-xl font-semibold text-black">Allison</h2>
+      <p class="text-gray-600">Developer</p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center"
+     data-name="Dad"
+     data-avatar="/img/dad.png">
+      <img src="/img/dad.png" alt="Dad" class="w-40 h-40 object-cover rounded-full border-4 border-yellow-500 shadow-lg mb-4" />
+      <h2 class="text-xl font-semibold text-black">Dad</h2>
+      <p class="text-gray-600">Support</p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center">
+      <img src="/img/braveheart.jpg" alt="Braveheart" class="w-40 h-40 object-cover rounded-full border-4 border-purple-500 shadow-lg mb-4" />
+      <h2 class="text-xl font-semibold text-black">Braveheart</h2>
+      <p class="text-gray-600">Security</p>
+    </div>
+  </div>
+<script type="module" src="/js/users.js?v=1"></script>
+</body>
+</html>

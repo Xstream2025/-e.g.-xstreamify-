@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X‑Streamify — Your movies, photos & home videos in one stream</title>
+  <meta name="description" content="X‑Streamify turns your DVDs, photos, and home videos into your personal streaming library." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #0a0a0a;
+      color: #f3f3f3;
+      overflow: hidden;
+    }
+    .container {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 40px;
+      height: 100vh;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1.25rem;
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+    }
+    a.button {
+      display: inline-block;
+      background: #e50914;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 20px rgba(229, 9, 20, 0.4);
+    }
+    .bg-anim {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .floater {
+      position: absolute;
+      top: 0;
+      left: 0;
+      will-change: transform;
+      opacity: 0.5;
+      animation-name: floatAcross, bob;
+      animation-timing-function: linear, ease-in-out;
+      animation-iteration-count: infinite, infinite;
+    }
+    @keyframes floatAcross {
+      from { transform: translate3d(-120vw, var(--y, 0px), 0) rotate(var(--rot, 0deg)) scale(var(--sc, 1)); }
+      to { transform: translate3d(120vw, var(--y, 0px), 0) rotate(calc(var(--rot, 0deg) + var(--spin, 0deg))) scale(var(--sc, 1)); }
+    }
+    @keyframes bob {
+      0%, 100% { translate: 0 -6px; }
+      50% { translate: 0 6px; }
+    }
+    .icon {
+      display: grid;
+      place-items: center;
+      font-weight: bold;
+      font-size: 14px;
+      text-transform: uppercase;
+      border-radius: 6px;
+      padding: 12px;
+      color: #fff;
+    }
+    .cd { width: 100px; height: 100px; }
+    .cd svg { width: 100%; height: 100%; }
+    .polaroid, .film, .clapperboard, .ticket, .label, .docsheet {
+      width: 140px; height: 120px;
+      background: #222;
+      border: 2px solid #444;
+    }
+    .polaroid { background: #eee; color: #111; font-weight: bold; }
+    .film { background: #111; color: #ccc; font-weight: bold; }
+    .clapperboard { background: #000; color: #fff; }
+    .ticket { background: #d9a300; color: #111; }
+    .label { background: #c44242; color: #fff; }
+    .docsheet { background: #fff; color: #111; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div>
+      <h1>Build your personal streaming library</h1>
+      <p style="margin-bottom: 0;">
+  Upload your DVDs, home videos, and photos into one secure, private streaming vault.
+</p>
+<p style="margin-top: 0;">
+  Stream your movies. Store your memories. All in one place.
+</p>
+
+      <a href="/signin.html" class="button">Sign In</a>
+    </div>
+  </div>
+  <div class="bg-anim" aria-hidden="true"></div>
+  <script>
+    const container = document.querySelector('.bg-anim');
+    const TOTAL = 100;
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+    const types = ['cd', 'polaroid', 'film', 'clapperboard', 'ticket', 'label', 'docsheet'];
+    function create(type) {
+      const el = document.createElement('div');
+      el.className = `floater ${type}`;
+      if (type === 'cd') {
+        el.innerHTML = `
+          <svg viewBox="0 0 100 100">
+            <defs>
+              <radialGradient id="g" cx="50%" cy="50%" r="60%">
+                <stop offset="0%" stop-color="#d9d9d9" />
+                <stop offset="30%" stop-color="#f5f5f5" />
+                <stop offset="55%" stop-color="#bfbfbf" />
+                <stop offset="100%" stop-color="#7c7c7c" />
+              </radialGradient>
+            </defs>
+            <circle cx="50" cy="50" r="48" fill="url(#g)" />
+            <circle cx="50" cy="50" r="10" fill="#111" />
+            <circle cx="50" cy="50" r="6" fill="#e50914" />
+          </svg>`;
+      } else {
+        el.classList.add('icon');
+        el.textContent = {
+          polaroid: 'Photos',
+          film: 'Film',
+          clapperboard: 'Scene',
+          ticket: 'Admit One',
+          label: 'Label',
+          docsheet: 'Docs'
+        }[type];
+      }
+      return el;
+    }
+    function spawn() {
+      const type = types[Math.floor(Math.random() * types.length)];
+      const el = create(type);
+      const y = rand(0, window.innerHeight * 0.9);
+      const scale = rand(0.6, 1.15);
+      const rot = rand(-12, 12);
+      const spin = rand(20, 80) * (Math.random() < 0.5 ? -1 : 1);
+      const journey = rand(22, 48);
+      const delay = -rand(0, journey);
+      el.style.setProperty('--y', `${y.toFixed(1)}px`);
+      el.style.setProperty('--sc', scale.toFixed(2));
+      el.style.setProperty('--rot', `${rot.toFixed(1)}deg`);
+      el.style.setProperty('--spin', `${spin.toFixed(1)}deg`);
+      el.style.animationDuration = `${journey}s, ${rand(4, 9)}s`;
+      el.style.animationDelay = `${delay}s, ${-rand(0, 9)}s`;
+      el.style.animationDirection = Math.random() < 0.5 ? 'normal, alternate' : 'reverse, alternate';
+      container.appendChild(el);
+    }
+    for (let i = 0; i < TOTAL; i++) spawn();
+  </script>
+</body>
+</html>

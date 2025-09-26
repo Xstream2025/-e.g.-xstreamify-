@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X-Streamify – Sign In</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      background: #0a0a0a;
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .signin-box {
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255,0,0,0.4);
+      width: 300px;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #000;
+      color: #fff;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background: red;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #c40000;
+    }
+  </style>
+</head>
+<body>
+  <div class="signin-box">
+    <h1>Sign In</h1>
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
+    <button id="signin-btn">Sign In</button>
+  </div>
+
+  <!-- Firebase + app logic -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+<!-- Load your sign-in as a JS module + version for cache-bust -->
+<script type="module" src="/js/signin.mjs?v=1"></script>
+
+</body>
+</html>

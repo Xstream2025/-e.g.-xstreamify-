@@ -1,41 +1,35 @@
-// profiles.js
-import { XSF_DB } from "./db.js";
+// /public/js/profiles.js
+document.addEventListener("DOMContentLoaded", () => {
+  const grid = document.getElementById("profiles-grid");
+  if (!grid) return;
 
-// DOM elements
-const profileForm = document.querySelector("#profile-form");
-const usernameInput = document.querySelector("#username");
-const profileMsg = document.querySelector("#profile-msg");
+  // Guard against double-binding
+  if (grid.dataset.bound === "1") return;
+  grid.dataset.bound = "1";
 
-// Save profile
-profileForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  profileMsg.textContent = "Saving profile...";
+  grid.addEventListener("click", (ev) => {
+    const link = ev.target.closest("a.card");
+    if (!link) return;
 
-  try {
-    const username = usernameInput.value.trim();
-    if (!username) {
-      profileMsg.textContent = "Username required.";
-      return;
+    ev.preventDefault();
+
+    // Collect profile info from the clicked card
+    const pid = link.dataset.profileId || "";
+    const nameEl = link.querySelector(".name");
+    const imgEl = link.querySelector("img");
+    const profile = {
+      id: pid,
+      name: nameEl ? nameEl.textContent.trim() : "",
+      img: imgEl ? imgEl.getAttribute("src") : ""
+    };
+
+    try {
+      localStorage.setItem("xs_profile", JSON.stringify(profile));
+    } catch (e) {
+      // ignore storage errors
     }
 
-    // Save to Supabase via db.js helper
-    await XSF_DB.saveProfile({ username });
-    profileMsg.textContent = "Profile saved!";
-  } catch (err) {
-    console.error("Save profile error:", err);
-    profileMsg.textContent = err.message || "Failed to save profile.";
-  }
-});
-
-// Load profile (if exists)
-window.addEventListener("DOMContentLoaded", async () => {
-  try {
-    const profile = await XSF_DB.loadProfile();
-    if (profile && profile.username) {
-      usernameInput.value = profile.username;
-      profileMsg.textContent = "Profile loaded.";
-    }
-  } catch (err) {
-    console.warn("No profile loaded:", err.message);
-  }
+    const target = link.dataset.href || link.getAttribute("href") || "/browse.html";
+    window.location.href = target;
+  });
 });

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X-Streamify – Sign In</title>
+
+  <!-- build: phase22 2025-09-25 -->
+  <!-- Silence old Supabase popup -->
+  <script>
+    (function () {
+      const orig = window.alert;
+      window.alert = function (msg) {
+        if (typeof msg === 'string' && msg.includes('SUPABASE_URL')) return;
+        return orig(msg);
+      };
+    })();
+  </script>
+
+  <link rel="stylesheet" href="/css/styles.css" />
+  <meta name="theme-color" content="#0a0a0a" />
+
+  <!-- 👇 the only addition -->
+  <style id="phase22-bg-only">
+    html, body {
+      background: radial-gradient(120% 70% at 50% -10%, #111 0%, #0d0d0d 40%, #0a0a0a 100%) !important;
+    }
+  </style>
+</head>
+<style id="phase22-bg-only">
+  html, body {
+    background: radial-gradient(120% 70% at 50% -10%, #111 0%, #0d0d0d 40%, #0a0a0a 100%) !important;
+  }
+</style>
+<body>
+  <!-- everything below is exactly what your beautiful live Phase 21 has -->
+  <div class="container">
+    <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1rem;">
+      <img src="/images/logo.svg" alt="X-Streamify" style="width:32px;height:32px;">
+      <strong style="color:#fff; font-size:1.1rem;">X-Streamify</strong>
+    </div>
+    <p style="color:#ccc; margin-bottom:1rem;">Sign in or create your account to continue.</p>
+
+    <form id="signin-form">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <label style="color:#aaa; font-size:0.85rem;">
+        <input type="checkbox" id="remember" style="margin-right:0.4rem;"> Remember me
+      </label>
+      <button type="submit" class="signin">Sign in</button>
+      <button type="button" class="create">Create account</button>
+    </form>
+
+    <p class="links">
+      By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
+    </p>
+    <p style="color:#666; font-size:0.75rem; margin-top:0.5rem;">© 2025 X-Streamify. All rights reserved.</p>
+  </div>
+
+  <script src="/js/auth-gate.js"></script>
+</body>
+</html>

@@ -1,52 +1,20 @@
-// public/js/db.js
-// Simple persistent DB using localStorage.
-// Key: 'xsf_library_v1'
+// /public/js/db.js
 
-(function () {
-  const KEY = "xsf_library_v1";
+// Import Firebase SDKs (v9 CDN)
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-  function load() {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (!raw) return [];
-      const arr = JSON.parse(raw);
-      return Array.isArray(arr) ? arr : [];
-    } catch {
-      return [];
-    }
-  }
+// Ensure keys.js ran first
+if (!window.firebaseConfig) {
+  throw new Error("keys.js did not load. Make sure /js/keys.js is included BEFORE /js/db.js");
+}
 
-  function save(arr) {
-    try {
-      localStorage.setItem(KEY, JSON.stringify(arr));
-    } catch (err) {
-      console.error("[DB] save failed:", err);
-    }
-  }
+// Single default app
+const app = getApps().length ? getApp() : initializeApp(window.firebaseConfig);
 
-  const DB = {
-    async add(item) {
-      const all = load();
-      all.push({ ...item, _ts: Date.now() });
-      save(all);
-      console.log("[DB] add:", item);
-      return true;
-    },
+// Export services for other modules
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 
-    async getAll() {
-      const all = load();
-      console.log("[DB] getAll ->", all.length, "items");
-      return all;
-    },
-
-    async clear() {
-      save([]);
-      console.log("[DB] cleared");
-      return true;
-    }
-  };
-
-  // expose both styles for compatibility
-  window.DB = DB;
-  window.db = DB;
-})();
+console.log("✅ Firebase initialized");

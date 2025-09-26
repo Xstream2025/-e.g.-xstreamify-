@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>X-Streamify — App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCiQrxZPoH7s56dr9m0OJlbRPrOQ9RibOQ",
+      authDomain: "xstreamify-auth.firebaseapp.com",
+      projectId: "xstreamify-auth",
+      storageBucket: "xstreamify-auth.appspot.com",
+      messagingSenderId: "868454287241",
+      appId: "1:868454287241:web:fc3eef7bf0ddaef2cc5358"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.replace('/signin.html');
+        return;
+      }
+      document.getElementById('status').textContent = 'Signed in';
+      document.getElementById('email').textContent = user.email;
+      try {
+        const token = await user.getIdToken();
+        console.log('idToken', token);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
+    async function signOut() {
+      await auth.signOut();
+      window.location.replace('/signin.html');
+    }
+  </script>
+</head>
+<body>
+  <h1>App Page</h1>
+  <p>Status: <span id="status">Checking…</span></p>
+  <p>Email: <span id="email">—</span></p>
+  <button onclick="signOut()">Sign Out</button>
+</body>
+</html>

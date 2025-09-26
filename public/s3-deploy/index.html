@@ -1,0 +1,32 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X-Streamify — Phase 14</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header style="padding:16px;">
+    <h1 style="margin:0;">X-Streamify</h1>
+    <button id="addToLibraryBtn" class="button">Add to Library</button>
+  </header>
+
+  <main id="content"></main>
+
+  <!-- IMPORTANT: /public is the web root. Do NOT include '/public' in the paths. -->
+  <script defer src="/js/db.js"></script>
+  <!-- render helpers BEFORE buttons so window.renderLibrary exists -->
+  <script defer src="/js/dbcodes.js"></script>
+  <!-- button wiring AFTER render helpers -->
+  <script defer src="/js/buttons.js"></script>
+
+  <script>
+    // quick boot check so we can see if db.js is loaded
+    (function () {
+      const ok = !!(window.DB || window.db);
+      console.log(ok ? "db.js loaded OK" : "db.js missing — no DB/db on window");
+    })();
+  </script>
+</body>
+</html>

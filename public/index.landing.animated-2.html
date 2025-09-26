@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X‑Streamify — Your movies, photos & home videos in one stream</title>
+  <meta name="description" content="X‑Streamify turns your DVDs, photos, and home videos into your personal streaming library." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: #0a0a0a;
+      color: #f3f3f3;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 40px;
+      height: 100vh;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.25rem;
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+    }
+
+    a.button {
+      display: inline-block;
+      background: #e50914;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 20px rgba(229, 9, 20, 0.4);
+    }
+
+    /* === Floating background items === */
+    .bg-anim {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .floater {
+      position: absolute;
+      top: 0;
+      left: 0;
+      will-change: transform;
+      opacity: 0.9;
+      animation-name: floatAcross, bob;
+      animation-timing-function: linear, ease-in-out;
+      animation-iteration-count: infinite, infinite;
+    }
+
+    @keyframes floatAcross {
+      from {
+        transform: translate3d(-120vw, var(--y, 0px), 0) rotate(var(--rot, 0deg)) scale(var(--sc, 1));
+      }
+      to {
+        transform: translate3d(120vw, var(--y, 0px), 0) rotate(calc(var(--rot, 0deg) + var(--spin, 0deg))) scale(var(--sc, 1));
+      }
+    }
+
+    @keyframes bob {
+      0%, 100% { translate: 0 -6px; }
+      50% { translate: 0 6px; }
+    }
+
+    .cd, .polaroid, .film {
+      will-change: transform;
+    }
+
+    .cd {
+      width: 120px;
+      height: 120px;
+    }
+
+    .cd svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .polaroid {
+      width: 150px;
+      height: 170px;
+      background: #fff;
+      color: #111;
+      border-radius: 8px;
+      padding: 8px 8px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+
+    .film {
+      width: 220px;
+      height: 80px;
+      background: #111;
+      border-radius: 8px;
+      border: 2px solid #2d2d2d;
+      display: flex;
+      gap: 6px;
+      padding: 10px;
+    }
+
+    .film div {
+      flex: 1;
+      background: #222;
+      border-radius: 4px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div>
+      <h1>Build your personal streaming library</h1>
+      <p>Upload your DVDs, home videos, and photos into one secure, private streaming vault. It’s like Netflix — but yours.</p>
+      <a href="/signin.html" class="button">Sign In</a>
+    </div>
+  </div>
+
+  <div class="bg-anim" aria-hidden="true"></div>
+
+  <script>
+    const container = document.querySelector('.bg-anim');
+    const TOTAL = 96;
+
+    function rand(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function createCD() {
+      const el = document.createElement('div');
+      el.className = 'floater cd';
+      el.innerHTML = `
+        <svg viewBox="0 0 100 100" aria-label="CD">
+          <defs>
+            <radialGradient id="g" cx="50%" cy="50%" r="60%">
+              <stop offset="0%" stop-color="#d9d9d9" />
+              <stop offset="30%" stop-color="#f5f5f5" />
+              <stop offset="55%" stop-color="#bfbfbf" />
+              <stop offset="100%" stop-color="#7c7c7c" />
+            </radialGradient>
+          </defs>
+          <circle cx="50" cy="50" r="48" fill="url(#g)" />
+          <circle cx="50" cy="50" r="10" fill="#111" />
+          <circle cx="50" cy="50" r="6" fill="#e50914" />
+        </svg>`;
+      return el;
+    }
+
+    function createPolaroid() {
+      const el = document.createElement('div');
+      el.className = 'floater polaroid';
+      el.textContent = 'Photos';
+      return el;
+    }
+
+    function createFilm() {
+      const el = document.createElement('div');
+      el.className = 'floater film';
+      for (let i = 0; i < 4; i++) {
+        const frame = document.createElement('div');
+        el.appendChild(frame);
+      }
+      return el;
+    }
+
+    function spawn(i) {
+      const types = [createCD, createPolaroid, createFilm];
+      const maker = types[Math.floor(Math.random() * types.length)];
+      const el = maker();
+
+      const y = rand(0, window.innerHeight * 0.9);
+      const scale = rand(0.6, 1.2);
+      const rot = rand(-15, 15);
+      const spin = rand(20, 60) * (Math.random() < 0.5 ? -1 : 1);
+      const duration = rand(24, 42);
+      const delay = -rand(0, duration);
+
+      el.style.setProperty('--y', `${y}px`);
+      el.style.setProperty('--sc', scale.toFixed(2));
+      el.style.setProperty('--rot', `${rot}deg`);
+      el.style.setProperty('--spin', `${spin}deg`);
+      el.style.animationDuration = `${duration}s, ${rand(4, 9)}s`;
+      el.style.animationDelay = `${delay}s, ${-rand(0, 9)}s`;
+      el.style.animationDirection = Math.random() < 0.5 ? 'normal, alternate' : 'reverse, alternate';
+
+      container.appendChild(el);
+    }
+
+    for (let i = 0; i < TOTAL; i++) {
+      spawn(i);
+    }
+  </script>
+</body>
+</html>

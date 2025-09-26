@@ -1,4 +1,9 @@
-// === Phase 14: single source of truth for Supabase keys ===
-// TODO: Replace with your real values from Supabase dashboard
-window.__SUPABASE_URL__  = "https://toaunopxummaartcvrtp.supabase.co";
-window.__SUPABASE_ANON__ = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvYXVub3B4dW1tYWFydGN2cnRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc4ODg4OTcsImV4cCI6MjA3MzQ2NDg5N30.1Gp9qL-gA_ue_TSRXVyE7ZCLZo2_Oaf7_FBDuRVwkF8";
+// keys.js
+export const firebaseConfig = {
+  apiKey: "AIzaSyCiQrxPoH7s56dr9m0OJlbRPo9QRib0Q",
+  authDomain: "xstreamify-auth.firebaseapp.com",
+  projectId: "xstreamify-auth",
+  storageBucket: "xstreamify-auth.appspot.com",
+  messagingSenderId: "860454287241",
+  appId: "1:860454287241:web:fc3eef7bf0ddaef2cc5358"
+};

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X-Streamify – Sign In</title>
+  <meta name="theme-color" content="#0a0a0a" />
+
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #000;
+      display: grid;
+      place-items: center;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
+      color: #eaeaea;
+    }
+
+    /* card look */
+    .card {
+      width: min(92vw, 560px);
+      background: #101010;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 0 48px rgba(255, 0, 0, 0.45), 0 0 1px rgba(255,255,255,0.25) inset;
+      padding: 22px 24px 20px;
+      text-align: left;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Double glow wrapper */
+    .stage {
+      position: relative;
+    }
+    .card-echo {
+      position: absolute;
+      width: min(92vw, 560px);
+      height: 100%;
+      top: -14px;
+      left: 12px;
+      border-radius: 16px;
+      background: #0c0c0c;
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 0 48px rgba(255,0,0,0.42);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* brand row */
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .brand-icon { width: 28px; height: 28px; border-radius: 6px; flex: 0 0 auto; }
+    .brand-title { font-weight: 700; font-size: 1.15rem; letter-spacing: .2px; color: #ffffff; }
+
+    /* intro */
+    .intro { color: #ffffff; margin: 4px 0 16px; font-size: 0.98rem; }
+
+    /* inputs */
+    .field {
+      width: 100%; height: 44px; border-radius: 10px;
+      background: #0b0b0b; border: 1px solid #2a2a2a;
+      color: #eee; padding: 10px 12px; outline: none;
+    }
+    .field::placeholder { color: #ffffff; }
+
+    /* buttons */
+    .btn { width: 100%; height: 46px; border: none; border-radius: 10px; font-weight: 700; color: #fff; cursor: pointer; margin-top: 12px; }
+    #signin-btn { background: linear-gradient(180deg, #2f58d8 0%, #2747b0 100%); text-shadow: 0 1px 0 rgba(0,0,0,0.25); }
+    #create-btn { background: linear-gradient(180deg, #f07b34 0%, #d95e0f 100%); text-shadow: 0 1px 0 rgba(0,0,0,0.25); }
+
+    .fineprint { margin-top: 14px; color: #9a9a9a; font-size: 0.82rem; text-align: center; }
+    .fineprint a { color: #d6d6d6; text-decoration: underline; }
+
+    /* ===== Floating background (decorative) ===== */
+    #bg-float {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    #bg-float .float-item {
+      position: absolute;
+      opacity: 0.18;
+      will-change: transform;
+      filter: drop-shadow(0 0 24px rgba(255, 0, 0, 0.18));
+      animation: drift var(--dur, 60s) linear infinite, bob 7s ease-in-out infinite;
+      transform-origin: 50% 50%;
+      user-select: none;
+    }
+    /* DVD shape */
+    #bg-float .float-dvd {
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff 0 8%, #b8b8b8 9% 28%, #eee 29% 40%, #cfcfcf 41% 60%, #9a9a9a 61% 100%);
+      box-shadow: inset 0 0 10px rgba(0,0,0,.25);
+    }
+    /* Film shape */
+    #bg-float .float-film {
+      width: var(--w, 180px);
+      height: calc(var(--w, 180px) * 0.45);
+      background:
+        repeating-linear-gradient(to right, transparent 0 14px, rgba(0,0,0,0.35) 14px 16px),
+        linear-gradient(#222, #111);
+      border: 2px solid #333;
+      border-radius: 6px;
+    }
+    /* Photo shape */
+    #bg-float .float-photo {
+      background: linear-gradient(#e0e0e0, #f8f8f8);
+      border: 10px solid #fff;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      border-radius: 4px;
+    }
+
+    /* Motion */
+    @keyframes drift {
+      from { transform: translate(var(--xStart), var(--yStart)) rotate(0deg) }
+      to { transform: translate(calc(var(--xStart) + var(--dx)), calc(var(--yStart) + var(--dy))) rotate(360deg) }
+    }
+    @keyframes bob {
+      0%,100% { translate: 0 -2% }
+      50% { translate: 0 2% }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #bg-float { display: none; }
+    }
+  </style>
+
+  <script>
+    // === Floating background items ===
+    const bg = document.getElementById('bg-float');
+    if (bg) {
+      const shapes = ['dvd', 'film', 'photo'];
+      for (let i = 0; i < 10; i++) {
+        const s = document.createElement('div');
+        const type = shapes[Math.floor(Math.random() * shapes.length)];
+        s.className = 'float-item float-' + type;
+        s.style.setProperty('--dur', `${40 + Math.random() * 50}s`);
+        s.style.setProperty('--xStart', `${Math.random() * 100}%`);
+        s.style.setProperty('--yStart', `${Math.random() * 100}%`);
+        s.style.setProperty('--dx', `${(Math.random() - .5) * 200}%`);
+        s.style.setProperty('--dy', `${(Math.random() - .5) * 200}%`);
+        if (type === 'film') s.style.setProperty('--w', `${120 + Math.random() * 100}px`);
+        bg.appendChild(s);
+      }
+    }
+  </script>
+</head>
+<body>
+  <!-- Floating background layer -->
+  <div id="bg-float" aria-hidden="true"></div>
+
+  <div class="stage">
+    <div class="card-echo" aria-hidden="true"></div>
+    <div class="card" role="group" aria-labelledby="signin-title">
+      <div class="brand">
+        <img src="/favicon.svg" alt="X-Streamify" class="brand-icon" />
+        <div class="brand-title" id="signin-title">X-Streamify</div>
+      </div>
+
+      <p class="intro">Sign in or create your account to continue.</p>
+
+      <input id="email" class="field" type="email" placeholder="Email" autocomplete="email" />
+      <div style="height:12px"></div>
+      <input id="password" class="field" type="password" placeholder="Password" autocomplete="current-password" />
+
+      <div class="flex items-center mt-2">
+        <input id="rememberMe" type="checkbox" class="h-4 w-4 text-orange-500 bg-gray-800 border-gray-600 rounded focus:ring-orange-400" />
+        <label for="rememberMe" class="ml-2 text-sm text-gray-300">Remember me</label>
+      </div>
+
+      <div style="height:12px"></div>
+      <button id="signin-btn" type="button" class="btn">Sign in</button>
+      <button id="create-btn" type="button" class="btn">Create account</button>
+
+      <div class="fineprint">
+        By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
+        <p class="mt-2">&copy; 2025 X-Streamify. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script type="module" src="/js/signin.mjs?v=1"></script>
+</body>
+</html>
