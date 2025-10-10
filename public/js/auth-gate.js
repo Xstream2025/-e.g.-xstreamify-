@@ -8,8 +8,31 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserLocalPersistence,
+  signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+
 import { getApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+
+// ✅ Replace with your real config keys from Firebase Console
+const firebaseConfig = {
+  apiKey: "AIzaSyCQVGm0GY4vUDhTOVvTsMr8-buC6fhizHs",
+  authDomain: "xstreamify-auth.firebaseapp.com",
+  projectId: "xstreamify-auth",
+  storageBucket: "xstreamify-auth.appspot.com",
+  messagingSenderId: "860454287241",
+  appId: "1:860454287241:web:fc3eef7bf0ddaeF2cc5358"
+};
+
+
+
+try {
+  initializeApp(firebaseConfig);
+} catch (e) {
+  console.warn("Firebase already initialized");
+}
+
 
 const auth = getAuth(getApp());
 
@@ -63,17 +86,18 @@ const isSignInPage = location.pathname.endsWith("/signin.html");
     if (kind === "replace" && ORIG.replace) return ORIG.replace(url);
   }
 
-  if (ORIG.assign) loc.assign = (url) => guardedNavigate("location.assign", url);
-  if (ORIG.replace) loc.replace = (url) => guardedNavigate("location.replace", url);
-  if (ORIG_OPEN) {
-    window.open = (url, name, specs) => {
-      if (isSignin(url) && Date.now() < BLOCK_UNTIL) {
-        logAttempt("window.open", url);
-        return null;
-      }
-      return ORIG_OPEN(url, name, specs);
-    };
-  }
+if (ORIG.assign) loc._assign = (url) => guardedNavigate("location.assign", url);
+if (ORIG.replace) loc._replace = (url) => guardedNavigate("location.replace", url);
+if (ORIG.open)
+  win._open = (...args) => {
+    if (isSignin(args[0]) && Date.now() < BLOCK_UNTIL) {
+      logAttempt("window.open", args[0]);
+      return null;
+    }
+    return ORIG.open(...args);
+  };
+
+
 
   // Expose a safe navigator for the gate itself after auth is decided
   window.__authGateNavigate = (url, useReplace = true) => {
@@ -113,3 +137,26 @@ try {
     // null for now; the grace timer will handle if needed
   }
 });
+// ⬇️ YOUR NEW CODE GOES HERE
+// --- X-Streamify: Manual Sign-In Logic ---
+
+const signinForm = document.getElementById('signin-form');
+if (signinForm) {
+  signinForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const auth = getAuth();
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log("✅ SIGNED IN:", user.email);
+      window.location.href = '/users.html'; // redirect after success
+    } catch (error) {
+      console.error("❌ Sign-in failed:", error.message);
+      alert("Sign-in failed. Please check your email or password.");
+    }
+  });
+}
