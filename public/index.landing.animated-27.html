@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X‑Streamify — Your movies, photos & home videos in one stream</title>
+  <meta name="description" content="X‑Streamify turns your DVDs, photos, and home videos into your personal streaming library." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #0a0a0a;
+      color: #f3f3f3;
+      overflow: hidden;
+    }
+    .container {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 40px;
+      height: 100vh;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1.25rem;
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+    }
+    a.button {
+      display: inline-block;
+      background: #e50914;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 20px rgba(229, 9, 20, 0.4);
+    }
+    .bg-anim {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .floater {
+      position: absolute;
+      top: 0;
+      left: 0;
+      will-change: transform;
+      opacity: 0.5;
+      animation-name: floatAcross, bob;
+      animation-timing-function: linear, ease-in-out;
+      animation-iteration-count: infinite, infinite;
+    }
+    @keyframes floatAcross {
+      from { transform: translate3d(-120vw, var(--y, 0px), 0) rotate(var(--rot, 0deg)) scale(var(--sc, 1)); }
+      to { transform: translate3d(120vw, var(--y, 0px), 0) rotate(calc(var(--rot, 0deg) + var(--spin, 0deg))) scale(var(--sc, 1)); }
+    }
+    @keyframes bob {
+      0%, 100% { translate: 0 -6px; }
+      50% { translate: 0 6px; }
+    }
+    .icon {
+      display: grid;
+      place-items: center;
+      font-weight: bold;
+      font-size: 14px;
+      text-transform: uppercase;
+      border-radius: 6px;
+      padding: 12px;
+      color: #fff;
+    }
+    .cd { width: 100px; height: 100px;  
+  background-size: cover;
+  background-position: center;
+ }
+    .cd svg { width: 100%; height: 100%; }
+    .polaroid, .film, .clapperboard, .ticket, .label, .docsheet {
+      width: 140px; height: 120px;
+      background: #222;
+      border: 2px solid #444;
+    }
+    .polaroid { background: #eee; color: #111; font-weight: bold; }
+    .film {
+  background: #444;
+  color: #fff;
+  font-weight: bold;
+  border: 2px solid #888;
+  box-shadow: 0 0 20px #fff5;
+}
+    .clapperboard { background: #000; color: #fff; }
+    .ticket { background: #d9a300; color: #111; }
+    .label {
+  background: #fff;            /* paper look */
+  color: #333;                 /* dark text */
+  border: 2px solid #ccc;      /* light border */
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.15); /* subtle shadow */
+  font-family: 'Courier New', monospace;   /* typewriter font */
+}
+    .docsheet { background: #fff; color: #111; font-weight: bold; }
+    .docsheet {
+  background: #fff;
+  color: #111;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Courier New', monospace;
+}
+
+.docsheet::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 10px;
+  bottom: 40px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.1) 0 1px,
+    transparent 1px 10px
+  );
+  pointer-events: none;
+}
+
+.docsheet::after {
+  content: "STAMP";
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  padding: 3px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(200, 0, 0, 0.8);
+  border: 2px solid rgba(200, 0, 0, 0.7);
+  border-radius: 4px;
+  transform: rotate(-12deg);
+  background: rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+}
+</style>
+  </style>
+</head>
+<body>
+  <!-- TOP NAVIGATION BAR -->
+<header style="position: absolute; top: 0; left: 0; width: 100%; z-index: 50;">
+  <div style="display: flex; align-items: center; padding: 2rem 3rem;">
+    <!-- Custom Logo Icon (larger) -->
+    <div style="width: 48px; height: 48px; background-color: #e50914; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 16px; position: relative;">
+      <!-- Play Triangle -->
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="white">
+        <path d="M6 4l10 6-10 6V4z" />
+      </svg>
+      <!-- White Dot -->
+      <div style="width: 8px; height: 8px; background-color: white; border-radius: 50%; position: absolute; top: 6px; right: 6px;"></div>
+    </div>
+    <!-- Logo Text (larger) -->
+    <div style="color: white; font-size: 3rem; font-weight: bold;">
+      X-Streamify
+    </div>
+      </div> <!-- end of Logo Text -->
+
+<!-- Language Dropdown -->
+<div style="position: absolute; top: 2.5rem; right: 2.5rem;">
+
+    <select style="padding: 0.5rem 1rem; font-size: 1rem; border-radius: 6px; background-color: #111; color: white; border: 1px solid #555;">
+      <option selected>English</option>
+      <option>Español</option>
+    </select>
+  </div>
+</div> <!-- end of top flex container -->
+  </div>
+</header>
+<!-- END TOP NAVIGATION BAR -->
+
+  <div class="container">
+    <div>
+      <h1>Build your personal streaming library</h1>
+      <p style="margin-bottom: 0;">
+  Upload your DVDs, home videos, and photos into one secure, private streaming vault.
+</p>
+<p style="margin-top: 0;">
+  Stream your movies. Store your memories. All in one place.
+</p>
+<!-- WHY X-STREAMIFY SECTION -->
+<section class="bg-black text-white py-16">
+  <div class="max-w-5xl mx-auto px-4 text-center">
+    <h2 class="text-4xl md:text-5xl font-bold mb-8">
+      Why X-Streamify?
+    </h2>
+    <div class="grid gap-8 md:grid-cols-3">
+      <div class="p-6 bg-zinc-900 rounded-xl shadow-lg hover:scale-105 transition-transform">
+        <h3 class="text-xl font-semibold mb-2">🎬 Own It, Stream It</h3>
+        <p class="text-gray-300 text-sm">
+          Upload your DVDs once and stream them forever — no subscriptions or licensing headaches.
+        </p>
+      </div>
+      <div class="p-6 bg-zinc-900 rounded-xl shadow-lg hover:scale-105 transition-transform">
+        <h3 class="text-xl font-semibold mb-2">🔒 Private Vault</h3>
+        <p class="text-gray-300 text-sm">
+          Your movies stay yours — safely stored and accessible only to you.
+        </p>
+      </div>
+      <div class="p-6 bg-zinc-900 rounded-xl shadow-lg hover:scale-105 transition-transform">
+        <h3 class="text-xl font-semibold mb-2">💸 One Flat Rate</h3>
+        <p class="text-gray-300 text-sm">
+          No upgrade traps or hidden fees — one clear price, total control of your library.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="faq" class="bg-black text-white py-20">
+  <div class="max-w-4xl mx-auto px-4 text-center">
+    <h2 class="text-3xl md:text-5xl font-bold mb-8">Frequently Asked Questions</h2>
+    <p class="text-gray-300 text-lg">We’ll fill this section with real Q&A next.</p>
+  </div>
+</section>
+<!-- END WHY X-STREAMIFY SECTION -->
+      <a href="/signin.html" class="button">Sign In</a>
+    </div>
+  </div>
+  <div class="bg-anim" aria-hidden="true"></div>
+  <script>
+    const container = document.querySelector('.bg-anim');
+    const TOTAL = 180;
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+    const types = ['cd', 'polaroid', 'film', 'ticket', 'docsheet'];
+    function create(type) {
+      const el = document.createElement('div');
+      el.className = `floater ${type}`;
+      const photoImages = [
+  'https://randomuser.me/api/portraits/women/44.jpg',
+  'https://randomuser.me/api/portraits/men/36.jpg',
+  'https://randomuser.me/api/portraits/women/29.jpg',
+  'https://randomuser.me/api/portraits/men/12.jpg'
+];
+const filmImages = [
+    '/img/Elf.jpg',
+    '/img/Friends.jpg',
+    '/img/Hotel Transylvania.jpg',
+    '/img/Mary Poppins.jpg',
+    '/img/Monsters, Inc.jpg',
+    '/img/Cars.jpg',
+    '/img/Braveheart.jpg',
+    '/img/Forrest Gump.jpg',
+    '/img/Red Notice.jpg',
+    '/img/Jumanji.jpg',
+    '/img/Anchorman.jpg',
+    '/img/Borat.jpg',
+    '/img/InsideOut 2.jpg',
+    '/img/The Boss Baby.jpg',
+    '/img/The Hangover.jpg',
+    "/img/The Emperor's New Groove.jpg"
+];
+
+      if (type === 'polaroid') {
+  const randomIndex = Math.floor(Math.random() * photoImages.length);
+  if (!photoImages[randomIndex]) return;
+  el.style.backgroundImage = `url('${photoImages[randomIndex]}')`;
+  el.style.backgroundSize = 'cover';
+  el.style.backgroundPosition = 'center';
+}
+
+if (type === 'film') {
+  const randomIndex = Math.floor(Math.random() * filmImages.length);
+  if (!filmImages[randomIndex]) return;
+  el.style.backgroundImage = `url('${filmImages[randomIndex]}')`;
+  el.style.backgroundSize = 'cover';
+  el.style.backgroundPosition = 'center';
+}
+      if (type === 'cd') {
+        el.innerHTML = `
+          <svg viewBox="0 0 100 100">
+            <defs>
+              <radialGradient id="g" cx="50%" cy="50%" r="60%">
+                <stop offset="0%" stop-color="#d9d9d9" />
+                <stop offset="30%" stop-color="#f5f5f5" />
+                <stop offset="55%" stop-color="#bfbfbf" />
+                <stop offset="100%" stop-color="#7c7c7c" />
+              </radialGradient>
+            </defs>
+            <defs>
+  <pattern id="dvdImage" patternUnits="userSpaceOnUse" width="100" height="100">
+  </pattern>
+</defs>
+<circle cx="50" cy="50" r="48" fill="#ccc" />
+<circle cx="50" cy="50" r="10" fill="#111" />
+<circle cx="50" cy="50" r="6" fill="#111" />
+
+          </svg>`;
+      } else {
+        el.classList.add('icon');
+        const map = { film: '', clapperboard: 'Scene', label: 'Label', ticket: 'Ticket' };
+if (map[type] === 'Ticket') { el.innerHTML = '<img src="img/ticket.jpg" alt="ticket" style="width:120px;height:auto;display:block;margin:0 auto;">'; }
+else { el.textContent = map[type]; }
+      }
+      return el;
+    }
+    function spawn() {
+      const type = types[Math.floor(Math.random() * types.length)];
+      const el = create(type);
+      const y = rand(0, window.innerHeight * 0.9);
+      const scale = rand(0.6, 1.15);
+      const rot = rand(-12, 12);
+      const spin = rand(20, 80) * (Math.random() < 0.5 ? -1 : 1);
+      const journey = rand(22, 48);
+      const delay = -rand(0, journey);
+      el.style.setProperty('--y', `${y.toFixed(1)}px`);
+      el.style.setProperty('--sc', scale.toFixed(2));
+      el.style.setProperty('--rot', `${rot.toFixed(1)}deg`);
+      el.style.setProperty('--spin', `${spin.toFixed(1)}deg`);
+      el.style.animationDuration = `${journey}s, ${rand(4, 9)}s`;
+      el.style.animationDelay = `${delay}s, ${-rand(0, 9)}s`;
+      el.style.animationDirection = Math.random() < 0.5 ? 'normal, alternate' : 'reverse, alternate';
+      container.appendChild(el);
+    }
+    for (let i = 0; i < TOTAL; i++) spawn();
+  </script>
+</body>
+</html>

@@ -41,9 +41,39 @@
       window.location.replace('/signin.html');
     }
   </script>
+  <script>
+  function setLanguage(lang) {
+    localStorage.setItem('language', lang);
+    location.reload();
+  }
+
+  function getLanguage() {
+    return localStorage.getItem('language') || 'en';
+  }
+
+  async function loadTranslations() {
+    const lang = getLanguage();
+    try {
+      const res = await fetch(`lang/${lang}.json`);
+      const translations = await res.json();
+
+      for (const key in translations) {
+        const el = document.querySelector(`[data-i18n="${key}"]`);
+        if (el) el.innerHTML = translations[key];
+      }
+    } catch (e) {
+      console.error('Translation load error:', e);
+    }
+  }
+
+  window.onload = loadTranslations;
+</script>
+
 </head>
 <body>
-  <h1>App Page</h1>
+  <h1 data-i18n="appPageTitle"></h1>
+  <p data-i18n="welcomeVaultText"></p>
+  <img src="img/Ticket.jpg" class="floating" />
   <p>Status: <span id="status">Checking…</span></p>
   <p>Email: <span id="email">—</span></p>
   <button onclick="signOut()">Sign Out</button>

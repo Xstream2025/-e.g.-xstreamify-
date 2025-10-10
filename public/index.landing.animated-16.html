@@ -80,7 +80,10 @@
       padding: 12px;
       color: #fff;
     }
-    .cd { width: 100px; height: 100px; }
+    .cd { width: 100px; height: 100px;   background-image: url('/img/allison.png');
+  background-size: cover;
+  background-position: center;
+ }
     .cd svg { width: 100%; height: 100%; }
     .polaroid, .film, .clapperboard, .ticket, .label, .docsheet {
       width: 140px; height: 120px;
@@ -97,8 +100,55 @@
 }
     .clapperboard { background: #000; color: #fff; }
     .ticket { background: #d9a300; color: #111; }
-    .label { background: #c44242; color: #fff; }
+    .label {
+  background: #fff;            /* paper look */
+  color: #333;                 /* dark text */
+  border: 2px solid #ccc;      /* light border */
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.15); /* subtle shadow */
+  font-family: 'Courier New', monospace;   /* typewriter font */
+}
     .docsheet { background: #fff; color: #111; font-weight: bold; }
+    .docsheet {
+  background: #fff;
+  color: #111;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Courier New', monospace;
+}
+
+.docsheet::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 10px;
+  bottom: 40px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.1) 0 1px,
+    transparent 1px 10px
+  );
+  pointer-events: none;
+}
+
+.docsheet::after {
+  content: "STAMP";
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  padding: 3px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(200, 0, 0, 0.8);
+  border: 2px solid rgba(200, 0, 0, 0.7);
+  border-radius: 4px;
+  transform: rotate(-12deg);
+  background: rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+}
+</style>
   </style>
 </head>
 <body>
@@ -118,12 +168,24 @@
   <div class="bg-anim" aria-hidden="true"></div>
   <script>
     const container = document.querySelector('.bg-anim');
-    const TOTAL = 100;
+    const TOTAL = 140;
     function rand(min, max) { return Math.random() * (max - min) + min; }
-    const types = ['cd', 'polaroid', 'film', 'clapperboard', 'ticket', 'label', 'docsheet'];
+    const types = ['cd', 'polaroid', 'film', 'ticket', 'docsheet'];
     function create(type) {
       const el = document.createElement('div');
       el.className = `floater ${type}`;
+      const photoImages = [
+  'https://randomuser.me/api/portraits/women/44.jpg',
+  'https://randomuser.me/api/portraits/men/36.jpg',
+  'https://randomuser.me/api/portraits/women/29.jpg',
+  'https://randomuser.me/api/portraits/men/12.jpg'
+];
+      if (type === 'polaroid') {
+ const randomIndex = Math.floor(Math.random() * photoImages.length);
+el.style.backgroundImage = `url('${photoImages[randomIndex]}')`;
+el.style.backgroundSize = 'cover';
+el.style.backgroundPosition = 'center';
+}
       if (type === 'cd') {
         el.innerHTML = `
           <svg viewBox="0 0 100 100">
@@ -135,20 +197,21 @@
                 <stop offset="100%" stop-color="#7c7c7c" />
               </radialGradient>
             </defs>
-            <circle cx="50" cy="50" r="48" fill="url(#g)" />
-            <circle cx="50" cy="50" r="10" fill="#111" />
-            <circle cx="50" cy="50" r="6" fill="#e50914" />
+            <defs>
+  <pattern id="dvdImage" patternUnits="userSpaceOnUse" width="100" height="100">
+    <image href="/img/braveheart.jpg" x="0" y="0" width="100" height="100" />
+  </pattern>
+</defs>
+<circle cx="50" cy="50" r="48" fill="url(#dvdImage)" />
+<circle cx="50" cy="50" r="10" fill="#111" />
+<circle cx="50" cy="50" r="6" fill="#111" />
+
           </svg>`;
       } else {
         el.classList.add('icon');
-        el.textContent = {
-          polaroid: 'Photos',
-          film: 'Film',
-          clapperboard: 'Scene',
-          ticket: 'Admit One',
-          label: 'Label',
-          docsheet: 'Docs'
-        }[type];
+        const map = { film: 'Film', clapperboard: 'Scene', label: 'Label', ticket: 'Ticket' };
+if (map[type] === 'Ticket') { el.innerHTML = '<img src="img/ticket.jpg" alt="ticket" style="width:120px;height:auto;display:block;margin:0 auto;">'; }
+else { el.textContent = map[type]; }
       }
       return el;
     }
