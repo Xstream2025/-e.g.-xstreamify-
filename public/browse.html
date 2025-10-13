@@ -6,6 +6,8 @@
   <title>X-Streamify — Your Library</title>
   <meta name="theme-color" content="#0a0a0a"/>
   <link rel="icon" href="/img/favicon.png"/>
+<link rel="stylesheet" href="app/css/styles.css?v=1.0">
+
   <style>
     :root{
       --bg:#0a0a0a; --panel:#101012; --panel2:#141416; --muted:#a9a9a9; --line:rgba(255,255,255,.12);
@@ -91,19 +93,48 @@
   </style>
 
   <!-- Firebase (compat) + your config -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
-  <script src="/js/keys.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
+<script src="/js/keys.js"></script>
+<script>
+  window.addEventListener("load", () => {
+    // Wait 2 seconds to confirm Firebase has initialized
+    setTimeout(() => {
+      if (!window.firebase || !window.firebase.auth) {
+        console.warn("⚠️ Firebase failed to load — displaying warning.");
+        const warn = document.createElement("div");
+        warn.textContent = "⚠️ Connection issue — please refresh the page.";
+        warn.style.position = "fixed";
+        warn.style.top = "0";
+        warn.style.left = "0";
+        warn.style.width = "100%";
+        warn.style.background = "#ff4d4d";
+        warn.style.color = "#fff";
+        warn.style.textAlign = "center";
+        warn.style.padding = "10px";
+        warn.style.fontSize = "16px";
+        warn.style.zIndex = "9999";
+        document.body.appendChild(warn);
+      }
+    }, 2000);
+  });
+</script>
+
 </head>
 <body>
   <div class="wrap">
     <!-- Header -->
     <header>
       <div class="brand">
-        <div class="mark"></div>
         <div>
-          <div style="opacity:.9">X-Streamify</div>
-          <div class="muted" id="greeting">Welcome</div>
+          <div class="flex items-center gap-2">
+<img src="/img/red-play-logo-rounded.png" alt="X-Streamify" style="width: 75px; height: auto; position: relative; top: 6px;" />
+<span style="font-size: 34px; font-weight: 600; letter-spacing: -0.5px;">X‑Streamify</span>
+</div>
+
+
+
+
         </div>
       </div>
 
@@ -117,7 +148,7 @@
       <div class="right">
         <button class="addBtn">Add Movies</button>
         <div class="who">
-          <img id="avatar" src="/img/profile1.png" alt="profile"/>
+<img id="avatar" src="/img/profile1.png" alt="profile" style="width: 48px; height: 48px; border-radius: 50%;" />
           <span id="whoName">Profile</span>
           <button class="btn" id="switch" onclick="try{localStorage.removeItem('xs_profile')}catch(e){};location.href='/profiles.html'">
 
@@ -223,45 +254,88 @@
     </div>
   </div>
 
-  <script>
     // --- Auth guard & personalization ---
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+    <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth-compat.js"></script>
 
+
+<script>
   const firebaseConfig = {
-    apiKey: "AIzaSyDFXRlF20221g5tYWypyrfQf58C0S0wMBfU",
+    apiKey: "AIzaSyDFXR1F20221g5tYwypyrfQf58C0S0wMBfU",
     authDomain: "xstreamify-auth.firebaseapp.com",
     projectId: "xstreamify-auth",
     storageBucket: "xstreamify-auth.appspot.com",
-    messagingSenderId: "868454287241",
-    appId: "1:868454287241:web:fc3eef7bf0ddaef2cc5358"
+    messagingSenderId: "868542872741",
+    appId: "1:868542872741:web:fc3eef7bf0ddaef2cc5358"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .then(() => console.log("Persistence mode: LOCAL ✅"))
+  .catch((err) => console.error("Persistence error:", err));
+window.stopRedirect = true; // temporary diagnostic lock
 
-  // protect page
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = "/signin.html";
-    } else {
-      // personalize
-      const raw = localStorage.getItem('selectedUser');
-      if (raw) {
-        const prof = JSON.parse(raw);
-        document.getElementById("whoName").textContent = prof.name || 'Profile';
-        document.getElementById("avatar").src = prof.avatar || "/img/profile1.png";
-        document.getElementById("greeting").textContent = `Welcome, ${prof.name || 'friend'}!`;
-      }
+  auth.onAuthStateChanged((user) => {
+  if (user) {
+    console.log("✅ User authenticated:", user.email);
+    const raw = localStorage.getItem("selectedUser");
+    if (raw) {
+      const prof = JSON.parse(raw);
+      document.getElementById("whoName").textContent = prof.name || "Profile";
+      document.getElementById("avatar").src = prof.avatar || "/img/profile1.png";
     }
-  });
-<script type="module">
-  // ...your existing imports and onAuthStateChanged code stay as-is above...
-
+  } else {
+    console.log("⚠️ No user found — waiting before redirect...");
+    // Give Firebase a chance to restore session before redirecting
+    setTimeout(() => {
+      firebase.auth().currentUser
+        ? console.log("Session restored just in time ✅")
+if (window.stopRedirect) {
+  console.log("🧠 Redirect prevented for debugging");
+} else {
+  window.location.href = "/signin.html";
+}
+    }, 1500);
+  }
 });
-  };
+
 </script>
+<script>
+  function signOut() {
+    firebase.auth().signOut()
+      .then(() => {
+        localStorage.removeItem("selectedUser");
+        window.location.href = "/signin.html";
+      })
+      .catch((error) => {
+        console.error("Sign-out error:", error);
+        alert("Sign out failed. Please try again.");
+      });
+  }
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const signoutBtn = document.getElementById("signout");
+  if (signoutBtn) {
+    signoutBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      try {
+        localStorage.removeItem("selectedUser");
+        localStorage.removeItem("xsf_Library_v1");
+        localStorage.removeItem("xs_profile");
+        localStorage.removeItem("selectedProfile");
+        window.location.href = "/signin.html";
+      } catch (error) {
+        console.error("Sign-out error:", error);
+        alert("Sign out failed. Please try again.");
+      }
+    });
+  } else {
+    console.warn("Sign-out button not found");
+  }
+});
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   try {
@@ -284,6 +358,8 @@ document.addEventListener('DOMContentLoaded', function () {
   } catch (e) { /* ignore */ }
 });
 </script>
+
+
 
 </body>
 </html>
