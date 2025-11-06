@@ -5,10 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>X-Streamify — Your Library</title>
   <meta name="theme-color" content="#0a0a0a"/>
-  <link rel="icon" href="/img/favicon.png"/>
-<link rel="stylesheet" href="app/css/styles.css?v=1.0">
+<link rel="icon" type="image/png" href="img/favicon-32x32.png">
+<link rel="stylesheet" href="css/styles.css">
+<style>#search-results { color:#fff; font-size:1rem; margin-top:12px; padding-left:5px; }</style>
+
 
   <style>
+    
     :root{
       --bg:#0a0a0a; --panel:#101012; --panel2:#141416; --muted:#a9a9a9; --line:rgba(255,255,255,.12);
       --brand:#e11d2f; --brand-soft:rgba(225,29,47,.35);
@@ -17,8 +20,8 @@
     html,body{height:100%}
     body{
       margin:0;background:
-        radial-gradient(900px 420px at 85% -10%, rgba(225,29,47,.24), transparent 60%),
-        radial-gradient(700px 380px at -10% 110%, rgba(225,29,47,.12), transparent 60%),
+radial-gradient(900px 420px at 85% -10%, rgb(0, 255, 0), transparent 30%),
+radial-gradient(700px 380px at -10% 110%, rgb(0, 255, 0), transparent 60%),
         var(--bg);
       color:#fff;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial
     }
@@ -30,12 +33,13 @@
     .nav a{color:#e9e9e9;text-decoration:none;opacity:.9}
     .nav a:hover{opacity:1}
     .right{display:flex;justify-content:flex-end;align-items:center;gap:10px}
-    .addBtn{display:none;background:#161617;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.addBtn { background: #161617; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 10px; padding: 8px 12px; cursor: pointer; color: #fff; }
+.addBtn:hover { border: 2px solid red; box-shadow: 0 0 12px red; }
     @media(min-width:800px){ .addBtn{display:inline-flex} }
     .who{display:flex;align-items:center;gap:10px}
     .who img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.18)}
-    .btn{background:#161617;border:1px solid var(--line);color:#fff;border-radius:10px;padding:8px 12px;cursor:pointer}
-    .btn:hover{border-color:rgba(255,255,255,.28)}
+.btn { background: #161617; border: 1px solid rgba(255, 255, 255, 0.18); color: #fff; border-radius: 10px; padding: 8px 12px; cursor: pointer; box-sizing: border-box; }
+.btn:hover { box-shadow: 0 0 12px red; }
     h1{margin:18px 0 6px;font-size:28px}
     .muted{color:var(--muted);font-size:14px}
 
@@ -47,9 +51,9 @@
       border:1px solid var(--line);border-radius:16px;padding:18px 18px 20px;
     }
     .heroImage{
-      height:280px;border-radius:16px;border:1px solid rgba(225,29,47,.45);
-      box-shadow:0 0 32px rgba(225,29,47,.28);
-      background: radial-gradient(800px 320px at 50% -20%, rgba(225,29,47,.25), transparent 60%), #0e0e10;
+height: 280px; border-radius: 16px; border: 1px solid rgb(0, 255, 0);
+      box-shadow: 0 0 32px rgb(0, 255, 0);
+background: radial-gradient(800px 320px at 50% -20%, rgb(0, 255, 0), transparent 50%), #0e0e10;
       display:flex;align-items:center;justify-content:center;font-size:22px;opacity:.95
     }
     .searchRow{display:flex;gap:10px;margin-top:14px}
@@ -90,6 +94,8 @@
     @media(max-width:700px){ .grid{grid-template-columns:repeat(2,1fr)} }
 
     .hr{height:1px;background:var(--line);margin:16px 0}
+    #search-results { color:#fff; font-size:1rem; margin-top:12px; padding-left:5px; }
+
   </style>
 
   <!-- Firebase (compat) + your config -->
@@ -128,8 +134,8 @@
       <div class="brand">
         <div>
           <div class="flex items-center gap-2">
-<img src="/img/red-play-logo-rounded.png" alt="X-Streamify" style="width: 75px; height: auto; position: relative; top: 6px;" />
-<span style="font-size: 34px; font-weight: 600; letter-spacing: -0.5px;">X‑Streamify</span>
+<img src="/img/red-play-logo-rounded.png" alt="X-Streamify" style="width: 75px; height: auto; position: relative; top: 24px;" />
+<span style="font-size: 40px; font-weight: 600; letter-spacing: -0.5px;">X‑Streamify</span>
 </div>
 
 
@@ -139,22 +145,25 @@
       </div>
 
       <nav class="nav" aria-label="Primary">
-        <a href="#" aria-current="page">Featured</a>
-        <a href="#">My Library</a>
-        <a href="#">How It Works</a>
-        <a href="#">Your Vault</a>
-      </nav>
+  <a href="#featured" aria-current="page">Featured</a>
+  <a href="#library">My Library</a>
+<a href="#how">How It Works</a>
+  <a href="#vault">Your Vault</a>
+</nav>
+
 
       <div class="right">
-<button class="addBtn" style="color: white;">Add Movies</button>
+<button class="addBtn" style="color: white;" onclick="location.href='add-movie.html'">Add Movies</button>
         <div class="who">
 <img id="avatar" src="/img/profile1.png" alt="profile" style="width: 48px; height: 48px; border-radius: 50%;" />
           <span id="whoName">Profile</span>
-          <button class="btn" id="switch" onclick="try{localStorage.removeItem('xs_profile')}catch(e){};location.href='/profiles.html'">
+<button class="btn" id="switch" onclick="try{localStorage.removeItem('xs_profile')}catch(e){};location.href='profiles.html'" style="border: 2px solid rgb(0, 255, 0);">
 
   Switch
 </button>
-          <button class="btn" id="signout">Sign out</button>
+<button class="btn" id="signout" style="border: 2px solid rgb(0, 255, 0); padding: 8px 12px; color: white; background-color: #000;" onclick="try{localStorage.removeItem('xs_profile')}catch(e){};location.href='sign-in.html'">
+  Sign out
+</button>
         </div>
       </div>
     </header>
@@ -167,13 +176,14 @@
     <section class="hero" aria-label="Hero">
       <div class="heroCard">
         <div class="searchRow">
-          <input id="search" placeholder="Search your movies…"/>
-          <button class="btn">Search</button>
+<input id="searchInput" placeholder="Search your movies…" />
+<button id="search-btn" class="btn" data-tab="search">Search</button>
         </div>
+        <div id="search-results" class="muted" style="margin-top:10px;"></div>
         <div class="pills" role="list">
-          <div class="pill">Recently Added</div>
-          <div class="pill">Favorites</div>
-          <div class="pill">By Genre</div>
+<div id="recentlyAdded" class="pill" onclick="alert('🔥 Recently Added clicked!')">Recently Added</div>
+<div id="favoritesTab" class="pill" style="color: white;" onclick="alert('⭐ Favorites clicked!')">Favorites</div>
+<div id="genreTab" class="pill" onclick="alert('🎭 By Genre clicked!')" style="color: white;">By Genre</div>
         </div>
         <div class="hr"></div>
         <div class="muted">Tip: “Add Movies” is on the right (hidden on phones).</div>
@@ -184,7 +194,7 @@
     <!-- Sections -->
     <div class="sections">
       <!-- Featured Row -->
-      <section class="row">
+<section id="featured" class="row">
         <h2>Featured</h2>
         <div class="rail" role="list">
           <div class="tile">Feature A</div>
@@ -195,6 +205,7 @@
 
       <!-- My Library -->
       <section class="row">
+        <a id="library"></a>
         <h2>My Library</h2>
         <div class="rail" role="list">
           <div class="tile small">Movie 1</div>
@@ -206,55 +217,144 @@
       </section>
 
       <!-- How It Works -->
+       <a id="how"></a>
       <section class="row">
         <h2>How It Works</h2>
         <div class="steps">
-          <div class="step"><strong>1) Import Disc</strong><br/><span class="muted">Use XstreamPort to read your DVD.</span></div>
-          <div class="step"><strong>2) Secure Upload</strong><br/><span class="muted">We store it in your private vault.</span></div>
-          <div class="step"><strong>3) Stream Anywhere</strong><br/><span class="muted">Play it on TV, phone, or tablet.</span></div>
-        </div>
+<div class="step" id="importDiscBtn" onclick="console.log('Clicked Import Disc'); openModal(1)">
+  <strong>1) Import Disc</strong><br/>
+  <span class="muted">Use XstreamPort to read your DVD.</span>
+</div>
+<div class="step" onclick="openModal(2)">
+  <strong>2) Secure Upload</strong><br/>
+  <span class="muted">We store it in your private vault.</span>
+</div>
+<div class="step" onclick="openModal(3)">
+  <strong>3) Stream Anywhere</strong><br/>
+  <span class="muted">Play it on TV, phone, or tablet.</span>
+</div>        </div>
       </section>
 
       <!-- Add a New Movie -->
       <section class="row">
         <h2>Add a New Movie</h2>
         <div class="cards">
-          <div class="card"><strong>Import Disc</strong><br/><span class="muted">Connect XstreamPort and start import.</span></div>
-          <div class="card"><strong>Upload File</strong><br/><span class="muted">Already ripped? Upload your file.</span></div>
+<div class="card add-movie-box" onclick="startImport()">
+  <strong>Import Disc</strong><br/>
+  <span class="muted">Connect XstreamPort and start import.</span>
+</div>
+<div class="card add-movie-box disabled-upload" id="uploadFile" onclick="startUpload()"><strong>Upload File</strong><br/><span class="muted">Already ripped? Upload your file.</span></div>
+
         </div>
       </section>
 
       <!-- Your Vault -->
+       <a id="vault"></a>
       <section class="row">
         <h2>Your Vault</h2>
         <div class="vault">
           <aside class="side">
             <div class="muted">Folders</div>
-            <div class="folders">
-              <button class="btn" data-folder="all">All</button>
-              <button class="btn" data-folder="by-genre">By Genre</button>
-              <button class="btn" data-folder="recent">Recently Added</button>
-              <button class="btn" data-folder="favorites">Favorites</button>
-            </div>
+
+
+
+            
+<div id="folderContainer" class="folders">
+  <button class="pill">📁 All</button>
+  <button class="pill">🎭 By Genre</button>
+  <button class="pill">🔥 Recently Added</button>
+  <button class="pill">⭐ Favorites</button>
+</div>
+
+
+
+            <div id="docFolderContainer" class="folders" style="display: none;">
+  <button class="btn">Medical</button>
+  <button class="btn">Legal</button>
+  <button class="btn">School</button>
+  <button class="btn">Financial</button>
+  <button class="btn">Insurance</button>
+  <button class="btn">Receipts</button>
+</div>
+
+<!-- PICTURES 2 FOLDER CONTAINER + TILE GRID -->
+<div id="pictures2-folderContainer" class="folders" style="display: none;">
+  <button class="pill">👨‍👩‍👧‍👦 Family</button>
+  <button class="pill">💼 Work</button>
+  <button class="pill">🏖️ Trips</button>
+  <button class="pill">🙋 Personal</button>
+  <button class="pill">⭐ Favorites</button>
+  <button class="pill">📂 Misc</button>
+</div>
+
+
           </aside>
-          <main>
+          <!-- PICTURES GRID -->
+<div id="picture-grid" class="folder-grid" style="display: none;" aria-live="polite">
+  <button class="tile small"><span class="emoji-tile">👨‍👩‍👧‍👦</span>Family</button>
+  <button class="tile small"><span class="emoji-tile">💼</span>Work</button>
+  <button class="tile small"><span class="emoji-tile">🏖️</span>Trips</button>
+  <button class="tile small"><span class="emoji-tile">🙋</span>Personal</button>
+  <button class="tile small"><span class="emoji-tile">⭐</span>Favorites</button>
+  <button class="tile small"><span class="emoji-tile">📂</span>Misc</button>
+</div>
+
+
+
+
+<div id="vaultScrollContainer">
+  <main>
+    
             <div class="tabs" role="tablist">
-              <div class="tab active" data-tab="movies" role="tab" aria-selected="true">Movies</div>
-              <div class="tab" data-tab="docs" role="tab">Docs</div>
-              <div class="tab" data-tab="pictures" role="tab">Pictures</div>
-            </div>
+  <button class="pill" data-tab="movies" role="tab" aria-selected="true">Movies</button>
+  <button id="docsBtn" class="pill" data-tab="docs" role="tab">Docs</button>
+  <button id="pictures2Btn" class="pill" data-tab="pictures2" role="tab">Pictures </button>
+</div>
+
+<div id="pictures2-grid" class="grid" style="display: none;" aria-live="polite">
+  <button class="tile small"><span class="emoji-tile">👨‍👩‍👧‍👦</span>Family</button>
+  <button class="tile small"><span class="emoji-tile">💼</span>Work</button>
+  <button class="tile small"><span class="emoji-tile">🏖️</span>Trips</button>
+  <button class="tile small"><span class="emoji-tile">🙋</span>Personal</button>
+  <button class="tile small"><span class="emoji-tile">⭐</span>Favorites</button>
+  <button class="tile small"><span class="emoji-tile">📂</span>Misc</button>
+</div>
+
+<!-- MOVIES CATEGORIES -->
+<div id="movie-grid" class="grid" role="region" aria-live="polite">
+  <button class="tile small"><span class="emoji-tile">🎬</span>Action</button>
+  <button class="tile small"><span class="emoji-tile">😂</span>Comedy</button>
+  <button class="tile small"><span class="emoji-tile">❤️</span>Romance</button>
+  <button class="tile small"><span class="emoji-tile">👨‍👩‍👧‍👦</span>Family</button>
+  <button class="tile small"><span class="emoji-tile">🛸</span>Sci-Fi</button>
+  <button class="tile small"><span class="emoji-tile">🤠</span>Western</button>
+  <button class="tile small"><span class="emoji-tile">😱</span>Thriller</button>
+  <button class="tile small"><span class="emoji-tile">👻</span>Horror</button>
+  <button class="tile small"><span class="emoji-tile">🦄</span>Fantasy</button>
+  <button class="tile small"><span class="emoji-tile">🎭</span>Drama</button>
+  <button class="tile small"><span class="emoji-tile">🕵️‍♂️</span>Crime/Mystery</button>
+  <button class="tile small"><span class="emoji-tile">🧭</span>Adventure</button>
+  <button class="tile small"><span class="emoji-tile">🎵</span>Musical</button>
+  <button class="tile small"><span class="emoji-tile">📽️</span>Documentary</button>
+</div>
+
+
             <div id="grid" class="grid" role="region" aria-live="polite">
-              <div class="tile small">Movie A</div><div class="tile small">Movie B</div>
-              <div class="tile small">Movie C</div><div class="tile small">Movie D</div>
-              <div class="tile small">Movie E</div><div class="tile small">Movie F</div>
+<button class="tile small"><span class="emoji-tile">📄</span>Medical</button>
+<button class="tile small"><span class="emoji-tile">📜</span>Legal</button>
+<button class="tile small"><span class="emoji-tile">🎓</span>School</button>
+<button class="tile small"><span class="emoji-tile">💰</span>Financial</button>
+<button class="tile small"><span class="emoji-tile">🛡️</span>Insurance</button>
+<button class="tile small"><span class="emoji-tile">🧾</span>Receipts</button>
+
+
             </div>
           </main>
-        </div>
+        </div> <!-- closes #vaultScrollContainer -->
       </section>
     </div>
   </div>
 
-    // --- Auth guard & personalization ---
     <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth-compat.js"></script>
 
@@ -283,20 +383,23 @@ window.stopRedirect = true; // temporary diagnostic lock
     if (raw) {
       const prof = JSON.parse(raw);
       document.getElementById("whoName").textContent = prof.name || "Profile";
-      document.getElementById("avatar").src = prof.avatar || "/img/profile1.png";
+document.getElementById("avatar").src = prof.avatar || "https://via.placeholder.com/100";
     }
   } else {
     console.log("⚠️ No user found — waiting before redirect...");
     // Give Firebase a chance to restore session before redirecting
-    setTimeout(() => {
-      firebase.auth().currentUser
-        ? console.log("Session restored just in time ✅")
-if (window.stopRedirect) {
-  console.log("🧠 Redirect prevented for debugging");
-} else {
-  window.location.href = "/signin.html";
-}
-    }, 1500);
+setTimeout(() => {
+  if (firebase.auth().currentUser) {
+    console.log("Session restored just in time ✅");
+
+    if (window.stopRedirect) {
+      console.log("🔄 Redirect prevented for debugging");
+    } else {
+      window.location.href = "/signin.html";
+    }
+  }
+}, 1500);
+
   }
 });
 
@@ -313,7 +416,6 @@ if (window.stopRedirect) {
         alert("Sign out failed. Please try again.");
       });
   }
-<script>
 window.addEventListener("DOMContentLoaded", () => {
   const signoutBtn = document.getElementById("signout");
   if (signoutBtn) {
@@ -358,6 +460,545 @@ document.addEventListener('DOMContentLoaded', function () {
   } catch (e) { /* ignore */ }
 });
 </script>
+
+
+
+<script>
+document.getElementById("search-btn").addEventListener("click", function () {
+  const searchInput = document.getElementById("search");
+  const query = searchInput.value.trim();
+  const resultsBox = document.getElementById("search-results");
+
+  if (!query) {
+    resultsBox.textContent = "Please enter a movie title first.";
+    return;
+  }
+
+  // Simulated search results
+  const fakeMovies = ["Elf", "Home Alone", "The Matrix", "Avatar", "The Dark Knight"];
+  const matches = fakeMovies.filter(m => m.toLowerCase().includes(query.toLowerCase()));
+
+if (matches.length) {
+  resultsBox.style.opacity = '0';
+  setTimeout(() => {
+    resultsBox.innerHTML = "Results: " + matches.join(", ");
+    resultsBox.style.opacity = '1';
+  }, 600);
+} else {
+  resultsBox.style.opacity = '0';
+  setTimeout(() => {
+    resultsBox.textContent = "No matches found for \"" + query + "\".";
+    resultsBox.style.opacity = '1';
+  }, 600);
+}
+  
+
+
+
+
+
+
+
+// Recently Added button logic
+document.addEventListener("DOMContentLoaded", () => {
+console.log('recentlyAdded =', document.getElementById('recentlyAdded'));
+  document.getElementById("recentlyAdded").addEventListener("click", () => {
+    const resultsBox = document.getElementById("search-results");
+alert("🔥 Recently Added clicked!");
+  });
+});
+
+
+/*
+window.onload = function () {
+  console.log("🔥 WINDOW ONLOAD WORKS");
+
+  document.querySelector('[data-tab="docs"]').addEventListener("click", () => {
+    console.log("📄 Docs button clicked");
+
+    const folderContainer = document.getElementById("folderContainer");
+    folderContainer.innerHTML = `
+      <button class="pill">All</button>
+      <button class="pill">Work</button>
+      <button class="pill">School</button>
+      <button class="pill">Personal</button>
+      <button class="pill">Recently Added</button>
+    `;
+
+    const folderButtons = folderContainer.querySelectorAll(".pill");
+    folderButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        alert(\`📁 You clicked on: \${button.textContent}\`);
+      });
+    });
+  });
+};
+*/
+
+
+
+
+</script>
+
+
+<div id="unusedContainer" class="grid" role="region" aria-live="polite">
+
+<!-- Modal Container -->
+<div id="howItWorksModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <h2 id="stepTitle">Step Title</h2>
+    <ul id="stepContent">
+      <!-- Steps will be injected here -->
+    </ul>
+  </div>
+</div>
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const docsBtn = document.getElementById("docsBtn");
+  const folderContainer = document.getElementById("folderContainer");
+
+  if (docsBtn && folderContainer) {
+    docsBtn.addEventListener("click", () => {
+      folderContainer.innerHTML = `
+        <button class="pill">📁 All</button>
+        <button class="pill">📑 Medical</button>
+        <button class="pill">📜 Legal</button>
+        <button class="pill">🎓 School</button>
+        <button class="pill">💰 Financial</button>
+        <button class="pill">🛡️ Insurance</button>
+        <button class="pill">🧾 Receipts</button>
+      `;
+      folderContainer.style.display = "grid";
+    });
+  }
+});
+</script>
+
+
+
+ 
+
+
+<script>
+  const docBtn = document.querySelector('[data-tab="docs"]');
+const movieBtn = document.querySelector('[data-tab="movies"]');
+const picturesBtn = document.querySelector('[data-tab="pictures"]');
+const pictures2Btn = document.getElementById("pictures2Btn");
+console.log("📌 Tabs Loaded", docsBtn, movieBtn, picturesBtn);
+
+
+  const docGrid = document.querySelector('#grid');          // DOCS
+  const movieGrid = document.querySelector('#movie-grid');  // MOVIES
+  const pictureGrid = document.getElementById("picture-grid"); // ✅ PICTURES
+
+  const pictures2Grid = document.getElementById("pictures2-grid");           // ✅ PICTURES 2 TILE GRID
+  const pictures2FolderContainer = document.getElementById("pictures2-folderContainer"); // ✅ PICTURES 2 FOLDERS
+
+  docBtn.addEventListener("click", () => {
+  console.log("📄 Docs button clicked");
+pictures2Grid.style.display = "none";
+pictures2FolderContainer.style.display = "none";
+
+  // ✅ Show Docs grid
+  docGrid.style.display = "grid";
+
+  // ❌ Hide Movies and Pictures grids
+movieGrid.style.display = "none";
+movieGrid.innerHTML = "";
+});
+
+
+
+
+
+pictures2Btn.addEventListener("click", () => {
+  console.log("🖼️ Pictures 2 button clicked");
+
+  // ✅ Hide all other grids
+movieGrid.style.display = "none";
+movieGrid.innerHTML = "";
+  docGrid.style.display = "none";
+  pictureGrid.style.display = "none";
+
+  // ✅ Hide other folder containers
+  document.getElementById("folderContainer").style.display = "none";
+  document.getElementById("docFolderContainer").style.display = "none";
+
+  // ✅ Show Pictures 2 folder container + grid
+  pictures2FolderContainer.style.display = "grid";
+  pictures2Grid.style.display = "grid";
+});
+
+
+
+
+movieBtn.addEventListener("click", () => {
+  console.log("🎥 Movies button clicked");
+  docGrid.style.display = "none";
+  pictureGrid.style.display = "none";
+  pictures2Grid.style.display = "none"; // ✅ hide Pictures2 tiles
+pictures2FolderContainer.style.display = "none"; // ✅ hide Pictures2 folders
+
+
+
+
+
+
+// ✅ Restore Movies folders in folderContainer
+const folderContainer = document.getElementById("folderContainer");
+folderContainer.innerHTML = `
+  <button class="pill">📁 All</button>
+  <button class="pill">🎭 By Genre</button>
+  <button class="pill">🔥 Recently Added</button>
+  <button class="pill">⭐ Favorites</button>
+`;
+folderContainer.style.display = "grid";
+
+
+
+  // Restore Movie grid HTML
+  movieGrid.innerHTML = `
+    <button class="tile small"><span class="emoji-tile">🎬</span>Action</button>
+    <button class="tile small"><span class="emoji-tile">😂</span>Comedy</button>
+    <button class="tile small"><span class="emoji-tile">❤️</span>Romance</button>
+    <button class="tile small"><span class="emoji-tile">👨‍👩‍👧‍👦</span>Family</button>
+    <button class="tile small"><span class="emoji-tile">🛸</span>Sci-Fi</button>
+    <button class="tile small"><span class="emoji-tile">🤠</span>Western</button>
+    <button class="tile small"><span class="emoji-tile">😱</span>Thriller</button>
+    <button class="tile small"><span class="emoji-tile">👻</span>Horror</button>
+    <button class="tile small"><span class="emoji-tile">🦄</span>Fantasy</button>
+    <button class="tile small"><span class="emoji-tile">🎭</span>Drama</button>
+    <button class="tile small"><span class="emoji-tile">🕵️‍♂️</span>Crime/Mystery</button>
+    <button class="tile small"><span class="emoji-tile">🧭</span>Adventure</button>
+    <button class="tile small"><span class="emoji-tile">🎵</span>Musical</button>
+    <button class="tile small"><span class="emoji-tile">📽️</span>Documentary</button>
+  `;
+
+  movieGrid.style.display = "grid";
+  
+});
+
+
+
+
+
+
+  // 👇 Default to movies view on first load
+  movieGrid.style.display = 'grid';
+  docGrid.style.display = 'none';
+</script>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const searchBtn = document.getElementById("search-btn");
+  const searchInput = document.getElementById("searchInput");
+  const resultsBox = document.getElementById("search-results");
+
+  if (searchBtn && searchInput && resultsBox) {
+    searchBtn.addEventListener("click", () => {
+const query = searchInput.value.toLowerCase().trim();
+console.log("🔍 Searching for:", query);
+      resultsBox.innerHTML = `🔹 You searched for: <strong>${query}</strong>`;
+    });
+  } else {
+    console.warn("❌ Search input or button not found");
+  }
+});
+</script>
+
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchBtn = document.getElementById("search-btn");
+    const searchInput = document.getElementById("searchInput");
+    const resultsBox = document.getElementById("search-results");
+
+    if (searchBtn && searchInput && resultsBox) {
+      searchBtn.addEventListener("click", () => {
+        const query = searchInput.value.toLowerCase().trim();
+        console.log("🔵 Searching for:", query);
+        resultsBox.innerHTML = `🔷 You searched for: <strong>${query}</strong>`;
+      });
+    } else {
+      console.warn("❌ Search input or button not found");
+    }
+  });
+</script>
+
+
+
+<script>
+  window.openModal = function(step) {
+    const modal = document.getElementById("howItWorksModal");
+const modalTitle = document.getElementById("stepTitle");
+const content = document.getElementById("stepContent");
+    let steps = [];
+
+    if (step === 1) {
+      modalTitle.textContent = "Step 1: Import Disc";
+      steps = [
+        "✅ Use your computer's built-in DVD drive — or plug in any external USB DVD drive",
+        "✅ For the best experience, you can also use your XstreamPort device (coming soon!)",
+        "✅ Make sure your disc is clean and not scratched for smooth importing",
+        "✅ Launch the X-Streamify Import Tool (we'll walk you through it)",
+        "✅ Wait for your disc to scan, then click 'Save to Vault' to finish",
+        "📌 Note: Smart TVs can't read discs directly. You'll need to upload from a computer first."
+      ];
+    }
+else if (step === 2) {
+  modalTitle.textContent = "Step 2: Secure Upload";
+  steps = [
+    "🔐 Upload the movie file from your computer or external drive",
+    "🖥️ Supported formats: MP4, MKV, AVI, MOV",
+    "💡 Files must be under 5GB for best performance",
+    "📁 Once uploaded, it will appear in your library under 'My Movies'",
+    "✅ Make sure your internet connection is stable during the upload"
+  ];
+} else if (step === 3) {
+  modalTitle.textContent = "Step 3: Stream Anywhere";
+  steps = [
+    "📺 Stream your uploaded movies from any device",
+    "🔐 You control who can watch — your vault is private by default",
+    "📱 Works on Smart TVs, phones, tablets, and computers",
+    "🌐 All files stream securely with no re-downloads needed",
+    "🎉 Press play and enjoy your personal movie library!"
+  ];
+}
+
+    
+
+    content.innerHTML = "";
+    steps.forEach(step => {
+      const li = document.createElement("li");
+      li.textContent = step;
+      content.appendChild(li);
+    });
+
+    modal.style.display = "flex";
+  };
+
+window.closeModal = function () {
+  const modal = document.getElementById("howItWorksModal");
+  if (modal) modal.style.display = "none";
+};
+
+  
+</script>
+
+<script>
+  // (your window.openModal = function(step) { ... } is already here)
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const closeBtn = document.querySelector(".close-btn");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        const modal = document.getElementById("howItWorksModal");
+        modal.style.display = "none";
+      });
+    }
+  });
+</script>
+
+
+<script>
+window.startImport = function () {
+  const importBox = document.querySelector('.card.add-movie-box');
+  if (!importBox) return;
+
+  // Start pulse animation
+  importBox.classList.add('importing');
+  console.log('📀 Import started...');
+
+  // Create progress bar if not present
+  let existingBar = document.getElementById("importProgressContainer");
+  if (!existingBar) {
+    const container = document.createElement("div");
+    container.id = "importProgressContainer";
+    container.style = `
+      margin-top: 12px;
+      width: 100%;
+      height: 16px;
+      background-color: #333;
+      border-radius: 8px;
+      overflow: hidden;
+    `;
+    container.innerHTML = `
+      <div id="importProgressBar" style="
+        height: 100%;
+        width: 0%;
+        background-color: lime;
+        transition: width 0.3s ease;
+      "></div>
+    `;
+    importBox.appendChild(container);
+  }
+
+  const bar = document.getElementById("importProgressBar");
+  const container = document.getElementById("importProgressContainer");
+  container.style.display = "block";
+  bar.style.width = "0%";
+
+  // Animate bar fill
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += 5;
+    bar.style.width = progress + "%";
+    if (progress >= 100) {
+      clearInterval(interval);
+      importBox.classList.remove('importing');
+      importBox.classList.add('disabled');
+      // Enable Upload File block
+const uploadFile = document.getElementById("uploadFile");
+uploadFile.classList.remove("disabled-upload");
+      console.log('✅ Import complete.');
+      setTimeout(() => {
+        container.style.display = "none";
+        bar.style.width = "0%";
+      }, 1000);
+    }
+  }, 100);
+};
+</script>
+
+
+
+<script>
+window.startUpload = function () {
+  const uploadBox = document.querySelectorAll('.card.add-movie-box')[1];
+  if (!uploadBox) return;
+
+  // Start pulse animation
+  uploadBox.classList.add('importing');
+  console.log('📤 Upload started...');
+
+  // Create progress bar if not present
+  let existingBar = document.getElementById("uploadProgressContainer");
+  if (!existingBar) {
+    const container = document.createElement("div");
+    container.id = "uploadProgressContainer";
+    container.style = `
+      margin-top: 12px;
+      width: 100%;
+      height: 16px;
+      background-color: #333;
+      border-radius: 8px;
+      overflow: hidden;
+    `;
+    container.innerHTML = `
+      <div id="uploadProgressBar" style="
+        height: 100%;
+        width: 0%;
+        background-color: lime;
+        transition: width 0.3s ease;
+      "></div>
+    `;
+    uploadBox.appendChild(container);
+  }
+
+
+  
+  const bar = document.getElementById("uploadProgressBar");
+  const container = document.getElementById("uploadProgressContainer");
+  container.style.display = "block";
+  bar.style.width = "0%";
+
+  // Animate bar fill
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += 5;
+    bar.style.width = progress + "%";
+    if (progress >= 100) {
+      clearInterval(interval);
+      uploadBox.classList.remove('importing');
+      uploadBox.classList.add('disabled');
+      console.log('✅ Upload complete.');
+      showUploadComplete();
+      setTimeout(() => {
+        container.style.display = "none";
+        bar.style.width = "0%";
+        document.querySelectorAll('.card.add-movie-box')[1].classList.remove('disabled');
+      }, 1000);
+    }
+  }, 100);
+};
+</script>
+
+
+<div id="uploadCompleteModal" class="upload-modal" style="display: none;">
+  <div class="upload-modal-content">
+    <span class="close" onclick="closeUploadComplete()">&times;</span>
+    <p>✅ Upload complete!</p>
+  </div>
+</div>
+
+
+
+
+<script>
+function showUploadComplete() {
+  const modal = document.getElementById("uploadCompleteModal");
+  modal.style.display = "block";
+}
+
+function closeUploadComplete() {
+  const modal = document.getElementById("uploadCompleteModal");
+  modal.style.display = "none";
+
+  // Reactivate Import Disc (start over)
+  const importBox = document.querySelector('.card.add-movie-box');
+  importBox.classList.remove('disabled');
+
+  // Disable Upload File again (wait for new import)
+  const uploadFile = document.getElementById("uploadFile");
+  uploadFile.classList.add("disabled-upload");
+}
+</script>
+
+
+<script>
+
+
+function showUploadComplete() {
+  const modal = document.getElementById('uploadCompleteModal');
+  if (modal) {
+    modal.style.display = 'block';
+  }
+}
+
+function toggleVault(category) {
+  document.querySelectorAll('.movies-folder, .tn-folder, .pictures-folder').forEach(block => {
+    block.style.display = 'none';
+  });
+
+  if (category === 'movies') {
+    document.querySelectorAll('.movies-folder').forEach(block => {
+      block.style.display = 'block';
+    });
+  } else if (category === 'docs') {
+    document.querySelectorAll('.docs-folder').forEach(block => {
+      block.style.display = 'block';
+    });
+  } else if (category === 'pictures') {
+    document.querySelectorAll('.pictures-folder').forEach(block => {
+      block.style.display = 'block';
+    });
+  }
+}
+
+toggleVault('movies');
+</script>
+
+
+
+
 
 
 

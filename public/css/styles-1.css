@@ -172,15 +172,12 @@ button.btn:hover {
 .pill {
   cursor: pointer;
   user-select: none;
-  color: white !important;             /* force white */
+  color: white !important;         /* force white */
   -webkit-text-fill-color: white !important;  /* extra fallback for WebKit */
-  font-size: 1rem !important;
-  padding: 10px 15px;
-  margin: 5px 0;
-  outline: 2px solid rgb(50, 205, 50);
-  border-radius: 0.5rem !important;
-}
+outline: 2px solid rgb(50, 205, 50);
+border-radius: 0.5rem !important;
 
+}
 .pill:hover {
   background-color: transparent;
   border: 2px  rgb(0, 255, 0);
@@ -279,138 +276,3 @@ button.btn:hover {
   gap: 12px;
   margin-top: 20px;
 }
-
-/* Default: for Movies */
-#folderContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 4px; /* spacing for Movies */
-  margin-top: 20px;
-}
-
-/* Tighter spacing only when Docs are shown */
-#folderContainer.docs-mode {
-  gap: 6px; /* or 4px if you want even tighter */
-}
-
-.steps .step,
-.steps .step * {
-  cursor: pointer !important;
-  pointer-events: auto !important;
-}
-
-.steps .step:hover {
-  border: 2px solid lime;
-  box-shadow: 0 0 12px 2px lime;
-  transition: all 0.2s ease-in-out;
-}
-
-
-.add-movie-box {
-  transition: all 0.3s ease !important;
-}
-
-.add-movie-box:hover {
-  border: 2px solid lime !important;
-  box-shadow: 0 0 12px 4px lime !important;
-  transform: scale(1.03) !important;
-  cursor: pointer !important;
-}
-
-/* 🔄 Pulse animation during Import */
-@keyframes pulseGlow {
-  0% { box-shadow: 0 0 15px rgb(0, 255, 0); transform: scale(1); }
-  50% { box-shadow: 0 0 30px rgb(0, 255, 0); transform: scale(1.05); }
-  100% { box-shadow: 0 0 15px rgb(0, 255, 0); transform: scale(1); }
-}
-
-.add-movie-box.importing {
-  animation: pulseGlow 1s infinite ease-in-out;
-  pointer-events: none; /* prevent double click */
-  opacity: 0.9;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(0, 255, 0, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
-  }
-}
-
-.card.add-movie-box.importing {
-  animation: pulse 1s ease-out infinite;
-}
-
-
-.card.add-movie-box.importing {
-  transform: none !important;
-}
-
-
-.card.add-movie-box.disabled {
-  opacity: 0.5;
-  pointer-events: none;
-  filter: grayscale(80%);
-  transition: opacity 0.3s ease;
-}
-
-.disabled-upload {
-  pointer-events: none;
-  opacity: 0.5;
-  filter: grayscale(100%);
-}
-
-
-.upload-modal {
-  display: none;
-  position: fixed;
-  z-index: 999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.upload-modal-content {
-  background-color: #fff;
-  color: red;
-  margin: 15% auto;
-  padding: 20px 30px;
-  border: 1px solid #888;
-  width: 300px;
-  text-align: center;
-  border-radius: 12px;
-  font-size: 24px;
-  font-weight: bold; /* 👈 Add this */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-
-
-
-.modal-content p {
-  margin: 0;
-  font-weight: bold;
-}
-
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-left: 10px;
-}
-
-.close:hover {
-  color: #000;
-}
-
-

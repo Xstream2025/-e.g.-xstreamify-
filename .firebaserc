@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "xstreamify-auth"
-  }
+  },
+  "targets": {
+    "xstreamify-auth": {
+      "hosting": {
+        "live": [
+          "xstreamify-auth"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
