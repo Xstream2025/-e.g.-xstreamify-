@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🚀 Kids Only! Launch My Vault!</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="vault-container">
+    <h1>🚀 Kids Only! Launch My Vault!</h1>
+    <p id="welcome-msg">Welcome back!</p>
+
+    <div id="movie-grid" class="movie-grid">
+      <!-- Movies will appear here -->
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyCQVGm0GY4vUDhTOVvTsMr8-buC6fhizHs",
+  authDomain: "xstreamify-auth.firebaseapp.com",
+  projectId: "xstreamify-auth",
+  storageBucket: "xstreamify-auth.firebasestorage.app",
+  messagingSenderId: "860454287241",
+  appId: "1:860454287241:web:fc3eef7bf0ddaef2cc5358"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Get kid name from URL
+    const params = new URLSearchParams(window.location.search);
+    const kidName = params.get("kid");
+
+    const welcomeMsg = document.getElementById("welcome-msg");
+    const movieGrid = document.getElementById("movie-grid");
+
+    async function loadMovies() {
+      if (!kidName) {
+        welcomeMsg.textContent = "Error: No kid name found.";
+        return;
+      }
+
+      welcomeMsg.textContent = `🎉 Hello, ${kidName}! Here are your movies:`;
+
+      const docRef = doc(db, "permissions", kidName);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const access = docSnap.data().access || [];
+
+        if (access.length === 0) {
+          movieGrid.innerHTML = "<p>No movies found for you yet!</p>";
+        } else {
+          access.forEach(movie => {
+            const tile = document.createElement("div");
+            tile.className = "movie-tile";
+            tile.textContent = movie;
+            movieGrid.appendChild(tile);
+          });
+        }
+      } else {
+        movieGrid.innerHTML = "<p>No permission found for you!</p>";
+      }
+    }
+
+    loadMovies();
+  </script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background-color: #fef6ff;
+      padding: 2rem;
+    }
+
+    .vault-container h1 {
+      font-size: 2rem;
+      color: #7b2cbf;
+    }
+
+    .movie-grid {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    .movie-tile {
+      padding: 1rem;
+      background-color: #ffedf8;
+      border: 2px solid #ff90b3;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+  </style>
+
+<button onclick="logout()" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 0 10px red;
+">
+  Log Out 🔒
+</button>
+
+<script>
+  function logout() {
+    window.location.href = "permissions-kid-logout.html";
+  }
+</script>
+
+
+</body>
+</html>

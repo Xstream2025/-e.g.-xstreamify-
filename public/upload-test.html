@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload Test</title>
+
+  <!-- AWS SDK (required for S3 upload) -->
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1481.0.min.js"></script>
+</head>
+<body>
+  <h1>📤 AWS S3 Upload Test</h1>
+
+  <!-- More code will go here in next steps -->
+<script>
+  // 🔐 TEMPORARY AWS CONFIG — for testing only
+  AWS.config.update({
+  accessKeyId: "AKIA55VSOAOISYK5AVV",
+  secretAccessKey: "BqyTxh6s3+sPL0gQtI3xoPMEfYfa/JZDN1ey7Zfe",
+  region: "us-east-1"
+});
+</script>
+
+<input type="file" id="file-upload" />
+<button onclick="uploadFile()">Upload to S3</button>
+
+<script>
+  function uploadFile() {
+    var files = document.getElementById("file-upload").files;
+    if (!files.length) {
+      alert("Please choose a file to upload.");
+      return;
+    }
+
+    var file = files[0];
+    var bucket = new AWS.S3({
+      params: { Bucket: "xstreamify-dvd-uploads" }
+    });
+
+    var params = {
+      Key: file.name,
+      ContentType: file.type,
+      Body: file,
+      ACL: "private"
+    };
+
+    bucket.upload(params, function (err, data) {
+      if (err) {
+        alert("Upload failed: " + err.message);
+      } else {
+        alert("Upload successful: " + data.Location);
+        console.log("Uploaded to:", data.Location);
+      }
+    });
+  }
+</script>
+
+
+</body>
+</html>

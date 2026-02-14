@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>X‑Streamify Uploader</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #00FF00;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 30px;
+    }
+
+    .step-box {
+      background-color: #1e1e1e;
+      padding: 20px;
+      border: 2px solid #00FF00;
+      border-radius: 10px;
+      margin: 20px auto;
+      max-width: 500px;
+    }
+
+    button {
+      background-color: #00FF00;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #00FF00;
+      background-color: #1a1a1a;
+      color: #00FF00;
+      margin-top: 10px;
+    }
+  </style>
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.814.0.min.js"></script>
+
+<script>
+  AWS.config.update({
+    accessKeyId: "AKIA55VSOAOISYK5AVV",
+    secretAccessKey: "BqyTxh6s3+sPL0gQtI3xoPMEfYfa/JZDN1ey7Zfe",
+    region: "us-east-1"
+  });
+
+  var s3 = new AWS.S3({
+    apiVersion: "2006-03-01",
+    params: { Bucket: "xstreamify-dvd-uploads" }
+  });
+</script>
+
+</head>
+<body>
+  <h1>🚀 X‑Streamify Uploader</h1>
+
+  <div class="step-box">
+    <p>📀 Step 1: Insert your DVD</p>
+    <p id="dvd-status">Waiting for disc...</p>
+  </div>
+
+  <div class="step-box">
+    <p>🎬 Optional: Rename your movie file</p>
+    <input type="text" placeholder="Enter custom filename..." id="customName" />
+  </div>
+
+  <div class="step-box">
+    <p>🔁 Step 2: Convert and upload</p>
+    <button id="convertBtn">Convert to MP4 & Upload</button>
+    <p id="statusMsg">Status: Idle</p>
+  </div>
+
+  <script>
+    // Simulate DVD detection
+const dvdStatus = document.getElementById("dvd-status");
+
+dvdStatus.textContent = "🔍 Scanning for DVD...";
+
+setTimeout(() => {
+  dvdStatus.textContent = "📀 DVD detected!";
+}, 2500);
+
+  const button = document.getElementById("convertBtn");
+  const status = document.getElementById("statusMsg");
+  const nameInput = document.getElementById("customName");
+
+  button.onclick = () => {
+    const customName = nameInput.value.trim();
+const safeName = customName.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_\-]/g, "");
+const filename = safeName ? safeName + ".mp4" : "Movie_" + Date.now() + ".mp4";
+const fakeFile = new File(["dummy content"], filename, { type: "video/mp4" });
+console.log("🧪 Fake file created:", fakeFile);
+
+    status.textContent = "🔁 Converting... (" + filename + ")";
+
+    setTimeout(() => {
+      status.textContent = "☁️ Uploading " + filename + "...";
+
+      setTimeout(() => {
+        status.textContent = "✅ Upload complete: " + filename;
+      }, 2000);
+
+    }, 2000);
+  };
+</script>
+
+<script>
+  // 🔹 This function simulates uploading a fake MP4 to S3
+  async function uploadFakeMovie() {
+    const fakeFile = new Blob(["This is a fake MP4 file content."], { type: "video/mp4" });
+    const fileName = document.getElementById("customName").value.trim() || "test-upload.mp4";
+
+    const uploadParams = {
+      Bucket: "xstreamify-dvd-uploads", // ✅ your real bucket
+      Key: fileName,
+      Body: fakeFile,
+      ContentType: "video/mp4"
+    };
+
+    document.getElementById("statusMsg").textContent = "Status: Uploading...";
+
+    try {
+      const data = await s3.upload(uploadParams).promise();
+      console.log("✅ Upload complete:", data);
+      document.getElementById("statusMsg").textContent = "✅ Upload complete!";
+      alert("Upload successful! 🎬");
+    } catch (err) {
+      console.error("❌ Upload failed:", err);
+      document.getElementById("statusMsg").textContent = "❌ Upload failed";
+      alert("Upload failed! Check console for details.");
+    }
+  }
+
+  // 🔹 Button event
+  document.getElementById("convertBtn").addEventListener("click", uploadFakeMovie);
+</script>
+
+
+</body>
+</html>

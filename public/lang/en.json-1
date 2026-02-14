@@ -8,27 +8,16 @@
 
   "connect.headline": "Connecting the Pieces",
   "connect.subheading": "Everything you need, finally united — X-Streamify brings it all together.",
-  "box1.headline": "Digitize Your DVDs",
-  "box1.subheading": "Convert your physical discs into a digital library you own and control.",
-  "box2.headline": "Organize Your Library",
-  "box2.subheading": "Browse and search your collection — by genre, title, or year.",
-  "box3.headline": "Stream Anywhere",
-  "box3.subheading": "Watch your digitized movies on any device, anytime, without limits.",
 
-  "box1.headline": "Digitize Your DVDs",
-"box1.subheading": "Convert your physical discs into a digital library you own and control.",
-
-"box2.headline": "Organize Your Library",
-"box2.subheading": "Browse and search your collection anytime — by genre, title, or year.",
-
-"box3.headline": "Stream Anywhere",
-"box3.subheading": "Watch your digitized movies on any device, anytime, without limits."
-,
+  "box1.title": "Digitize Your DVDs",
+  "box1.desc": "Convert your physical discs into a digital library you own and control.",
+  "box2.title": "Organize Your Library",
+  "box2.desc": "Browse and search your collection anytime — by genre, title, or year.",
+  "box3.title": "Stream Anywhere",
+  "box3.desc": "Watch your digitized movies on any device, anytime, without limits.",
 
   "howitworks.title": "How It Works",
   "hiw1.title": "Add Your Movies: Upload or import your DVDs into your secure vault.",
-  "toggle.learn": "Learn more →",
-"toggle.close": "Close ✕",
   "hiw1.learnmore": "Learn more",
   "hiw1.desc": "You don't need to subscribe or buy movies again. Just upload your DVDs — we digitize them into your personal vault so you can stream anytime.",
   "hiw1.close": "Close",
@@ -42,11 +31,11 @@
   "hiw3.close": "Close",
 
   "why.title": "Why X-Streamify?",
-  "why.benefit1.title": "✅ Own It, Stream It",
+  "why.benefit1.title": "Own It, Stream It",
   "why.benefit1.desc": "Upload your DVDs once and stream them forever — no subscriptions or licensing headaches.",
-  "why.benefit2.title": "🔒 Private Vault",
+  "why.benefit2.title": "Private Vault",
   "why.benefit2.desc": "Your movies stay yours — safely stored and accessible only to you.",
-  "why.benefit3.title": "💵 One Flat Rate"
+  "why.benefit3.title": "One Flat Rate",
   "why.benefit3.desc": "No upgrade traps or hidden fees — one clear price, total control of your library.",
 
   "addmovie.title": "Add a New Movie",
@@ -62,7 +51,7 @@
   "vault.filter.favorites": "Favorites",
   "featured.title": "Featured",
 
-  "footer.title": "Add. Upload. Stream. Vault. ✅",
+  "footer.title": "Add. Upload. Stream. Vault.",
   "footer.upload.title": "Upload",
   "footer.upload.desc": "Securely send it to your private vault.",
   "footer.upload.button": "Upload",
@@ -70,7 +59,7 @@
   "footer.stream.title": "Stream",
   "footer.stream.desc": "Watch instantly on any device you own.",
   "footer.stream.button": "Stream",
-  "footer.vault.title": "Your Vault",
+  "footer.vault.title": "Vault",
   "footer.vault.desc": "Keep everything organized in one place.",
   "footer.vault.button": "Your Vault",
 

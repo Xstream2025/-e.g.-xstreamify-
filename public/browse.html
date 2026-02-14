@@ -10,8 +10,9 @@
 <style>#search-results { color:#fff; font-size:1rem; margin-top:12px; padding-left:5px; }</style>
 
 
+
+
   <style>
-    
     :root{
       --bg:#0a0a0a; --panel:#101012; --panel2:#141416; --muted:#a9a9a9; --line:rgba(255,255,255,.12);
       --brand:#e11d2f; --brand-soft:rgba(225,29,47,.35);
@@ -94,6 +95,10 @@ background: radial-gradient(800px 320px at 50% -20%, rgb(0, 255, 0), transparent
     @media(max-width:700px){ .grid{grid-template-columns:repeat(2,1fr)} }
 
     .hr{height:1px;background:var(--line);margin:16px 0}
+#movie-grid { margin-top: 10px !important; }
+#grid { margin-top: -90px !important; }
+#pictures2-grid { margin-top: 20px !important; }
+
     #search-results { color:#fff; font-size:1rem; margin-top:12px; padding-left:5px; }
 
   </style>
@@ -181,9 +186,9 @@ background: radial-gradient(800px 320px at 50% -20%, rgb(0, 255, 0), transparent
         </div>
         <div id="search-results" class="muted" style="margin-top:10px;"></div>
         <div class="pills" role="list">
-<div id="recentlyAdded" class="pill" onclick="alert('🔥 Recently Added clicked!')">Recently Added</div>
-<div id="favoritesTab" class="pill" style="color: white;" onclick="alert('⭐ Favorites clicked!')">Favorites</div>
-<div id="genreTab" class="pill" onclick="alert('🎭 By Genre clicked!')" style="color: white;">By Genre</div>
+<div id="recentlyAdded" class="pill" onclick="alert('✨ Nice taste! Let’s check what’s fresh out of the oven.')">Recently Added</div>
+<div id="favoritesTab" class="pill" style="color: white;" onclick="alert('❤️ Only the finest for you. Let’s check your all-time favorites.')">Favorites</div>
+<div id="genreTab" class="pill" onclick="alert('🎬 Mood check: Comedy, Action, or Cry-your-eyes-out?')" style="color: white;">By Genre</div>
         </div>
         <div class="hr"></div>
         <div class="muted">Tip: “Add Movies” is on the right (hidden on phones).</div>
@@ -311,44 +316,49 @@ background: radial-gradient(800px 320px at 50% -20%, rgb(0, 255, 0), transparent
   <button id="pictures2Btn" class="pill" data-tab="pictures2" role="tab">Pictures </button>
 </div>
 
+
 <div id="pictures2-grid" class="grid" style="display: none;" aria-live="polite">
-  <button class="tile small"><span class="emoji-tile">👨‍👩‍👧‍👦</span>Family</button>
-  <button class="tile small"><span class="emoji-tile">💼</span>Work</button>
-  <button class="tile small"><span class="emoji-tile">🏖️</span>Trips</button>
-  <button class="tile small"><span class="emoji-tile">🙋</span>Personal</button>
-  <button class="tile small"><span class="emoji-tile">⭐</span>Favorites</button>
-  <button class="tile small"><span class="emoji-tile">📂</span>Misc</button>
+  <button class="tile small" data-pic="Family"><span class="emoji-tile">👨‍👩‍👧‍👦</span>Family</button>
+  <button class="tile small" data-pic="Work"><span class="emoji-tile">💼</span>Work</button>
+  <button class="tile small" data-pic="Trips"><span class="emoji-tile">🏖️</span>Trips</button>
+  <button class="tile small" data-pic="Personal"><span class="emoji-tile">🙋</span>Personal</button>
+  <button class="tile small" data-pic="Favorites"><span class="emoji-tile">⭐</span>Favorites</button>
+  <button class="tile small" data-pic="Misc"><span class="emoji-tile">📂</span>Misc</button>
 </div>
 
+
 <!-- MOVIES CATEGORIES -->
-<div id="movie-grid" class="grid" role="region" aria-live="polite">
-  <button class="tile small"><span class="emoji-tile">🎬</span>Action</button>
-  <button class="tile small"><span class="emoji-tile">😂</span>Comedy</button>
-  <button class="tile small"><span class="emoji-tile">❤️</span>Romance</button>
-  <button class="tile small"><span class="emoji-tile">👨‍👩‍👧‍👦</span>Family</button>
-  <button class="tile small"><span class="emoji-tile">🛸</span>Sci-Fi</button>
-  <button class="tile small"><span class="emoji-tile">🤠</span>Western</button>
-  <button class="tile small"><span class="emoji-tile">😱</span>Thriller</button>
-  <button class="tile small"><span class="emoji-tile">👻</span>Horror</button>
-  <button class="tile small"><span class="emoji-tile">🦄</span>Fantasy</button>
-  <button class="tile small"><span class="emoji-tile">🎭</span>Drama</button>
-  <button class="tile small"><span class="emoji-tile">🕵️‍♂️</span>Crime/Mystery</button>
-  <button class="tile small"><span class="emoji-tile">🧭</span>Adventure</button>
-  <button class="tile small"><span class="emoji-tile">🎵</span>Musical</button>
-  <button class="tile small"><span class="emoji-tile">📽️</span>Documentary</button>
-</div>
+<div id="movieWrapper" style="display: flex; flex-direction: column; min-height: 100px;">
+  <div id="movie-grid" class="grid" role="region" aria-live="polite">
+  <button class="tile small" data-category="Action"><span class="emoji-tile">🎬</span>Action</button>
+<button class="tile small" data-category="Comedy"><span class="emoji-tile">😂</span>Comedy</button>
+<button class="tile small" data-category="Romance"><span class="emoji-tile">❤️</span>Romance</button>
+<button class="tile small" data-category="Family"><span class="emoji-tile">👨‍👩‍👧‍👦</span>Family</button>
+<button class="tile small" data-category="Sci-Fi"><span class="emoji-tile">🛸</span>Sci-Fi</button>
+<button class="tile small" data-category="Western"><span class="emoji-tile">🤠</span>Western</button>
+<button class="tile small" data-category="Thriller"><span class="emoji-tile">😱</span>Thriller</button>
+<button class="tile small" data-category="Horror"><span class="emoji-tile">👻</span>Horror</button>
+<button class="tile small" data-category="Fantasy"><span class="emoji-tile">🦄</span>Fantasy</button>
+<button class="tile small" data-category="Drama"><span class="emoji-tile">🎭</span>Drama</button>
+<button class="tile small" data-category="Crime/Mystery"><span class="emoji-tile">🕵️‍♂️</span>Crime/Mystery</button>
+<button class="tile small" data-category="Adventure"><span class="emoji-tile">🧭</span>Adventure</button>
+<button class="tile small" data-category="Musical"><span class="emoji-tile">🎵</span>Musical</button>
+<button class="tile small" data-category="Documentary"><span class="emoji-tile">📽️</span>Documentary</button>
+  <div id="family-tile" class="tile small" style="display: none;"></div>
+  </div> <!-- end movie-grid -->
+</div> <!-- end movieWrapper -->
+
 
 
             <div id="grid" class="grid" role="region" aria-live="polite">
-<button class="tile small"><span class="emoji-tile">📄</span>Medical</button>
-<button class="tile small"><span class="emoji-tile">📜</span>Legal</button>
-<button class="tile small"><span class="emoji-tile">🎓</span>School</button>
-<button class="tile small"><span class="emoji-tile">💰</span>Financial</button>
-<button class="tile small"><span class="emoji-tile">🛡️</span>Insurance</button>
-<button class="tile small"><span class="emoji-tile">🧾</span>Receipts</button>
+  <button class="tile small" data-doc="Medical"><span class="emoji-tile">📄</span>Medical</button>
+  <button class="tile small" data-doc="Legal"><span class="emoji-tile">📜</span>Legal</button>
+  <button class="tile small" data-doc="School"><span class="emoji-tile">🎓</span>School</button>
+  <button class="tile small" data-doc="Financial"><span class="emoji-tile">💰</span>Financial</button>
+  <button class="tile small" data-doc="Insurance"><span class="emoji-tile">🛡️</span>Insurance</button>
+  <button class="tile small" data-doc="Receipts"><span class="emoji-tile">🧾</span>Receipts</button>
+</div>
 
-
-            </div>
           </main>
         </div> <!-- closes #vaultScrollContainer -->
       </section>
@@ -998,6 +1008,591 @@ toggleVault('movies');
 
 
 
+
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+  apiKey: "AIzaSyCQvGM6GY4vUDhTOVvTsMr8-buC6fhizHs",
+  authDomain: "xstreamify-auth.firebaseapp.com",
+  projectId: "xstreamify-auth",
+  storageBucket: "xstreamify-auth.appspot.com",
+  messagingSenderId: "868454287241",
+  appId: "1:868454287241:web:fc3eef7bf8ddae2f2cc5358"
+};
+
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Load movies by category
+  async function loadMoviesByCategory(category) {
+    const movieGrid = document.getElementById("movie-grid");
+    movieGrid.innerHTML = ""; // Clear grid
+
+    const q = query(
+      collection(db, "movies"),
+      where("category", "==", category)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    allMovies = [];
+querySnapshot.forEach((doc) => {
+  allMovies.push(doc.data());
+});
+currentPage = 1;
+renderMoviesPage();
+
+
+    if (querySnapshot.empty) {
+      console.warn("No movies found in category:", category);
+    }
+  }
+
+  // Step 2: Handle only Movies folder buttons
+const movieFolderButtons = document.querySelectorAll('#movie-folder-controls .pill');
+
+movieFolderButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    movieFolderButtons.forEach(btn => btn.classList.remove("active"));
+    button.classList.add("active");
+
+    const folder = button.dataset.folder;
+    if (folder === "All") {
+      loadMoviesByCategory("All");
+    } else if (folder === "Favorites") {
+      loadMoviesByCategory("Favorites");
+    } else if (folder === "Recently") {
+      loadMoviesByCategory("Recently");
+    } else if (folder === "ByGenre") {
+      loadMoviesByCategory("Family");
+    }
+  });
+});
+
+
+  // Handle Family button click
+  const familyBtn = document.querySelector('[data-category="Family"]');
+  if (familyBtn) {
+    familyBtn.addEventListener("click", () => {
+      console.log("🎬 Family button clicked");
+      loadMoviesByCategory("Family");
+    });
+  } else {
+    console.warn("❌ Family button not found");
+  }
+  // Handle Action button click
+const actionBtn = document.querySelector('[data-category="Action"]');
+if (actionBtn) {
+  actionBtn.addEventListener("click", () => {
+    console.log("🎬 Action button clicked");
+    loadMoviesByCategory("Action");
+  });
+} else {
+  console.warn("❌ Action button not found");
+}
+const comedyBtn = document.querySelector('[data-category="Comedy"]');
+if (comedyBtn) {
+  comedyBtn.addEventListener("click", () => {
+    console.log("🎭 Comedy button clicked");
+    loadMoviesByCategory("Comedy");
+  });
+} else {
+  console.warn("❌ Comedy button not found");
+}
+
+const romanceBtn = document.querySelector('[data-category="Romance"]');
+if (romanceBtn) {
+  romanceBtn.addEventListener("click", () => {
+    console.log("💘 Romance button clicked");
+    loadMoviesByCategory("Romance");
+  });
+} else {
+  console.warn("❌ Romance button not found");
+}
+
+const sciFiBtn = document.querySelector('[data-category="Sci-Fi"]');
+if (sciFiBtn) {
+  sciFiBtn.addEventListener("click", () => {
+    console.log("🛸 Sci-Fi button clicked");
+    loadMoviesByCategory("Sci-Fi");
+  });
+} else {
+  console.warn("❌ Sci-Fi button not found");
+}
+
+const westernBtn = document.querySelector('[data-category="Western"]');
+if (westernBtn) {
+  westernBtn.addEventListener("click", () => {
+    console.log("🤠 Western button clicked");
+    loadMoviesByCategory("Western");
+  });
+} else {
+  console.warn("❌ Western button not found");
+}
+
+const thrillerBtn = document.querySelector('[data-category="Thriller"]');
+if (thrillerBtn) {
+  thrillerBtn.addEventListener("click", () => {
+    console.log("😱 Thriller button clicked");
+    loadMoviesByCategory("Thriller");
+  });
+} else {
+  console.warn("❌ Thriller button not found");
+}
+const horrorBtn = document.querySelector('[data-category="Horror"]');
+if (horrorBtn) {
+  horrorBtn.addEventListener("click", () => {
+    console.log("👻 Horror button clicked");
+    loadMoviesByCategory("Horror");
+  });
+} else {
+  console.warn("❌ Horror button not found");
+}
+
+const fantasyBtn = document.querySelector('[data-category="Fantasy"]');
+if (fantasyBtn) {
+  fantasyBtn.addEventListener("click", () => {
+    console.log("🦄 Fantasy button clicked");
+    loadMoviesByCategory("Fantasy");
+  });
+} else {
+  console.warn("❌ Fantasy button not found");
+}
+
+const dramaBtn = document.querySelector('[data-category="Drama"]');
+if (dramaBtn) {
+  dramaBtn.addEventListener("click", () => {
+    console.log("🎭 Drama button clicked");
+    loadMoviesByCategory("Drama");
+  });
+} else {
+  console.warn("❌ Drama button not found");
+}
+
+const crimeMysteryBtn = document.querySelector('[data-category="Crime/Mystery"]');
+if (crimeMysteryBtn) {
+  crimeMysteryBtn.addEventListener("click", () => {
+    console.log("🕵️‍♂️ Crime/Mystery button clicked");
+    loadMoviesByCategory("Crime/Mystery");
+  });
+} else {
+  console.warn("❌ Crime/Mystery button not found");
+}
+
+const adventureBtn = document.querySelector('[data-category="Adventure"]');
+if (adventureBtn) {
+  adventureBtn.addEventListener("click", () => {
+    console.log("🧭 Adventure button clicked");
+    loadMoviesByCategory("Adventure");
+  });
+} else {
+  console.warn("❌ Adventure button not found");
+}
+
+const musicalBtn = document.querySelector('[data-category="Musical"]');
+if (musicalBtn) {
+  musicalBtn.addEventListener("click", () => {
+    console.log("🎵 Musical button clicked");
+    loadMoviesByCategory("Musical");
+  });
+} else {
+  console.warn("❌ Musical button not found");
+}
+
+const documentaryBtn = document.querySelector('[data-category="Documentary"]');
+if (documentaryBtn) {
+  documentaryBtn.addEventListener("click", () => {
+    console.log("📽️ Documentary button clicked");
+    loadMoviesByCategory("Documentary");
+  });
+} else {
+  console.warn("❌ Documentary button not found");
+}
+
+
+</script>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const folderContainer = document.getElementById("folderContainer");
+
+  if (folderContainer) {
+    const buttons = folderContainer.querySelectorAll("button");
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        // Remove 'active' state from all
+        buttons.forEach(b => b.classList.remove("active"));
+
+        // Highlight current
+        btn.classList.add("active");
+
+        // Log selected folder
+        const text = btn.textContent.trim();
+        console.log("📂 Folder clicked:", text);
+      });
+    });
+  } else {
+    console.warn("❌ folderContainer not found");
+  }
+});
+</script>
+
+
+<script>
+let currentFamilyPage = 1;
+const moviesPerPage = 6;
+let familyMovies = [];
+
+function renderFamilyMoviesPage() {
+  const startIndex = (currentFamilyPage - 1) * moviesPerPage;
+  const endIndex = startIndex + moviesPerPage;
+  const pageMovies = familyMovies.slice(startIndex, endIndex);
+
+  const vault = document.getElementById("vault");
+  vault.innerHTML = "";
+
+  pageMovies.forEach((movie) => {
+    const tile = document.createElement("div");
+    tile.className = "tile small";
+    tile.innerHTML = `
+      <video controls width="100%">
+        <source src="${movie.url}" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <p>${movie.title}</p>
+    `;
+    vault.appendChild(tile);
+  });
+
+  renderPaginationControls();
+}
+
+function renderPaginationControls() {
+  const totalPages = Math.ceil(familyMovies.length / moviesPerPage);
+  const vault = document.getElementById("vault");
+
+  const controls = document.createElement("div");
+  controls.style.display = "flex";
+  controls.style.justifyContent = "center";
+  controls.style.marginTop = "20px";
+  controls.innerHTML = `
+    <button id="prevPage">Previous</button>
+    <span style="margin: 0 10px;">Page ${currentFamilyPage} of ${totalPages}</span>
+    <button id="nextPage">Next</button>
+  `;
+  vault.appendChild(controls);
+
+  document.getElementById("prevPage").onclick = () => {
+    if (currentFamilyPage > 1) {
+      currentFamilyPage--;
+      renderFamilyMoviesPage();
+    }
+  };
+  document.getElementById("nextPage").onclick = () => {
+    if (currentFamilyPage < totalPages) {
+      currentFamilyPage++;
+      renderFamilyMoviesPage();
+    }
+  };
+}
+
+document.querySelector('[data-category="Family"]').addEventListener("click", async () => {
+  currentFamilyPage = 1;
+  const querySnapshot = await getDocs(collection(db, "movies"));
+  familyMovies = [];
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    if (data.category === "Family") {
+      familyMovies.push({
+        title: data.title,
+        url: data.url,
+      });
+    }
+  });
+  renderFamilyMoviesPage();
+});
+
+// ✅ Pagination Setup
+let currentPage = 1;
+const itemsPerPage = 4;
+let allMovies = [];
+
+// Render movies for current page
+function renderMoviesPage() {
+  const movieGrid = document.getElementById("movie-grid");
+  movieGrid.innerHTML = ""; // Clear previous tiles
+
+  const start = (currentPage - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  const pageItems = allMovies.slice(start, end);
+
+  pageItems.forEach((data) => {
+    const tile = document.createElement("div");
+    tile.className = "tile small";
+    tile.innerHTML = `
+      <video controls width="100%">
+        <source src="${data.url}" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <p>${data.title || "Untitled Movie"}</p>
+    `;
+    movieGrid.appendChild(tile);
+  });
+
+  injectPaginationControls();
+}
+
+// Inject Next/Previous buttons at bottom-center of movie grid
+function injectPaginationControls() {
+  let existing = document.getElementById("pagination-controls");
+  if (existing) return; // only inject once
+
+  const container = document.createElement("div");
+  container.id = "pagination-controls";
+  container.style = "text-align: center; margin-top: 20px; width: 100%;";
+
+  const grid = document.getElementById("movie-grid");
+if (grid && grid.children.length === 0) {
+  const spacer = document.createElement("div");
+  spacer.style.height = "150px"; // ⬅️ adjust this as needed
+  grid.appendChild(spacer);
+}
+
+  container.innerHTML = `
+  <button id="prevPageBtn" class="btn" style="margin-right: 100px;">⬅️ Previous</button>
+  <button id="nextPageBtn" class="btn">Next ➡️</button>
+  <p style="margin-top: 8px; color: var(--muted);">Page ${currentPage} of ${Math.ceil(allMovies.length / itemsPerPage)}</p>
+`;
+
+
+  document.getElementById("movie-grid").after(container);
+
+  document.getElementById("prevPageBtn").addEventListener("click", () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderMoviesPage();
+    }
+  });
+
+  document.getElementById("nextPageBtn").addEventListener("click", () => {
+    if (currentPage * itemsPerPage < allMovies.length) {
+      currentPage++;
+      renderMoviesPage();
+    }
+  });
+}
+
+</script>
+
+
+<script type="module">
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const db = getFirestore();
+
+let currentDocPage = 1;
+const docsPerPage = 6;
+let currentDocs = [];
+
+function renderDocsPage() {
+  const docGrid = document.getElementById("grid");
+  docGrid.innerHTML = "";
+
+  const start = (currentDocPage - 1) * docsPerPage;
+  const end = start + docsPerPage;
+  const pageItems = currentDocs.slice(start, end);
+
+  pageItems.forEach((docData) => {
+    const tile = document.createElement("div");
+    tile.className = "tile small";
+    tile.innerHTML = `
+      <div>
+        <p><strong>${docData.title || "Untitled Document"}</strong></p>
+        <p style="font-size: 12px; color: var(--muted);">${docData.description || "No description"}</p>
+      </div>
+    `;
+    docGrid.appendChild(tile);
+  });
+
+  injectDocPaginationControls();
+}
+
+function injectDocPaginationControls() {
+  let existing = document.getElementById("pagination-controls");
+  if (existing) existing.remove();
+
+  const container = document.createElement("div");
+  container.id = "pagination-controls";
+  container.style = "text-align: center; margin-top: 20px; width: 100%;";
+
+  const docGrid = document.getElementById("grid");
+if (docGrid && docGrid.children.length === 0) {
+  const spacer = document.createElement("div");
+  spacer.style.height = "150px"; // same height used in Movies
+  docGrid.appendChild(spacer);
+}
+
+  const totalPages = Math.ceil(currentDocs.length / docsPerPage);
+  container.innerHTML = `
+    <button id="prevDocPageBtn" class="btn" style="margin-right: 100px;">⬅️ Previous</button>
+    <button id="nextDocPageBtn" class="btn">Next ➡️</button>
+    <p style="margin-top: 8px; color: var(--muted);">Page ${currentDocPage} of ${totalPages}</p>
+  `;
+
+  document.getElementById("grid").after(container);
+
+  document.getElementById("prevDocPageBtn").onclick = () => {
+    if (currentDocPage > 1) {
+      currentDocPage--;
+      renderDocsPage();
+    }
+  };
+  document.getElementById("nextDocPageBtn").onclick = () => {
+    if (currentDocPage < totalPages) {
+      currentDocPage++;
+      renderDocsPage();
+    }
+  };
+}
+
+async function loadDocsByCategory(docType) {
+  currentDocPage = 1;
+  const q = query(collection(db, "docs"), where("category", "==", docType));
+  const querySnapshot = await getDocs(q);
+  currentDocs = [];
+  querySnapshot.forEach((doc) => currentDocs.push(doc.data()));
+  renderDocsPage();
+}
+
+const docFolderButtons = document.querySelectorAll('[data-doc]');
+docFolderButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    docFolderButtons.forEach(b => b.classList.remove("active"));
+    button.classList.add("active");
+    const folder = button.getAttribute("data-doc");
+    console.log("📁 Loading Docs folder:", folder);
+    loadDocsByCategory(folder);
+  });
+});
+</script>
+
+
+<script type="module">
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const db = getFirestore();
+
+let currentPicPage = 1;
+const picsPerPage = 6;
+let currentPics = [];
+
+function renderPicturesPage() {
+  const picGrid = document.getElementById("pictures2-grid");
+  picGrid.innerHTML = "";
+
+  const start = (currentPicPage - 1) * picsPerPage;
+  const end = start + picsPerPage;
+  const pageItems = currentPics.slice(start, end);
+
+  pageItems.forEach((picData) => {
+    const tile = document.createElement("div");
+    tile.className = "tile small";
+    tile.innerHTML = `
+      <img src="${picData.url}" alt="${picData.title || 'Untitled Picture'}" style="width: 100%; border-radius: 8px;">
+      <p>${picData.title || "Untitled Picture"}</p>
+    `;
+    picGrid.appendChild(tile);
+  });
+
+  injectPicPaginationControls();
+}
+
+function injectPicPaginationControls() {
+  let existing = document.getElementById("pagination-controls");
+  if (existing) existing.remove();
+
+  const container = document.createElement("div");
+  container.id = "pagination-controls";
+  container.style = "text-align: center; margin-top: 20px; width: 100%;";
+
+  const picGrid = document.getElementById("pictures2-grid");
+if (picGrid && picGrid.children.length === 0) {
+  const spacer = document.createElement("div");
+  spacer.style.height = "150px"; // ✅ same as Movies
+  picGrid.appendChild(spacer);
+}
+
+  const totalPages = Math.ceil(currentPics.length / picsPerPage);
+  container.innerHTML = `
+    <button id="prevPicPageBtn" class="btn" style="margin-right: 100px;">⬅️ Previous</button>
+    <button id="nextPicPageBtn" class="btn">Next ➡️</button>
+    <p style="margin-top: 8px; color: var(--muted);">Page ${currentPicPage} of ${totalPages}</p>
+  `;
+
+document.getElementById("pictures2-grid").insertAdjacentElement("afterend", container);
+
+  document.getElementById("prevPicPageBtn").onclick = () => {
+    if (currentPicPage > 1) {
+      currentPicPage--;
+      renderPicturesPage();
+    }
+  };
+  document.getElementById("nextPicPageBtn").onclick = () => {
+    if (currentPicPage < totalPages) {
+      currentPicPage++;
+      renderPicturesPage();
+    }
+  };
+}
+
+async function loadPicturesByCategory(picType) {
+  currentPicPage = 1;
+  const q = query(collection(db, "pictures"), where("category", "==", picType));
+  const querySnapshot = await getDocs(q);
+  currentPics = [];
+  querySnapshot.forEach((doc) => currentPics.push(doc.data()));
+  renderPicturesPage();
+}
+
+const picFolderButtons = document.querySelectorAll('#pictures2-grid [class*="tile"]');
+picFolderButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    picFolderButtons.forEach(b => b.classList.remove("active"));
+    button.classList.add("active");
+    const folder = button.textContent.trim();
+    console.log("🖼️ Loading Pictures folder:", folder);
+    loadPicturesByCategory(folder);
+  });
+});
+</script>
 
 
 

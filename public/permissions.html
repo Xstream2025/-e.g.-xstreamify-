@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X‑Streamify • Permissions</title>
+  <style>
+    :root {
+      --bg: #0c0f14;          /* deep slate */
+      --panel: #121826;       /* card surface */
+      --muted: #8ea0b6;       /* labels */
+      --txt: #e6eef8;         /* primary text */
+      --accent: #4da3ff;      /* buttons/links */
+      --accent-2: #7ef29a;    /* success */
+      --danger: #ff6b6b;      /* cancel */
+      --line: #243246;        /* borders */
+      --glow: rgba(77,163,255,.35);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; background: linear-gradient(180deg, #0a0e13, #0c1018 30%, #0a0e13 100%);
+      color: var(--txt); font: 14px/1.5 system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+    /* Header */
+    header { display:flex; align-items:center; gap:16px; margin-bottom: 18px; }
+    .logo { width: 28px; height: 28px; border-radius: 6px; background:#e11; display:grid; place-items:center; box-shadow: 0 0 0 3px rgba(255,0,0,.08), 0 6px 18px rgba(0,0,0,.45); }
+    .logo:before { content:"▶"; color:#fff; font-size:14px; transform: translateX(1px); }
+    h1 { font-size: 18px; margin:0; letter-spacing:.2px; }
+    .sub { color: var(--muted); font-size: 12px; }
+
+    /* Panel */
+    .panel { background: var(--panel); border:1px solid var(--line); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.02) inset; overflow:hidden; }
+    .panel-head { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding: 14px 16px; border-bottom:1px solid var(--line); background: linear-gradient(180deg, rgba(255,255,255,.02), transparent); }
+    .row { display:flex; gap:12px; align-items:center; }
+    label.small { font-size:12px; color:var(--muted); }
+    select, button, input[type="search"] {
+      background:#0f1522; color:var(--txt); border:1px solid var(--line); border-radius:10px; height:36px; padding:0 12px; outline:none;
+    }
+    input[type="search"] { width: 260px; }
+    select:focus, input[type="search"]:focus { box-shadow: 0 0 0 3px var(--glow), 0 0 0 1px var(--accent) inset; }
+
+    /* Table */
+    .table-wrap { overflow:auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { position: sticky; top:0; z-index:2; background:#0e1421; border-bottom:1px solid var(--line); }
+    th, td { padding: 12px 14px; text-align: left; border-bottom:1px solid var(--line); }
+    tbody tr:hover { background: rgba(77,163,255,.05); }
+    .movie { display:flex; align-items:center; gap:12px; }
+    .poster { width: 34px; height: 50px; border-radius:6px; background:#202a3b; flex:0 0 auto; box-shadow: 0 2px 8px rgba(0,0,0,.35) inset; }
+    .title { font-weight:600; letter-spacing:.2px; }
+    .meta { color: var(--muted); font-size: 12px; }
+    .center { text-align:center; }
+
+    /* Actions bar */
+    .actions {
+      position: sticky; bottom:0; display:flex; justify-content: space-between; align-items:center;
+      gap:12px; padding: 12px 16px; background: linear-gradient(180deg, rgba(14,20,33,.75), rgba(14,20,33,.98));
+      border-top: 1px solid var(--line);
+      backdrop-filter: blur(6px);
+    }
+    .btn { height:40px; padding:0 16px; border-radius: 10px; border:1px solid var(--line); background:#121a2a; color:var(--txt); cursor:pointer; }
+.btn.primary { background: linear-gradient(180deg, rgb(0,255,0), rgb(0,200,0)); border-color: rgb(0,255,0); box-shadow: 0 0 0 3px var(--glow); font-weight:600; } .btn.primary:hover { background: linear-gradient(180deg, rgb(102,255,102), rgb(0,180,0)); }
+    .btn.ghost { background: transparent; }
+    .btn.danger { border-color: #7a2b2b; color:#ff9a9a; }
+
+    /* Helpers */
+    .pill { font-size: 12px; padding: 3px 8px; border:1px solid var(--line); border-radius: 999px; color: var(--muted); }
+    .spacer { flex: 1 1 auto; }
+    .hint { color: var(--muted); font-size: 12px; }
+    .json { background:#0b111b; border-top:1px dashed var(--line); padding:12px 16px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size:12px; color:#bfe4ff; overflow:auto; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>Permissions — Library Access</h1>
+        <div class="sub">Dad controls which profiles can view each movie.</div>
+      </div>
+      <span class="spacer"></span>
+      <span class="pill" id="count-pill">0 selected</span>
+    </header>
+
+    <section class="panel" aria-labelledby="tableTitle">
+      <div class="panel-head">
+        <div class="row">
+          <label class="small" for="profileSelect">Acting as</label>
+          <select id="profileSelect" aria-label="Acting as">
+            <option value="Dad" selected>Dad (admin)</option>
+          </select>
+        </div>
+        <div class="row">
+          <input type="search" id="search" placeholder="Search movies…" aria-label="Search movies" />
+        </div>
+        <div class="spacer"></div>
+        <div class="row hint">Tip: use column checkboxes to “Select all” for a kid.</div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="permTable" role="grid" aria-describedby="tableHelp">
+          <thead>
+            <tr>
+              <th id="movieCol">Movie</th>
+              <!-- Kid columns injected here -->
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows injected via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="actions">
+        <div class="hint" id="tableHelp">Review selections, then Save. Nothing is written to your backend in Step 1.</div>
+        <div class="spacer"></div>
+        <button class="btn ghost" id="clearBtn" type="button">Clear selections</button>
+        <button class="btn danger" id="cancelBtn" type="button">Cancel</button>
+        <button class="btn primary" id="saveBtn" type="button">Save</button>
+      </div>
+
+      <pre id="output" class="json" hidden></pre>
+    </section>
+  </div>
+
+  <script>
+    // ----- Step 1: Pure front‑end baseline (no persistence) -----
+    // You can replace these with real data later.
+    const kids = [
+      { id: 'emma', label: 'Emma' },
+      { id: 'allison', label: 'Allison' },
+      { id: 'jordan', label: 'Jordan' },
+    ];
+
+    const movies = [
+      { id: 'm01', title: 'The Incredibles', year: 2004, rating: 'PG' },
+      { id: 'm02', title: 'Jurassic Park', year: 1993, rating: 'PG-13' },
+      { id: 'm03', title: 'Toy Story', year: 1995, rating: 'G' },
+      { id: 'm04', title: 'Spider‑Verse', year: 2018, rating: 'PG' },
+      { id: 'm05', title: 'Harry Potter', year: 2001, rating: 'PG' },
+    ];
+
+    const table = document.getElementById('permTable');
+    const theadRow = table.querySelector('thead tr');
+    const tbody = table.querySelector('tbody');
+    const search = document.getElementById('search');
+    const output = document.getElementById('output');
+    const countPill = document.getElementById('count-pill');
+
+    // Build header kid columns with "select all" checkboxes
+    kids.forEach(k => {
+      const th = document.createElement('th');
+      th.className = 'center';
+      th.id = `col-${k.id}`;
+      th.innerHTML = `
+  <div style="display:grid; place-items:center; gap:2px;">
+    <label class="small" for="all-${k.id}">${k.label}</label>
+    <input type="checkbox" id="all-${k.id}" aria-label="Select all for ${k.label}">
+    <span class="small" style="color:var(--muted); font-size:11px;">(select all)</span>
+  </div>
+`;
+      theadRow.appendChild(th);
+    });
+
+    function renderRows(filter = '') {
+      tbody.innerHTML = '';
+      const q = filter.trim().toLowerCase();
+      const rows = movies.filter(m => !q || m.title.toLowerCase().includes(q));
+
+      rows.forEach(m => {
+        const tr = document.createElement('tr');
+        tr.dataset.movieId = m.id;
+        tr.innerHTML = `
+          <td>
+            <div class="movie">
+              <div class="poster" aria-hidden="true"></div>
+              <div>
+                <div class="title">${m.title}</div>
+                <div class="meta">${m.year} • ${m.rating}</div>
+              </div>
+            </div>
+          </td>
+        `;
+        kids.forEach(k => {
+          const td = document.createElement('td');
+          td.className = 'center';
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.setAttribute('aria-label', `${k.label} can view ${m.title}`);
+          cb.dataset.kid = k.id;
+          cb.dataset.movieId = m.id;
+          td.appendChild(cb);
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      updateCount();
+    }
+
+    function updateCount() {
+      const total = tbody.querySelectorAll('input[type="checkbox"]').length;
+      const checked = tbody.querySelectorAll('input[type="checkbox"]:checked').length;
+      countPill.textContent = `${checked} / ${total} selected`;
+    }
+
+    // Column select‑all behavior
+    kids.forEach(k => {
+      document.getElementById(`all-${k.id}`).addEventListener('change', (e) => {
+        const on = e.currentTarget.checked;
+        tbody.querySelectorAll(`input[data-kid="${k.id}"]`).forEach(cb => {
+          cb.checked = on;
+        });
+        updateCount();
+      });
+    });
+
+    // Row / cell interactions
+    tbody.addEventListener('change', (e) => {
+      if (e.target.matches('input[type="checkbox"]')) updateCount();
+    });
+
+    // Search
+    search.addEventListener('input', () => renderRows(search.value));
+
+    // Action buttons
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      tbody.querySelectorAll('input[type="checkbox"]').forEach(cb => (cb.checked = false));
+      kids.forEach(k => (document.getElementById(`all-${k.id}`).checked = false));
+      updateCount();
+      output.hidden = true;
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+  const response = confirm("🩷 *Did you click cancel by mistake? Or are you just scared of commitment?*");
+  if (response) {
+    document.getElementById('clearBtn').click();
+  } else {
+    alert("😎 Good call. Sometimes it's best to think twice.");
+  }
+});
+
+
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      const payload = { byKid: {}, byMovie: {} };
+
+      kids.forEach(k => (payload.byKid[k.id] = []));
+      movies.forEach(m => (payload.byMovie[m.id] = []));
+
+      tbody.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        if (cb.checked) {
+          payload.byKid[cb.dataset.kid].push(cb.dataset.movieId);
+          payload.byMovie[cb.dataset.movieId].push(cb.dataset.kid);
+        }
+      });
+
+      // Step 1: show what would be saved
+      output.hidden = true;
+
+      if (!payload || !payload.byKid) {
+  alert("⚠️ Payload is missing or malformed. Aborting.");
+  return;
+}
+
+      if (!payload || !payload.byKid) {
+  alert("⚠️ Payload is missing or malformed. Aborting.");
+  return;
+}
+
+      try {
+  const writeOps = [];
+  for (const kidId in payload.byKid) {
+    const docRef = doc(db, "permissions", kidId);
+    writeOps.push(setDoc(docRef, { access: payload.byKid[kidId] }));
+  }
+
+  Promise.all(writeOps)
+    .then(() => {
+      console.log("[✅ Firestore] All permissions saved per kid.");
+alert("🧃 Saved. Now hydrate and pretend you did something heroic.\n\n🌮 Go reward yourself with some tacos 🌶️🌮🔥");
+    })
+    .catch((error) => {
+      console.error("❌ Error saving one or more docs:", error);
+      alert("⚠️ Error saving. Check console.");
+    });
+} catch (err) {
+  console.error("❌ Save failed:", err);
+  alert("❌ Save failed. Check console.");
+}
+
+
+
+      // In Step 2, we will replace this with real persistence (e.g., Firebase)
+      console.log('[Permissions] Save payload →', payload);
+    });
+
+    // Initial render
+    renderRows();
+  </script>
+
+<!-- Firebase SDK -->
+<script type="module">
+  // Import the functions you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+  apiKey: "AIzaSyCQVGm0GY4vUDhTOVvTsMr8-buC6fhizHs",
+  authDomain: "xstreamify-auth.firebaseapp.com",
+  projectId: "xstreamify-auth",
+  storageBucket: "xstreamify-auth.firebasestorage.app",
+  messagingSenderId: "860454287241",
+  appId: "1:860454287241:web:fc3eef7bf0ddaef2cc5358"
+};
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Test read from 'permissions_test' collection
+  async function readPermissionsTest() {
+    const querySnapshot = await getDocs(collection(db, "permissions_test"));
+    querySnapshot.forEach((doc) => {
+      console.log(`${doc.id} =>`, doc.data());
+    });
+  }
+
+  // Run on load
+  readPermissionsTest();
+
+  // 🔍 Firestore preview (read-only, safe to test)
+async function previewPermissions() {
+  const querySnapshot = await getDocs(collection(db, "permissions"));
+  const permissionsData = {};
+
+  querySnapshot.forEach((doc) => {
+    const name = doc.id; // e.g., Emma, Allison, Jordan
+    const data = doc.data();
+    permissionsData[name] = data.access || [];
+  });
+
+  console.log("🔥 Firestore permissions preview:", permissionsData);
+
+  // Sync checkboxes
+  tbody.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    const kidId = cb.dataset.kid;       // e.g., "emma"
+    const movieId = cb.dataset.movieId; // e.g., "m01"
+
+    // Match movie title to checkbox via title
+    const movieTitle = movies.find(m => m.id === movieId)?.title;
+    const accessList = permissionsData[kidId.charAt(0).toUpperCase() + kidId.slice(1)] || [];
+
+    const match = accessList.find(item => item.title === movieTitle);
+    cb.checked = !!(match && match.allowed);
+  });
+
+  updateCount();
+}
+
+previewPermissions();
+
+  // Make these available to the main script block
+window.doc = doc;
+window.setDoc = setDoc;
+window.db = db;
+
+
+</script>
+
+</body>
+</html>

@@ -8,38 +8,28 @@
 
   "connect.headline": "Conectando las piezas",
   "connect.subheading": "Todo lo que necesitas, finalmente en una sola plataforma - X-Streamify lo reúne todo.",
-  "box1.headline": "Digitaliza tus DVD's",
-  "box1.subheading": "Convierte tus discos físicos en una biblioteca digital que tú controlas.",
-  "box2.headline": "Organiza tu Biblioteca",
-  "box2.subheading": "Explora y busca tu colección — por género, título o año.",
-  "box3.headline": "Transmite en Cualquier Lugar",
-  "box3.subheading": "Mira tus películas digitalizadas en cualquier dispositivo, sin límites.",
 
-  "box1.headline": "Digitaliza tus DVD",
-"box1.subheading": "Convierte tus discos físicos en una biblioteca digital que tú controlas.",
-
-"box2.headline": "Organiza tu Biblioteca",
-"box2.subheading": "Explora y encuentra tu colección en cualquier momento — por medio de género, título o año.",
-
-"box3.headline": "Transmite tus películas en cualquier lugar",
-"box3.subheading": "Disfruta tus películas digitalizadas en cualquier dispositivo, en cualquier momento, sin límites."
-,
+  "box1.title": "Digitaliza tus DVDs",
+  "box1.desc": "Convierte tus DVDs en una biblioteca digital que posees y solo tú controlas.",
+  "box2.title": "Organiza tu Biblioteca",
+  "box2.desc": "Explora y encuentra tu colección en cualquier momento - por medio de género, título o año.",
+  "box3.title": "Transmite tus películas en cualquier lugar",
+  "box3.desc": "Disfruta tus películas digitalizadas en cualquier dispositivo, en cualquier momento, sin límites.",
 
   "howitworks.title": "Cómo Funciona",
   "hiw1.title": "Añade tus películas: sube o importa tus DVD a tu bóveda segura.",
   "hiw1.learnmore": "Ver más",
   "hiw1.desc": "No necesitas suscribirte ni comprar películas de nuevo. Simplemente descarga tus DVD - los digitalizamos en tu bóveda personal para que puedas disfrutarlos cuando y donde quieras. Es tu colección, por fin modernizada.",
-  "hiw1.close": "Cerrar ✕",
+  "hiw1.close": "Cerrar",
   "hiw2.title": "Transmite en cualquier lugar: disfruta en cualquier dispositivo a través de tu biblioteca privada, sin necesidad de volver a comprar nada.",
   "hiw2.learnmore": "Ver más",
   "hiw2.desc": "X-Streamify funciona en cualquier teléfono moderno, tableta, Smart TV o computadora. Tus películas y fotos se almacenan en tu nube privada, sin suscripciones ni recompras. Solo inicia sesión y disfruta tu película favorita desde cualquier lugar.",
-  "hiw2.close": "Cerrar ✕",
+  "hiw2.close": "Cerrar",
   "hiw3.title": "Almacenado en la nube: manten toda tu colección de DVDs, fotos, etc. respaldada y lista para transmitir - tuya para siempre.",
   "hiw3.learnmore": "Ver más",
   "hiw3.desc": "Con X-Streamify, tu biblioteca, con toda tu información está segura en la nube. Respaldada, protegida y accesible al instante - sin discos, sin preocupaciones. Disfruta de tus contenidos cuando quieras, para siempre.",
-  "hiw3.close": "Cerrar ✕",
+  "hiw3.close": "Cerrar",
 
-  
   "why.title": "¿Por qué X-Streamify?",
   "why.benefit1.title": "✅ Consíguelo, transmítelo",
   "why.benefit1.desc": "Descarga tus DVDs, fotos, etc. una vez y transmítelos para siempre - sin suscripciones ni problemas de licencias.",
@@ -61,7 +51,7 @@
   "vault.filter.favorites": "Favoritos",
   "featured.title": "Relevante",
 
-  "footer.title": "Agregar. Descargar. Transmitir. Guardar.✅",
+  "footer.title": "Agregar. Descargar. Transmitir. Guardar. ✅",
   "footer.upload.title": "Descargar",
   "footer.upload.desc": "Descárgalo de forma segura a su bóveda privada.",
   "footer.upload.button": "Descargar",
@@ -69,7 +59,7 @@
   "footer.stream.title": "Transmitir",
   "footer.stream.desc": "Disfrútalo instantáneamente en cualquier dispositivo que tengas.",
   "footer.stream.button": "Transmitir",
-  "footer.vault.title": "Tu Bóveda",
+  "footer.vault.title": "Bóveda",
   "footer.vault.desc": "Conserva todo organizado en un solo lugar.",
   "footer.vault.button": "Tu Bóveda",
 

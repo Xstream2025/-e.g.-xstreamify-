@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit My Profile</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="profile-container">
+    <h1>🧒 Edit My Profile</h1>
+    <p id="kid-name">Loading...</p>
+
+    <div>
+      <img id="avatar-preview" src="" alt="Profile Picture" width="120" style="border-radius: 50%; border: 2px solid #ccc;" />
+    </div>
+
+    <div style="margin-top: 1rem;">
+      <label for="avatar-select">Choose your avatar:</label>
+      <select id="avatar-select">
+  <option value="emma.png">Emma</option>
+  <option value="jordan.png">Jordan</option>
+  <option value="allison.png">Allison</option>
+</select>
+    </div>
+
+    <button id="save-btn" style="margin-top: 1rem;">💾 Save My Profile</button>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyCQVGm0GY4vUDhTOVvTsMr8-buC6fhizHs",
+  authDomain: "xstreamify-auth.firebaseapp.com",
+  projectId: "xstreamify-auth",
+  storageBucket: "xstreamify-auth.firebasestorage.app",
+  messagingSenderId: "860454287241",
+  appId: "1:860454287241:web:fc3eef7bf0ddaef2cc5358"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const kidName = params.get("kid");
+
+    const kidNameText = document.getElementById("kid-name");
+    const avatarPreview = document.getElementById("avatar-preview");
+    const avatarSelect = document.getElementById("avatar-select");
+    const saveBtn = document.getElementById("save-btn");
+
+    async function loadProfile() {
+      if (!kidName) return;
+
+      kidNameText.textContent = `Hello, ${kidName}`;
+      const docRef = doc(db, "permissions", kidName);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+let avatar = data.avatar || "emma.png";
+if (avatar.endsWith(".jpg")) {
+  avatar = avatar.replace(".jpg", ".png");
+}
+        avatarPreview.src = `img/${avatar}`;
+        avatarSelect.value = avatar;
+      }
+    }
+
+    avatarSelect.addEventListener("change", () => {
+      const selected = avatarSelect.value;
+      avatarPreview.src = `img/${selected}`;
+    });
+
+    saveBtn.addEventListener("click", async () => {
+      if (!kidName) return;
+
+      const docRef = doc(db, "permissions", kidName);
+      await updateDoc(docRef, {
+        avatar: avatarSelect.value
+      });
+
+if (kidName === "Emma") {
+  alert("🎤 Strike a pose, superstar!");
+} else if (kidName === "Allison") {
+  alert("🧸 Too cute! Picture saved!");
+} else if (kidName === "Jordan") {
+  alert("💪 Avatar locked in, champ!");
+} else {
+  alert("✅ Avatar updated!");
+}
+    });
+
+    loadProfile();
+  </script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4faff;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .profile-container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    select, button {
+      font-size: 1rem;
+      padding: 0.5rem;
+    }
+  </style>
+</body>
+</html>

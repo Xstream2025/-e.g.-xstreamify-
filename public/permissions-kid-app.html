@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kid Vault App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+    }
+
+    .section {
+      display: none;
+      padding: 40px 20px;
+    }
+
+    .active {
+      display: block;
+    }
+
+    button {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px;
+    }
+
+input {
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  outline: none;
+  background-color: #222;
+  color: white;
+  text-decoration: none;
+  -webkit-appearance: none;
+}
+
+
+    .emoji {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Section -->
+  <div id="login-section" class="section active">
+    <h2>🔐 Kid Login</h2>
+    <input id="kidName" placeholder="Enter your name" /><br><br>
+    <input id="kidCode" placeholder="Enter your code" type="password" /><br><br>
+<button id="loginBtn">Login</button>
+    <p id="login-error" style="color: red; margin-top: 10px;"></p>
+  </div>
+
+  <!-- Vault Section -->
+  <div id="vault-section" class="section">
+    <h2>🎬 Welcome to Your Vault</h2>
+    <div id="vault-movies"></div>
+    <button id="profileBtn">Edit Profile</button>
+    <button id="logoutBtn">Log Out 🔒</button>
+
+  </div>
+
+  <!-- Profile Editor Section -->
+  <div id="profile-section" class="section">
+    <h2>🧸 Choose Your Avatar</h2>
+    <img id="avatar-preview" width="120" /><br><br>
+    <button onclick="saveAvatar()">Save Avatar</button>
+    <p id="avatar-message"></p>
+  </div>
+
+  <!-- Logout Section -->
+  <div id="logout-section" class="section">
+    <div class="emoji">👋</div>
+    <div class="message">See you next time!</div>
+    <div class="sub">Redirecting to login...</div>
+  </div>
+
+  <!-- Firebase + Script Logic Comes Next -->
+
+<!-- Firebase SDKs -->
+<script type="module">
+  // Firebase setup
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+  apiKey: "AIzaSyCQVGm0GY4vUDhTOVvTsMr8-buC6fhizHs",
+  authDomain: "xstreamify-auth.firebaseapp.com",
+  projectId: "xstreamify-auth",
+  storageBucket: "xstreamify-auth.firebasestorage.app",
+  messagingSenderId: "860454287241",
+  appId: "1:860454287241:web:fc3eef7bf0ddaef2cc5358"
+};
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let currentKid = "";
+  let currentAvatar = "";
+
+  // Helper to show one section at a time
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(div => div.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // Login
+  async function handleLogin() {
+    const name = document.getElementById("kidName").value.trim();
+    const code = document.getElementById("kidCode").value.trim();
+    const loginError = document.getElementById("login-error");
+
+    if (!name || !code) {
+      loginError.textContent = "Please enter name and code.";
+      return;
+    }
+
+    const docRef = doc(db, "permissions", name);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      loginError.textContent = "No such user.";
+      return;
+    }
+
+    const data = docSnap.data();
+    if (data.code !== code) {
+      loginError.textContent = "Invalid code.";
+      return;
+    }
+
+    // Success!
+    currentKid = name;
+    currentAvatar = data.avatar || "default.png";
+    loadVault(data.access || []);
+    loginError.textContent = "";
+    showSection("vault-section");
+  }
+
+  // Load vault movies
+  function loadVault(movieList) {
+    const container = document.getElementById("vault-movies");
+    container.innerHTML = "";
+    movieList.forEach(title => {
+      const tile = document.createElement("div");
+      tile.textContent = `🎬 ${title}`;
+      tile.style.margin = "10px";
+      container.appendChild(tile);
+    });
+  }
+
+  // Go to profile editor
+  function goToProfile() {
+  document.getElementById("avatar-preview").src = "new-img/" + currentAvatar;
+  document.getElementById("avatar-message").textContent = "";
+  showSection("profile-section");
+}
+
+
+  // Save avatar
+  async function saveAvatar() {
+  const message = document.getElementById("avatar-message");
+
+  try {
+    await updateDoc(doc(db, "permissions", currentKid), {
+      avatar: currentAvatar
+    });
+
+    // Confirm new image path
+    document.getElementById("avatar-preview").src = "new-img/" + currentAvatar;
+
+    // Custom alert messages
+    const msgMap = {
+      emma: "🎤 Strike a pose, superstar!",
+      allison: "🧸 Too cute! Picture saved!",
+      jordan: "💪 Avatar locked in, champ!"
+    };
+
+    const lower = currentKid.toLowerCase();
+    message.textContent = msgMap[lower] || "✅ Avatar updated!";
+  } catch (err) {
+    message.textContent = "Error saving avatar.";
+  }
+}
+
+
+  // Log out
+  
+
+  function logOut() {
+    showSection("logout-section");
+    setTimeout(() => {
+      currentKid = "";
+      currentAvatar = "";
+      document.getElementById("kidName").value = "";
+      document.getElementById("kidCode").value = "";
+      showSection("login-section");
+    }, 3000);
+  }
+
+  document.getElementById("loginBtn").addEventListener("click", handleLogin);
+document.getElementById("profileBtn").addEventListener("click", goToProfile);
+document.getElementById("logoutBtn").addEventListener("click", logOut);
+
+window.saveAvatar = saveAvatar;
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Permissions Test</title>
+</head>
+<body>
+
+  <h1>Phase 19 🧩 Permissions Logic</h1>
+
+  <label for="profileSelect">Select Profile:</label>
+  <select id="profileSelect">
+    <option value="Emma">Emma</option>
+    <option value="Jordan">Jordan</option>
+    <option value="Allison">Allison</option>
+    <option value="Dad">Dad</option>
+  </select>
+
+<h2>Add New Movie (as Dad)</h2>
+<input type="text" id="newTitle" placeholder="Movie Title" />
+<br><label><input type="checkbox" value="Emma" class="assignProfile"> Emma</label>
+<br><label><input type="checkbox" value="Jordan" class="assignProfile"> Jordan</label>
+<br><label><input type="checkbox" value="Allison" class="assignProfile"> Allison</label>
+<br><label><input type="checkbox" value="Dad" class="assignProfile" checked> Dad</label>
+<br><button id="addMovieBtn">Add Movie</button>
+<br><br>
+<button id="downloadBtn">Download Library JSON</button>
+
+
+  <div id="movie-list" style="margin-top: 20px;"></div>
+
+  <script>
+    const movieLibrary = [
+      {
+        title: "Shrek",
+        fileUrl: "shrek.mp4",
+        allowedProfiles: ["Emma", "Jordan"]
+      },
+      {
+        title: "John Wick",
+        fileUrl: "john-wick.mp4",
+        allowedProfiles: ["Dad"]
+      },
+      {
+        title: "Barbie",
+        fileUrl: "barbie.mp4",
+        allowedProfiles: ["Allison"]
+      }
+    ];
+
+    const container = document.getElementById("movie-list");
+    const selector = document.getElementById("profileSelect");
+
+    function renderMovies(profile) {
+      container.innerHTML = "";
+      const visibleMovies = movieLibrary.filter(movie =>
+        movie.allowedProfiles.includes(profile)
+      );
+      visibleMovies.forEach(movie => {
+        const div = document.createElement("div");
+        div.textContent = `🎬 ${movie.title}`;
+        container.appendChild(div);
+      });
+    }
+
+    selector.addEventListener("change", () => {
+      renderMovies(selector.value);
+    });
+
+    // Initial render
+    renderMovies(selector.value);
+
+document.getElementById("addMovieBtn").addEventListener("click", () => {
+  const title = document.getElementById("newTitle").value.trim();
+  const checkboxes = document.querySelectorAll(".assignProfile:checked");
+  const allowedProfiles = Array.from(checkboxes).map(cb => cb.value);
+
+  if (title && allowedProfiles.length) {
+    movieLibrary.push({
+      title: title,
+      fileUrl: `${title.toLowerCase().replace(/\s+/g, "-")}.mp4`,
+      allowedProfiles: allowedProfiles
+    });
+    renderMovies(selector.value); // Refresh list
+    document.getElementById("newTitle").value = "";
+    checkboxes.forEach(cb => cb.checked = false);
+    document.querySelector('input[value="Dad"]').checked = true; // default checked
+  }
+});
+
+document.getElementById("downloadBtn").addEventListener("click", () => {
+  const blob = new Blob(
+    [JSON.stringify(movieLibrary, null, 2)],
+    { type: "application/json" }
+  );
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "movieLibrary.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+});
+
+  </script>
+
+</body>
+</html>
