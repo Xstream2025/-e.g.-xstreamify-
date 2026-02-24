@@ -1,3 +1,6 @@
+// language persistence
+
+
 // Mobile menu toggle (defensive)
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('menuBtn');
@@ -29,3 +32,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+function setLanguage(lang) {
+  localStorage.setItem('lang', lang);
+  document.documentElement.lang = lang;
+}
+
+// ===== Translation engine =====
+async function applyTranslations() {
+  const lang = localStorage.getItem('lang') || 'en';
+
+  const res = await fetch(`lang/${lang}.json`);
+  const translations = await res.json();
+
+  // Text nodes
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[key]) {
+      el.textContent = translations[key];
+    }
+  });
+
+  // Placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (translations[key]) {
+      el.placeholder = translations[key];
+    }
+  });
+}
+const savedLang = localStorage.getItem("lang") || "en";
+setLanguage(savedLang);
+applyTranslations();

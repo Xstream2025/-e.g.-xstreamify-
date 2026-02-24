@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Do Not Sell or Share My Personal Information</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg-dark: #0b0f14;
+      --bg-panel: #0f1620;
+      --text-main: #ffffff;
+      --text-muted: #cbd5e1;
+      --border-line: rgba(255,255,255,0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+    }
+
+    /* PAGE WRAPPER */
+    .page-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1px 40px; /* THIS controls left/right spacing */
+      position: relative;
+z-index: 1;
+    }
+
+    h1 {
+      margin: 0 0 12px 0;
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      color: var(--text-muted);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-line);
+      margin: 24px 0 32px 0;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 0 0 24px 0;
+      color: var(--text-muted);
+    }
+
+    h2 {
+      font-size: 22px;
+      margin: 40px 0 16px 0;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* OPTIONAL RESPONSIVE TWEAK */
+    @media (max-width: 768px) {
+      .page-wrapper {
+        padding: 32px 20px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+    }
+
+     /* Bottom-right lime glow */
+     body::after {
+       content: "";
+       position: fixed;
+       bottom: -320px;
+right: -320px;
+width: 920px;
+height: 720px;
+       background: radial-gradient(
+         circle,
+         rgb(0, 255, 0) 0%,
+         rgba(0, 255, 0, 0.18) 30%,
+         rgba(0, 255, 0, 0.08) 45%,
+         rgba(0, 255, 0, 0) 65%
+       );
+       pointer-events: none;
+       z-index: 0;
+     }
+
+     .language-toggle:focus-within {
+  box-shadow: 0 0 0 2px #ffffff;
+}
+   </style>
+  
+<script src="https://unpkg.com/i18next@22.4.9/i18next.min.js"></script>
+
+<script>
+i18next.init({
+  lng: localStorage.getItem("lang") || "en",
+  debug: false,
+  resources: {
+    en: {
+      translation: {
+        "dns.title": "Do Not Sell or Share My Personal Information",
+        "dns.subtitle": "Your privacy rights",
+
+        "dns.intro":
+          "We do not sell or share personal information for advertising or marketing purposes. This page explains your rights and how to submit a request, if applicable, under relevant privacy laws.",
+
+        "dns.section1.title": "Do Not Sell or Share",
+        "dns.section1.body":
+          "Certain privacy laws provide consumers with the right to opt out of the sale or sharing of personal information. Although we do not sell or share personal data, we provide this page to explain your rights and our practices.",
+
+        "dns.section2.title": "Global Privacy Control (GPC)",
+        "dns.section2.body":
+          "Where required by applicable law, we recognize and honor Global Privacy Control (GPC) signals sent through supported web browsers as a request to opt out of the sale or sharing of personal information.",
+
+        "dns.section3.title": "How to Submit a Privacy Request",
+        "dns.section3.body":
+          "You may submit a request related to your personal information by contacting us via email. Please include sufficient information to allow us to verify your request and respond appropriately.",
+
+        "dns.section4.title": "Authorized Agents",
+        "dns.section4.body":
+          "Where permitted by law, you may designate an authorized agent to submit a request on your behalf. We may require verification of the agent’s authority and your identity before processing the request.",
+
+        "dns.section5.title": "Children and Minors",
+        "dns.section5.body":
+          "We do not knowingly sell or share personal information of children or minors. We do not engage in targeted or behavioral advertising directed at children.",
+
+        "dns.contact.title": "Contact Information",
+        "dns.contact.body":
+          "If you have questions about this page or our privacy practices, you may contact us using the information below.",
+
+        "dns.email": "Email: privacy@xstreamify.com",
+        "dns.updated": "Last updated: February 2026"
+      }
+    },
+
+    es: {
+      translation: {
+        "dns.title": "No Vender ni Compartir Mi Información Personal",
+        "dns.subtitle": "Sus derechos de privacidad",
+
+        "dns.intro":
+          "No vendemos ni compartimos información personal con fines publicitarios o de marketing. Esta página explica sus derechos y cómo enviar una solicitud, si corresponde, conforme a las leyes de privacidad aplicables.",
+
+        "dns.section1.title": "No Vender ni Compartir",
+        "dns.section1.body":
+          "Algunas leyes de privacidad otorgan a los consumidores el derecho de optar por no participar en la venta o el intercambio de información personal. Aunque no vendemos ni compartimos datos personales, proporcionamos esta página para explicar nuestros derechos y prácticas.",
+
+        "dns.section2.title": "Control Global de Privacidad (GPC)",
+        "dns.section2.body":
+          "Cuando lo exige la ley aplicable, reconocemos y respetamos las señales de Control Global de Privacidad (GPC) enviadas a través de navegadores compatibles como una solicitud para excluirse de la venta o el intercambio de información personal.",
+
+        "dns.section3.title": "Cómo Enviar una Solicitud de Privacidad",
+        "dns.section3.body":
+          "Puede enviar una solicitud relacionada con su información personal contactándonos por correo electrónico. Incluya información suficiente para que podamos verificar su solicitud y responder adecuadamente.",
+
+        "dns.section4.title": "Agentes Autorizados",
+        "dns.section4.body":
+          "Cuando la ley lo permita, puede designar a un agente autorizado para enviar una solicitud en su nombre. Podemos requerir verificación de la autoridad del agente y de su identidad antes de procesar la solicitud.",
+
+        "dns.section5.title": "Niños y Menores",
+        "dns.section5.body":
+          "No vendemos ni compartimos intencionalmente información personal de niños o menores. No realizamos publicidad dirigida o conductual dirigida a menores.",
+
+        "dns.contact.title": "Información de Contacto",
+        "dns.contact.body":
+          "Si tiene preguntas sobre esta página o nuestras prácticas de privacidad, puede contactarnos utilizando la información a continuación.",
+
+        "dns.email": "Correo electrónico: privacy@xstreamify.com",
+        "dns.updated": "Última actualización: Febrero 2026"
+      }
+    }
+  }
+});
+</script>
+
+</head>
+
+<body>
+    <header style="position: relative; width: 100%; z-index: 50; background: transparent;">
+  <div style="display: flex; align-items: center; padding: 2rem 3rem;">
+    
+    <!-- Logo -->
+    <div style="width: 48px; height: 48px; background-color: #e50914; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 16px; position: relative;">
+      <svg width="40" height="40" viewBox="0 0 20 20" fill="white">
+        <path d="M6 4l10 6-10 6V4z" />
+      </svg>
+      <div style="width: 8px; height: 8px; background-color: white; border-radius: 50%; position: absolute; top: 6px; right: 6px;"></div>
+    </div>
+
+    <!-- Brand -->
+    <div style="color: white; font-size: 3rem; font-weight: bold;">
+      X-Streamify
+    </div>
+
+    
+
+</div>
+</header>
+<div style="height:140px;"></div>
+  <main class="page-wrapper">
+
+  <h1 data-i18n="dns.title">
+    Do Not Sell or Share My Personal Information
+  </h1>
+
+  <div class="subtitle" data-i18n="dns.subtitle">
+    Your privacy rights
+  </div>
+
+  <div class="divider"></div>
+
+  <p data-i18n="dns.intro">
+    We do not sell or share personal information for advertising or marketing purposes.
+    This page explains your rights and how to submit a request, if applicable, under
+    relevant privacy laws.
+  </p>
+
+  <h2 data-i18n="dns.section1.title">
+    Do Not Sell or Share
+  </h2>
+  <p data-i18n="dns.section1.body">
+    Certain privacy laws provide consumers with the right to opt out of the sale or
+    sharing of personal information. Although we do not sell or share personal data,
+    we provide this page to explain your rights and our practices.
+  </p>
+
+  <h2 data-i18n="dns.section2.title">
+    Global Privacy Control (GPC)
+  </h2>
+  <p data-i18n="dns.section2.body">
+    Where required by applicable law, we recognize and honor Global Privacy Control (GPC)
+    signals sent through supported web browsers as a request to opt out of the sale or
+    sharing of personal information.
+  </p>
+
+  <h2 data-i18n="dns.section3.title">
+    How to Submit a Privacy Request
+  </h2>
+  <p data-i18n="dns.section3.body">
+    You may submit a request related to your personal information by contacting us via
+    email. Please include sufficient information to allow us to verify your request and
+    respond appropriately.
+  </p>
+
+  <p data-i18n="dns.email">
+    <strong>Email:</strong> privacy@yourdomain.com
+  </p>
+
+  <h2 data-i18n="dns.section4.title">
+    Authorized Agents
+  </h2>
+  <p data-i18n="dns.section4.body">
+    Where permitted by law, you may designate an authorized agent to submit a request on
+    your behalf. We may require verification of the agent’s authority and your identity
+    before processing the request.
+  </p>
+
+  <h2 data-i18n="dns.section5.title">
+    Children and Minors
+  </h2>
+  <p data-i18n="dns.section5.body">
+    We do not knowingly sell or share personal information of children or minors. We do
+    not engage in targeted or behavioral advertising directed at children.
+  </p>
+
+  <h2 data-i18n="dns.contact.title">
+    Contact Information
+  </h2>
+  <p data-i18n="dns.contact.body">
+    If you have questions about this page or our privacy practices, you may contact us
+    using the information below.
+  </p>
+
+  <p data-i18n="dns.email">
+    <strong>Email:</strong> privacy@xstreamify.com
+  </p>
+
+  <p>
+    <strong data-i18n="dns.updated">
+      Last updated: February 2026
+    </strong>
+  </p>
+
+</main>
+
+<script>
+function applyI18n() {
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    const value = i18next.t(key);
+    if (value && value !== key) {
+      el.textContent = value;
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const lang = localStorage.getItem("lang") || "en";
+  i18next.changeLanguage(lang).then(applyI18n);
+});
+
+window.addEventListener("storage", e => {
+  if (e.key === "lang") {
+    i18next.changeLanguage(e.newValue).then(applyI18n);
+  }
+});
+</script>
+</body>
+</html>

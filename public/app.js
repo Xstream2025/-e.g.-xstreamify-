@@ -6,7 +6,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDFXRlF20221g5tYWypyrfQf58C0S0wMBfU",
+  apiKey: "__GOOGLE_API_KEY__",
   authDomain: "xstreamify-auth.firebaseapp.com",
   projectId: "xstreamify-auth",
   storageBucket: "xstreamify-auth.appspot.com",

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Terms of Service</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg-dark: #0b0f14;
+      --bg-panel: #0f1620;
+      --text-main: #ffffff;
+      --text-muted: #cbd5e1;
+      --border-line: rgba(255,255,255,0.15);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+    }
+
+    .page-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 0 0 12px 0;
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      color: var(--text-muted);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-line);
+      margin: 24px 0 32px 0;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 0 0 24px 0;
+      color: var(--text-muted);
+    }
+
+    h2 {
+      font-size: 22px;
+      margin: 40px 0 16px 0;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -320px;
+      right: -320px;
+      width: 920px;
+      height: 720px;
+      background: radial-gradient(
+        circle,
+        rgb(0, 255, 0) 0%,
+        rgba(0, 255, 0, 0.18) 30%,
+        rgba(0, 255, 0, 0.08) 45%,
+        rgba(0, 255, 0, 0) 65%
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .language-toggle:focus-within {
+      box-shadow: 0 0 0 3px #ffffff;
+    }
+  </style>
+  <script src="https://unpkg.com/i18next@22.4.9/i18next.min.js"></script>
+  <script>
+  i18next.init({
+    lng: localStorage.getItem("lang") || "en",
+    debug: false,
+    resources: {
+      en: {
+        translation: {
+          "terms.title": "Terms of Service",
+"terms.updated": "Last updated: February 2026",
+
+"terms.acceptance.title": "Acceptance of Terms",
+"terms.acceptance.body": "By accessing or using X-Streamify, you agree to these Terms of Service.",
+
+"terms.accounts.title": "Accounts & Eligibility",
+"terms.accounts.body": "You must be at least 18 years old to create an account and are responsible for all activity under it.",
+
+"terms.parental.title": "Profiles & Parental Controls",
+"terms.parental.body": "Parents or guardians are responsible for managing access and content for minor profiles.",
+
+"terms.content.title": "User Content",
+"terms.content.body": "You retain ownership of your content and confirm you have the right to store and stream it.",
+
+"terms.use.title": "Acceptable Use",
+"terms.use.body": "You agree not to misuse the service or violate any laws.",
+
+"terms.billing.title": "Subscriptions & Billing",
+"terms.billing.body": "Paid features may be introduced with clear pricing and terms.",
+
+"terms.termination.title": "Termination",
+"terms.termination.body": "We may suspend or terminate accounts that violate these terms.",
+
+"terms.disclaimer.title": "Disclaimer",
+"terms.disclaimer.body": "The service is provided \"as is\" without warranties.",
+
+"terms.liability.title": "Limitation of Liability",
+"terms.liability.body": "X-Streamify is not liable for indirect or consequential damages.",
+
+"terms.contact.title": "Contact",
+"terms.contact.body": "Email: privacy@xstreamify.com"
+        }
+      },
+
+      es: {
+        translation: {
+          "terms.title": "Términos del Servicio",
+"terms.updated": "Última actualización: Febrero 2026",
+
+"terms.acceptance.title": "Aceptación de los Términos",
+"terms.acceptance.body": "Al acceder o utilizar X-Streamify, usted acepta estos Términos del Servicio.",
+
+"terms.accounts.title": "Cuentas y Elegibilidad",
+"terms.accounts.body": "Debe tener al menos 18 años para crear una cuenta y es responsable de toda la actividad bajo ella.",
+
+"terms.parental.title": "Perfiles y Controles Parentales",
+"terms.parental.body": "Los padres o tutores son responsables de administrar el acceso y el contenido de los perfiles de menores.",
+
+"terms.content.title": "Contenido del Usuario",
+"terms.content.body": "Usted conserva la propiedad de su contenido y confirma que tiene derecho a almacenarlo y transmitirlo.",
+
+"terms.use.title": "Uso Aceptable",
+"terms.use.body": "Usted acepta no hacer un uso indebido del servicio ni violar ninguna ley.",
+
+"terms.billing.title": "Suscripciones y Facturación",
+"terms.billing.body": "Las funciones de pago pueden introducirse con precios y términos claros.",
+
+"terms.termination.title": "Terminación",
+"terms.termination.body": "Podemos suspender o cancelar cuentas que violen estos términos.",
+
+"terms.disclaimer.title": "Descargo de Responsabilidad",
+"terms.disclaimer.body": "El servicio se proporciona \"tal cual\" sin garantías.",
+
+"terms.liability.title": "Limitación de Responsabilidad",
+"terms.liability.body": "X-Streamify no es responsable de daños indirectos o consecuentes.",
+
+"terms.contact.title": "Contacto",
+"terms.contact.body": "Correo electrónico: privacy@xstreamify.com"
+        }
+      }
+    }
+  });
+</script>
+</head>
+
+<body>
+
+<header style="position: relative; width: 100%; z-index: 50; background: transparent;">
+  <div style="display:flex; align-items:center; padding:2rem 3rem;">
+
+    <div style="width:48px; height:48px; background:#e50914; border-radius:10px; display:flex; align-items:center; justify-content:center; margin-right:16px; position:relative;">
+      <svg width="40" height="40" viewBox="0 0 20 20" fill="white">
+        <path d="M6 4l10 6-10 6V4z" />
+      </svg>
+      <div style="width:8px; height:8px; background:white; border-radius:50%; position:absolute; top:6px; right:6px;"></div>
+    </div>
+
+    <div style="color:white; font-size:3rem; font-weight:bold;">
+      X-Streamify
+    </div>
+
+    
+
+  </div>
+</header>
+
+<div style="height:140px;"></div>
+
+<main class="page-wrapper">
+
+  <h1 data-i18n="terms.title">Terms of Service</h1>
+  <div class="subtitle" data-i18n="terms.updated">Last updated: February 2026</div>
+
+  <div class="divider"></div>
+
+  <h2 data-i18n="terms.acceptance.title">Acceptance of Terms</h2>
+  <p data-i18n="terms.acceptance.body">
+    By accessing or using X-Streamify, you agree to these Terms of Service.
+  </p>
+
+  <h2 data-i18n="terms.accounts.title">Accounts & Eligibility</h2>
+  <p data-i18n="terms.accounts.body">
+    You must be at least 18 years old to create an account and are responsible for all activity under it.
+  </p>
+
+  <h2 data-i18n="terms.parental.title">Profiles & Parental Controls</h2>
+  <p data-i18n="terms.parental.body">
+    Parents or guardians are responsible for managing access and content for minor profiles.
+  </p>
+
+  <h2 data-i18n="terms.content.title">User Content</h2>
+  <p data-i18n="terms.content.body">
+    You retain ownership of your content and confirm you have the right to store and stream it.
+  </p>
+
+  <h2 data-i18n="terms.use.title">Acceptable Use</h2>
+  <p data-i18n="terms.use.body">
+    You agree not to misuse the service or violate any laws.
+  </p>
+
+  <h2 data-i18n="terms.billing.title">Subscriptions & Billing</h2>
+  <p data-i18n="terms.billing.body">
+    Paid features may be introduced with clear pricing and terms.
+  </p>
+
+  <h2 data-i18n="terms.termination.title">Termination</h2>
+  <p data-i18n="terms.termination.body">
+    We may suspend or terminate accounts that violate these terms.
+  </p>
+
+  <h2 data-i18n="terms.disclaimer.title">Disclaimer</h2>
+  <p data-i18n="terms.disclaimer.body">
+    The service is provided "as is" without warranties.
+  </p>
+
+  <h2 data-i18n="terms.liability.title">Limitation of Liability</h2>
+  <p data-i18n="terms.liability.body">
+    X-Streamify is not liable for indirect or consequential damages.
+  </p>
+
+  <h2 data-i18n="terms.contact.title">Contact</h2>
+  <p data-i18n="terms.contact.body">
+    Email: privacy@xstreamify.com
+  </p>
+
+</main>
+
+<script>
+  function applyI18n() {
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const key = el.getAttribute("data-i18n");
+      const value = i18next.t(key);
+      if (value && value !== key) el.textContent = value;
+    });
+  }
+
+  function setLang(lang) {
+    localStorage.setItem("lang", lang);
+    document.documentElement.lang = lang;
+    i18next.changeLanguage(lang).then(applyI18n);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const lang = localStorage.getItem("lang") || "en";
+    document.documentElement.lang = lang;
+
+    i18next.changeLanguage(lang).then(applyI18n);
+
+    // update if landing page toggle changes localStorage.lang
+    window.addEventListener("storage", (e) => {
+      if (e.key === "lang" && e.newValue) {
+        document.documentElement.lang = e.newValue;
+        i18next.changeLanguage(e.newValue).then(applyI18n);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -15,8 +15,9 @@
       font-family: sans-serif;
       background: #0a0a0a;
       color: #f3f3f3;
-      overflow: hidden;
+      overflow-x: hidden;
     }
+    
     .container {
       position: relative;
       z-index: 10;
@@ -24,7 +25,6 @@
       place-items: center;
       text-align: center;
       padding: 40px;
-      height: 100vh;
     }
     h1 {
       font-size: 3rem;
@@ -55,24 +55,7 @@
     
     /* === Layering fix (CSS-only): keep main content above floating background === */
     .container { position: relative; z-index: 2; }
-.floater {
-      position: absolute;
-      top: 0;
-      left: 0;
-      will-change: transform;
-      opacity: 0.5;
-      animation-name: floatAcross, bob;
-      animation-timing-function: linear, ease-in-out;
-      animation-iteration-count: infinite, infinite;
-    }
-    @keyframes floatAcross {
-      from { transform: translate3d(-120vw, var(--y, 0px), 0) rotate(var(--rot, 0deg)) scale(var(--sc, 1)); }
-      to { transform: translate3d(120vw, var(--y, 0px), 0) rotate(calc(var(--rot, 0deg) + var(--spin, 0deg))) scale(var(--sc, 1)); }
-    }
-    @keyframes bob {
-      0%, 100% { translate: 0 -6px; }
-      50% { translate: 0 6px; }
-    }
+
     .icon {
       display: grid;
       place-items: center;
@@ -190,8 +173,131 @@
 .xs-row-btn.right { right:-6px; }
 
 .xs-row-track.grabbing { cursor:grabbing; }
+
+/* ===== UNIFIED VAULT SECTION ===== */
+
+#unified-vault {
+  position: relative;
+  z-index: 5;
+}
+
+.vault-orbit {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  margin: 80px auto 0;
+}
+
+.vault-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 540px;
+  height: 540px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+
+
+
+    background: url("img/Fort Knox - X-Streamify Vault.png") center/cover no-repeat;
+
+
+    box-shadow:
+        0 0 60px rgba(0,255,0,0.25),
+        inset 0 0 40px rgba(0,0,0,0.6);
+
+    animation: vaultBreath 6s ease-in-out infinite,
+           vaultRotate 40s linear infinite;
+
+}
+@keyframes vaultBreath {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow:
+            0 0 60px rgba(0,255,0,0.25),
+            inset 0 0 40px rgba(0,0,0,0.6);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.03);
+        box-shadow:
+            0 0 90px rgba(0,255,0,0.45),
+            inset 0 0 50px rgba(0,0,0,0.8);
+    }
+}
+@keyframes vaultRotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+
+/* Orbit Items */
+.orbit-item {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 20px;
+  background: #111;
+  box-shadow: 0 0 25px rgba(0,255,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.orbit-item:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 40px rgba(0,255,0,0.9);
+}
+
+/* Corner Positions */
+.orbit-top-left     { top: 0; left: -140px; }
+.orbit-top-right    { top: 0; right: -140px; }
+.orbit-bottom-left  { bottom: 0; left: -140px; }
+.orbit-bottom-right { bottom: 0; right: -140px; }
+
+.orbit-item img {
+  width: 70px;
+  height: auto;
+  display: block;
+}
+
+
+.floater {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+  opacity: 0.5;
+  animation-name: floatAcross, bob;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+}
+
+@keyframes floatAcross {
+  from {
+    transform: translate3d(-120vw, var(--y, 0px), 0)
+               rotate(var(--rot, 0deg))
+               scale(var(--sc, 1));
+  }
+  to {
+    transform: translate3d(120vw, var(--y, 0px), 0)
+               rotate(calc(var(--rot, 0deg) + var(--spin, 0deg)))
+               scale(var(--sc, 1));
+  }
+}
+
+@keyframes bob {
+  0%, 100% { translate: 0 -6px; }
+  50% { translate: 0 6px; }
+}
+
 </style>
-  </style>
 </head>
 <body>
   <!-- TOP NAVIGATION BAR -->
@@ -212,16 +318,75 @@
     </div>
       </div> <!-- end of Logo Text -->
 
+      <!-- Personal / Business Toggle (UI only) -->
+<div style="position:absolute; top:2.5rem; right:18rem;">
+
+  <div id="pb-toggle"
+       style="
+        display:flex;
+        background:#111;
+        border-radius:6px;
+        border:11px solid #555;
+        overflow:hidden;
+        outline:none;
+       ">
+
+    <div id="pb-personal"
+         onclick="selectPB('personal')"
+         style="
+          padding:0.5rem 1.2rem;
+          font-size:1rem;
+          color:white;
+          cursor:pointer;
+          white-space:nowrap;">
+      <span data-i18n="toggle.personal">Personal</span>
+    </div>
+
+    <div id="pb-business"
+         onclick="selectPB('business')"
+         style="
+          padding:0.5rem 1.2rem;
+          font-size:1rem;
+          color:#999;
+          cursor:pointer;
+          white-space:nowrap;">
+      <span data-i18n="toggle.business">Business</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function selectPB(type){
+  const p=document.getElementById('pb-personal');
+  const b=document.getElementById('pb-business');
+  const box=document.getElementById('pb-toggle');
+
+  if(type==='personal'){
+    p.style.color='white';
+    b.style.color='#999';
+  } else {
+    p.style.color='#999';
+    b.style.color='white';
+  }
+
+  box.style.outline='2px solid white';
+  setTimeout(()=>box.style.outline='none',150);
+}
+</script>
+
 <!-- Language Dropdown -->
 <div style="position: absolute; top: 2.5rem; right: 2.5rem;">
 
-<select class="languageSwitcher" id="language-select-top" onchange="changeLanguage(this.value)"
+<select class="languageSwitcher" id="language-select-top" onchange="localStorage.setItem('lang', this.value); changeLanguage(this.value);"
           style="padding: 0.5rem 1rem; font-size: 1rem; border-radius: 6px; background-color: #111; color: white; border: 11px solid #555;">
 
   <option value="en">English</option>
   <option value="es">Español</option>
 </select>
-<a id="account-section" href="/public/signin.html"
+<a id="account-section"
+   href="/public/signin.html?lang=es"
+   onclick="localStorage.setItem('lang', document.getElementById('language-select-top').value)"
    style="background-color: #dc2626; color: white; font-weight: bold; padding: 0.5rem 1rem; border-radius: 9999px; transition: background-color 0.3s; text-decoration: none;"
    onmouseover="this.style.backgroundColor='#b91c1c';"
    onmouseout="this.style.backgroundColor='#dc2626';">
@@ -250,10 +415,51 @@
 
 
 <!-- spacer -->
-<div style="height: 380px;"></div>
+<div style="height: 180px;"></div>
 
 
 
+<!-- ===== UNIFIED VAULT SECTION ===== -->
+<section id="unified-vault" style="position:relative; padding:140px 20px; text-align:center; overflow:hidden;">
+
+  <!-- Headline -->
+  <h2 style="font-size:3.5rem; text-shadow:0 0 25px rgba(0,255,0,0.9); margin-bottom:20px;"
+    data-i18n="connect.headline"></h2>
+
+
+  <p style="font-size:1.3rem; color:#ccc; max-width:800px; margin:0 auto 100px;"
+   data-i18n="connect.subheadline"></p>
+
+
+  <!-- Orbital Container -->
+  <div class="vault-orbit">
+
+    <!-- CENTER VAULT -->
+    <div class="vault-core">
+      
+    </div>
+
+    <!-- CORNER ICONS -->
+    <div class="orbit-item orbit-top-left">
+  <img src="img/icon-movies.png" alt="Movies">
+</div>
+
+    <div class="orbit-item orbit-top-right">
+  <img src="img/icon-pictures.png" alt="Pictures">
+</div>
+
+    <div class="orbit-item orbit-bottom-left">
+  <img src="img/icon-documents.png" alt="Documents">
+</div>
+
+    <div class="orbit-item orbit-bottom-right">
+  <img src="img/icon-cloud.png" alt="Cloud">
+</div>
+
+
+  </div>
+
+</section>
 
 
 
@@ -302,19 +508,32 @@
   How It Works
 </h2>
 <!-- Group wrapper for all 3 horizontal boxes -->
-<div style="width:100%; max-width:1280px; margin:360px auto 40 auto; padding:20px 20px 40px 20px; border:2px solid rgb(0, 255, 0); border-radius:20px; box-shadow:0 0 30px rgb(0, 255, 0);">
+<div style="width:100%; max-width:1280px; margin:40px auto 40px auto; padding:20px 20px 40px 20px; border:2px solid rgb(0, 255, 0); border-radius:20px; box-shadow:0 0 30px rgb(0, 255, 0);">
 
   <!-- Horizontal Info Box 1 -->
 <div class="box-link" style="cursor:pointer;">
-  <div class="info-box" style="display: flex; align-items: center; gap: 10px; background: #2d2d2d; padding: 20px 40px; margin: 25px auto; width: 1200px; border: 2px solid rgb(0, 255, 0); border-radius: 12px;">
+  <div class="info-box" style="display: flex; align-items: center; gap: 10px; background: #2d2d2d; padding: 20px 40px; margin: 25px auto; max-width:1200px; width:100%; border: 2px solid rgb(0, 255, 0); border-radius: 12px;">
     <span style="font-size:2.5em; width:2.5em; text-align:center;">🎬</span>
 <span data-i18n="hiw1.title" style="font-weight:normal;font-size:1.2em;">Add Your Media: Upload or import directly into your secure Vault.</span>
     <span class="toggle-label"
       style="margin-left:auto; font-size:1.1em; text-decoration:underline; cursor:pointer;"
-      onclick="this.textContent = this.textContent.trim() === 'Learn more →' ? 'Close ✖' : 'Learn more →';
-               const box = document.getElementById('info-ans-1');
-               box.style.display = (box.style.display === 'none' || !box.style.display) ? 'block' : 'none';">
-  Learn more →
+      onclick="
+       const box = document.getElementById('info-ans-1');
+const isHidden = (box.style.display === 'none' || box.style.display === '');
+
+box.style.display = isHidden ? 'block' : 'none';
+
+const label = this.querySelector('[data-i18n]');
+const arrow = this.querySelector('.arrow');
+label.dataset.i18n = 'hiw1.learnmore';
+label.style.display = isHidden ? 'none' : 'inline';
+
+arrow.textContent = isHidden
+  ? (document.documentElement.lang === 'es' ? 'Cerrar ✖' : 'Close ✖')
+  : '→';
+
+applyTranslations();">
+  <span data-i18n="hiw1.learnmore"></span><span class="arrow"> →</span>
 </span>
 
     </div>
@@ -325,41 +544,59 @@
 </div>
 
 
-</div
+</div>
 
 
 
-
-  <!-- ✅ Horizontal Info Box 2 (FAQ-style toggle) -->
-<div style="display: flex; align-items: center; background: #2d2d2d; padding: 20px 40px; margin: 25px auto; width: 1200px; border: 2px solid rgb(0, 255, 0); border-radius: 12px; color: white;  transition: transform 0.3s ease, box-shadow 0.3s ease;"
-  onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 0 15px 4px rgba(0, 255, 0, 0.9)';"
-  onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 0 8px 2px rgba(0, 255, 0, 0.7)';"
+  <!-- ✅ Horizontal Info Box 2 -->
+<div style="display: flex; align-items: center; background: #2d2d2d; padding: 20px 40px; margin: 25px auto; width: 1200px; border: 2px solid rgb(0, 255, 0); border-radius: 12px; color: white; transition: transform 0.3s ease, box-shadow 0.3s ease;"
+  onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 0 15px 4px rgba(0,255,0,0.9)';"
+  onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 0 8px 2px rgba(0,255,0,0.7)';"
 >
 
   <span style="font-size:2.5em; width:2.5em; text-align:center;">📱</span>
-<span data-i18n="hiw2.title" style="font-weight:normal;font-size:1.2em;">Stream Anywhere: Access your private Vault on any device — no repurchasing.</span>
-  <span 
+
+  <span data-i18n="hiw2.title" style="font-weight:normal;font-size:1.2em;"></span>
+
+ <span
   style="margin-left:auto; font-size:18px; cursor:pointer; text-decoration:underline;"
   onclick="
-    const box = document.getElementById('info-ans-2');
-    const isHidden = (box.style.display === 'none' || !box.style.display);
-    box.style.display = isHidden ? 'block' : 'none';
-    this.textContent = isHidden ? 'Close ✖' : 'Learn more →';
-  ">
-  Learn more →
+  const box = document.getElementById('info-ans-2');
+  const isHidden = (box.style.display === 'none' || !box.style.display);
+  box.style.display = isHidden ? 'block' : 'none';
+
+  const label = this.querySelector('[data-i18n]');
+  label.setAttribute('data-i18n', isHidden ? 'hiw2.close' : 'hiw2.learnmore');
+  label.style.display = isHidden ? 'none' : 'inline';
+
+  this.lastElementChild.textContent = isHidden
+    ? (document.documentElement.lang === 'es' ? ' Cerrar ✖' : ' Close ✖')
+    : ' →';
+
+  applyTranslations();
+"
+
+>
+  <span class="toggle-label" data-i18n="hiw2.learnmore"></span>
+<span class="arrow">→</span>
+
 </span>
+
+
+
 </div>
+
+<!-- 👇 Answer block 2 -->
+<div id="info-ans-2" style="display:none; width:1200px; background:#1f1f1f; color:white; padding:18px 30px; border-radius:12px; box-shadow: 0 0 20px rgb(0,255,0), 0 0 40px rgb(0,255,0); margin: -10px auto 30px auto; font-size:17px;">
+  <span data-i18n="hiw2.desc"></span>
+</div>
+
 
 <!-- 👇 Answer block (starts hidden) -->
 <div id="info-ans-2" style="display:none; width:1200px; background:#1f1f1f; color:white; padding:18px 30px; border-radius: 12px; box-shadow: 0 0 20px rgb(0, 255, 0), 0 0 40px rgb(0, 255, 0); margin: -10px auto 30px auto; font-size: 17px;">
 <span data-i18n="hiw2.desc">X-Streamify works on any modern phone, tablet, Smart TV, or computer. Your media lives in your private Vault — no subscriptions, no rebuying.</span>
 </div>
-<!-- 🟩 Answer block 3 (starts hidden) -->
-<div id="info-ans-3" style="display:none; width:1200px; background:#1f1f1f; color:white; padding:20px; margin-top:10px; border-radius:10px;">
-  <span data-i18n="hiw3.desc">
-    With X-Streamify, your DVD library lives safely in the cloud. Backed up, secure, and instantly accessible — no discs, no worries. Watch anytime, forever.
-  </span>
-</div>
+
 
 
  <!-- Horizontal Info Box 3 -->
@@ -376,18 +613,32 @@
     const box = document.getElementById('box3-answer');
     const isHidden = (box.style.display === 'none' || !box.style.display);
     box.style.display = isHidden ? 'block' : 'none';
-    this.textContent = isHidden ? 'Close ✖' : 'Learn more →';
-  ">
-  Learn more →
+
+    const label = this.querySelector('[data-i18n]');
+    label.setAttribute('data-i18n', isHidden ? 'hiw3.close' : 'hiw3.learnmore');
+    label.style.display = isHidden ? 'none' : 'inline';
+
+    this.lastElementChild.textContent = isHidden
+      ? (document.documentElement.lang === 'es' ? ' Cerrar ✖' : ' Close ✖')
+      : ' →';
+
+    applyTranslations();
+  "
+>
+  <span class="toggle-label" data-i18n="hiw3.learnmore"></span>
+<span class="arrow">→</span>
+
 </span>
+
 
   <span id="box3-close" style="display:none; margin-left:auto; font-size: 1.1em; text-decoration: underline; font-weight: normal; cursor: pointer;" onclick="document.getElementById('box3-answer').style.display='none'; this.style.display='none'; document.querySelector('#box3-container span[onclick*=&quot;box3-answer&quot;]').style.display='inline';">Close ✕</span>
 </div>
 
 <div id="box3-answer" style="display:none; width:1200px; background:#1f1f1f; color:white; padding:16px 20px; border-radius:12px; margin:15px auto 8px auto;
 box-shadow: 0 0 20px rgb(0, 255, 0), 0 0 40px rgb(0, 255, 0); animation:pulse 2s infinite;">
-  With X-Streamify, your media lives securely in your private Vault. Backed up, protected, and instantly accessible — no discs, no worries. Yours forever.
+  <span data-i18n="hiw3.desc"></span>
 </div>
+
 
 
 
@@ -564,7 +815,7 @@ Drag and drop your photos, videos, and important documents from your phone, tabl
 <!-- === /FEATURED HORIZONTAL ROW === -->
 <!-- END WHY X-STREAMIFY SECTION -->
       <div style="text-align:center; margin-top:180px;">
-  <a href="/public/signin.html" class="button">Sign In</a>
+  <a href="/public/signin.html" class="button" onclick="this.href='/public/signin.html?lang='+document.documentElement.lang">Sign In</a>
 </div>
   </div>
   <div class="bg-anim" aria-hidden="true"></div>
@@ -726,9 +977,9 @@ else { el.textContent = map[type]; }
 
 
   <!-- FAQ -->
-<section id="faq-section" class="bg-black text-white py-20" style="padding-bottom: 5rem;">
+<section id="faq-section" class="bg-black text-white py-20" style="padding-top: 14rem; padding-bottom: 5rem;">
 
-  <div class="max-w-4xl mx-auto px-6">
+  <div style="max-width:1200px; margin:0 auto; padding:0 24px;">
     <h2 data-i18n="footer.faq" style="font-size:clamp(48px, 8vw, 60px); font-weight:900; text-align:left; margin-bottom:2rem; color:white;">
   FAQ
 </h2>
@@ -747,26 +998,26 @@ else { el.textContent = map[type]; }
 <!-- ✅ FINAL GRAY BOX with red glow -->
 <div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none;
 
- width: 1200px; margin-left: 0;">
+ max-width:1200px; width:100%; margin:0 auto;">
   <span data-i18n="faq.q1">What is X-Streamify?</span>
   <span style="font-size: 32px; cursor: pointer; margin-left:auto;" onclick="this.textContent=this.textContent.trim()==='+'?'–' : '+'; document.getElementById('faq-ans-1').style.display = (document.getElementById('faq-ans-1').style.display === 'none') ? 'block' : 'none';">+</span>
 </div>
-<div id="faq-ans-1" style="display:none; width:1200px; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0);
+<div id="faq-ans-1" style="display:none; max-width:1200px; width:100%; margin:0 auto; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0);
  animation:pulse 2s infinite;">
 <span data-i18n="faq.a1">X-Streamify is your personal digital vault where you can upload, store, and stream your movies, documents, photos, and family memories — all in your own private cloud library.</span>
 </div>
 
-<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; width: 1200px; margin-top:1rem; margin-left: 0;">
+<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; max-width:1200px; width:100%; margin:1rem auto 0 auto;">
     <span data-i18n="faq.q2">Is this legal?</span>
     <span style="font-size: 32px; cursor: pointer; margin-left:auto;" onclick="this.textContent=this.textContent.trim()==='+'?'−':'+'; const box=document.getElementById('faq-ans-2'); box.style.display = (box.style.display==='none'||!box.style.display) ? 'block' : 'none';">+</span>
 </div>
-<div id="faq-ans-2" style="display:none; width:1200px; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
+<div id="faq-ans-2" style="display:none; max-width:1200px; width:100%; margin:0 auto; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
 <span data-i18n="faq.a2">Yes. X-Streamify helps you manage your own legally owned media. Laws vary by region, so you should only upload content you own and have the right to digitize for personal use.</span>
 </div>
 
 
 
-<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; width: 1200px; margin-top:1rem; margin-left: 0;">
+<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; max-width:1200px; width:100%; margin:1rem auto 0 auto;">
     <span data-i18n="faq.q3">Can I access my library on any device?</span>
    <span
   style="font-size: 32px; cursor: pointer; margin-left:auto;"
@@ -774,117 +1025,118 @@ else { el.textContent = map[type]; }
 >+</span>
  
 </div>
-<div id="faq-ans-3" style="display:none; width:1200px; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
+<div id="faq-ans-3" style="display:none; max-width:1200px; width:100%; margin:0 auto; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
 <span data-i18n="faq.a3">Yes. X-Streamify works on phones, tablets, laptops, and smart TVs — anywhere you have internet access.</span>
 </div>
 
 
-<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; width: 1200px; margin-top:1rem; margin-left: 0;">
+<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; max-width:1200px; width:100%; margin:1rem auto 0 auto;">
     <span data-i18n="faq.q4">Do I need special equipment to digitize my DVDs?</span>
     <span
   style="font-size: 32px; cursor: pointer; margin-left:auto;"
   onclick="this.textContent=this.textContent.trim()==='+'?'−':'+'; const a=document.getElementById('faq-ans-4'); a.style.display = (a.style.display==='none' || !a.style.display) ? 'block' : 'none';"
 >+</span>
 </div>
-<div id="faq-ans-4" style="display:none; width:1200px; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
+<div id="faq-ans-4" style="display:none; max-width:1200px; width:100%; margin:0 auto; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
 <span data-i18n="faq.a4">No — you don’t need complex equipment. A compatible DVD drive and our simple upload tools make digitizing your DVDs easy. X-Streamify is also working toward providing a seamless hardware solution for subscribers.</span>
 </div>
 
 
 
 
-<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; width: 1200px; margin-top:1rem; margin-left: 0;">
+<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; max-width:1200px; width:100%; margin:1rem auto 0 auto;">
   <span data-i18n="faq.q5">What file types can I upload?</span>
     <span
   style="font-size: 32px; cursor: pointer; margin-left:auto;"
   onclick="this.textContent=this.textContent.trim()==='+'?'−':'+'; const a=document.getElementById('faq-ans-5'); a.style.display = (a.style.display==='none' || !a.style.display) ? 'block' : 'none';"
 >+</span>
 </div>
-<div id="faq-ans-5" style="display:none; width:1200px; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
+<div id="faq-ans-5" style="display:none; max-width:1200px; width:100%; margin:0 auto; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
 <span data-i18n="faq.a5">You can upload common video formats like MP4, MKV, AVI, and MOV, most standard image formats, and widely used document files. Our system is designed to support a broad range of media types for smooth and secure access.</span>
 </div>
 
 
 
 
-<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; width: 1200px; margin-top:1rem; margin-left: 0;">
+<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; max-width:1200px; width:100%; margin:1rem auto 0 auto;">
     <span data-i18n="faq.q6">Will my uploads stay private and secure?</span>
     <span
   style="font-size: 32px; cursor: pointer; margin-left:auto;"
   onclick="this.textContent=this.textContent.trim()==='+'?'−':'+'; const a=document.getElementById('faq-ans-6'); a.style.display = (a.style.display==='none' || !a.style.display) ? 'block' : 'none';"
 >+</span>
 </div>
-<div id="faq-ans-6" style="display:none; width:1200px; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
+<div id="faq-ans-6" style="display:none; max-width:1200px; width:100%; margin:0 auto; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
 <span data-i18n="faq.a6">Absolutely. Your uploads remain private and secure. Files are encrypted during transfer and stored in your private vault with strict access controls. Only you can see your uploads.</span>
 </div>
 
 
 
 
-<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; width: 1200px; margin-top:1rem; margin-left: 0;">
+<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; max-width:1200px; width:100%; margin:1rem auto 0 auto;">
     <span data-i18n="faq.q7">Can I share my library with family members?</span>
     <span
   style="font-size: 32px; cursor: pointer; margin-left:auto;"
   onclick="this.textContent=this.textContent.trim()==='+'?'−':'+'; const a=document.getElementById('faq-ans-7'); a.style.display = (a.style.display==='none' || !a.style.display) ? 'block' : 'none';"
 >+</span>
 </div>
-<div id="faq-ans-7" style="display:none; width:1200px; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
+<div id="faq-ans-7" style="display:none; max-width:1200px; width:100%; margin:0 auto; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
 <span data-i18n="faq.a7">Yes — you can add family members to your account and control what each person can access. Every profile can have its own permissions and personalized library experience.</span>
 </div>
 
 
 
 </div>
-<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; width: 1200px; margin-top:1rem; margin-left: 0;">
+<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; max-width:1200px; width:100%; margin:1rem auto 0 auto;">
   <span data-i18n="faq.q8">How do I upload my DVDs to X-Streamify?</span>
   <span
   style="font-size: 32px; cursor: pointer; margin-left:auto;"
   onclick="this.textContent=this.textContent.trim()==='+'?'−':'+'; const a=document.getElementById('faq-ans-8'); a.style.display = (a.style.display==='none' || !a.style.display) ? 'block' : 'none';"
 >+</span>
 </div>
-<div id="faq-ans-8" style="display:none; width:1200px; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
+<div id="faq-ans-8" style="display:none; max-width:1200px; width:100%; margin:0 auto;
+ background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
 <span data-i18n="faq.a8">It’s simple — insert your DVD into your computer (or the X-Stream Port), use the X-Streamify Uploader to digitize it, and it’s automatically added to your personal library.</span>
 </div>
 
 
 
 
-<div style="display: flex; align-items: center; justify-content: space-between; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; width: 1200px; margin-top:1rem; margin-left: 0;">
+<div style="display: flex; align-items: center; justify-content: space-between; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; max-width:1200px; width:100%; margin:1rem auto 0 auto;">
   <span data-i18n="faq.q9">Can I upload Blu-ray, standard DVDs, or 4K?</span>
   <span
   style="font-size: 32px; cursor: pointer; margin-left:auto;"
   onclick="this.textContent=this.textContent.trim()==='+'?'−':'+'; const a=document.getElementById('faq-ans-9'); a.style.display = (a.style.display==='none' || !a.style.display) ? 'block' : 'none';"
 >+</span>
 </div>
-<div id="faq-ans-9" style="display:none; width:1200px; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
+<div id="faq-ans-9" style="display:none; max-width:1200px; width:100%; margin:0 auto; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
 <span data-i18n="faq.a9">Yes — X-Streamify supports standard DVDs, Blu-ray, and 4K Ultra HD discs. Insert your disc into a compatible drive or the X-Stream Port, and our uploader handles the rest.</span>
 </div>
 
 
 
 
-<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; width: 1200px; margin-top:1rem; margin-left: 0;">
+<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; max-width:1200px; width:100%; margin:1rem auto 0 auto;">
   <span data-i18n="faq.q10">Does X-Streamify work worldwide?</span>
   <span
   style="font-size: 32px; cursor: pointer; margin-left:auto;"
   onclick="this.textContent=this.textContent.trim()==='+'?'−':'+'; const a=document.getElementById('faq-ans-10'); a.style.display = (a.style.display==='none' || !a.style.display) ? 'block' : 'none';"
 >+</span>
 </div>
-<div id="faq-ans-10" style="display:none; width:1200px; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
+<div id="faq-ans-10" style="display:none; max-width:1200px; width:100%; margin:0 auto; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
 <span data-i18n="faq.a10">Yes — X-Streamify works worldwide. As long as you have an internet connection, you can securely access your personal library from anywhere.</span>
 </div>
 
 
 
 
-<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; width: 1200px; margin-top:1rem; margin-left: 0;">
+<div style="display: flex; align-items: center; background: #2d2d2d; padding: 15px 20px; color: white; font-size: 24px; font-weight: bold; border-radius: 15px; border: 2px solid rgb(0,255,0);box-shadow: none; max-width:1200px; width:100%; margin:1rem auto 0 auto;">
   <span data-i18n="faq.q11">How fast is streaming after upload?</span>
   <span
   style="font-size: 32px; cursor: pointer; margin-left:auto;"
   onclick="this.textContent=this.textContent.trim()==='+'?'−':'+'; const a=document.getElementById('faq-ans-11'); a.style.display = (a.style.display==='none' || !a.style.display) ? 'block' : 'none';"
 >+</span>
 </div>
-<div id="faq-ans-11" style="display:none; width:1200px; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
+<div id="faq-ans-11" style="display:none; max-width:1200px; width:100%; margin:0 auto; background:#1f1f1f; color:#dddddd; padding:16px 20px; border-radius:12px; margin-top:.5rem; box-shadow: 0 0 20px rgb(0,255,0), 0 0 45px rgb(0,255,0), 0 0 80px rgb(0,255,0); animation:pulse 2s infinite;">
 <span data-i18n="faq.a11">Streaming is fast and seamless — once upload and processing are complete, your content is ready to play within minutes.</span>
 </div>
 
@@ -1000,14 +1252,15 @@ else { el.textContent = map[type]; }
     </div>
 
     <div class="footer-column" style="padding-top: 4.0rem;">
-<a data-i18n="footer.privacy" href="javascript:void(0)">Privacy</a>
-<a data-i18n="footer.donotsell" href="javascript:void(0)">Do Not Sell or Share My Personal Information</a>
-<a data-i18n="footer.speedtest" href="https://www.fast.com" target="_blank" rel="noopener noreferrer">Speed Test</a>
-    </div>
+  <a data-i18n="footer.privacy" href="privacy.html" onclick="this.href='privacy.html?lang='+localStorage.getItem('lang')">Privacy</a>
+<a data-i18n="footer.terms" href="Terms.html">Terms of Service</a>
+<a data-i18n="footer.donotsell" href="do-not-sell.html">Do Not Sell or Share My Personal Information</a>
+  <a data-i18n="footer.speedtest" href="https://www.fast.com" target="_blank" rel="noopener noreferrer">Speed Test</a>
+</div>
   </div>
 
-  <div class="footer-bottom" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
-  <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 2.5rem;">
+  <div class="footer-bottom" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 8rem;">
+  <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 8.5rem;">
   <select class="languageSwitcher" id="language-select-bottom" onchange="changeLanguage(this.value)"
   style="padding: 0.5rem 1rem; font-size: 1rem; border-radius: 6px; background-color: #111; color: white; border: 11px solid #555;">
     <option value="en">English</option>
@@ -1023,7 +1276,7 @@ else { el.textContent = map[type]; }
 
   </div>
 
-  <p style="margin-top: 1rem; font-size: 12px;">© 2025 X‑Streamify, Inc.</p>
+  <p style="margin-top: 0; margin-bottom: 0; font-size: 12px;">© 2025 X-Streamify, Inc.</p>
 </div>
 
 
@@ -1298,7 +1551,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="https://unpkg.com/i18next@22.4.9/i18next.min.js"></script>
 <script>
   i18next.init({
-    lng: 'en', // default language
+    lng: localStorage.getItem("lang") || "en", // default language
     debug: true,
     resources: {
       en: {
@@ -1333,13 +1586,14 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
 // ✅ Language switcher
 function changeLanguage(selectedLang) {
-    console.log("Language switched to:", selectedLang);
+  console.log("Language switched to:", selectedLang);
 
-    document.documentElement.lang = selectedLang;
+  localStorage.setItem("lang", selectedLang);   // ← ADD THIS LINE
+  document.documentElement.lang = selectedLang;
 
-    if (typeof applyI18n === "function") {
-        applyI18n();
-    }
+  if (typeof applyI18n === "function") {
+    applyI18n();
+  }
 }
 
 
@@ -1367,14 +1621,15 @@ function toggleLearnMore(el) {
   // 🔥 Pick up live language from <html lang="">
   const currentLang = document.documentElement.lang || 'en';
 
-  const translations = {
-    en: { learn: 'Learn more →', close: 'Close ✗' },
-    es: { learn: 'Ver más →', close: 'Cerrar ✗' }
-  };
+  
 
-  label.textContent = isOpen
-    ? translations[currentLang]?.learn || 'Learn more →'
-    : translations[currentLang]?.close || 'Close ✗';
+  label.setAttribute(
+  'data-i18n',
+  isOpen ? 'hiw1.learnmore' : 'hiw1.close'
+);
+label.textContent = '';
+applyTranslations();
+
 }
 </script>
 <script>
@@ -1463,6 +1718,10 @@ console.log("✅ Test script running");
   });
 })();
 </script>
+</script>
+
+
 
 </body>
 </html>
+

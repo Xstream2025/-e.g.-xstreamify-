@@ -26,7 +26,7 @@
       background: #101010;
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 0 48px rgba(255, 0, 0, 0.45), 0 0 1px rgba(255,255,255,0.25) inset;
+     box-shadow: 0 0 48px rgb(0, 255, 0), 0 0 1px rgba(255,255,255,0.25) inset;
       padding: 22px 24px 20px;
       text-align: left;
       position: relative;
@@ -46,7 +46,7 @@
       border-radius: 16px;
       background: #0c0c0c;
       border: 1px solid rgba(255,255,255,0.10);
-      box-shadow: 0 0 48px rgba(255,0,0,0.42);
+      box-shadow: 0 0 48px rgb(0, 255, 0);
       pointer-events: none;
       z-index: 0;
     }
@@ -70,7 +70,12 @@
     /* buttons */
     .btn { width: 100%; height: 46px; border: none; border-radius: 10px; font-weight: 700; color: #fff; cursor: pointer; margin-top: 12px; }
     #signin-btn { background: linear-gradient(180deg, #2f58d8 0%, #2747b0 100%); text-shadow: 0 1px 0 rgba(0,0,0,0.25); }
-    #create-btn { background: linear-gradient(180deg, #f07b34 0%, #d95e0f 100%); text-shadow: 0 1px 0 rgba(0,0,0,0.25); }
+    #create-btn {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.65);
+  color: #ffffff;
+}
+
 
     .fineprint { margin-top: 14px; color: #9a9a9a; font-size: 0.82rem; text-align: center; }
     .fineprint a { color: #d6d6d6; text-decoration: underline; }
@@ -163,31 +168,47 @@
         <div class="brand-title" id="signin-title">X-Streamify</div>
       </div>
 
-      <p class="intro">Sign in or create your account to continue.</p>
+      <p class="intro" data-i18n="signin_subtitle">Sign in or create your account to continue.</p>
 
-      <input id="email" class="field" type="email" placeholder="Email" autocomplete="email" />
+      <input id="email" class="field" type="email"placeholder="Email"data-i18n-placeholder="email_placeholder"autocomplete="email" />
       <div style="height:12px"></div>
-      <input id="password" class="field" type="password" placeholder="Password" autocomplete="current-password" />
+      <input id="password" class="field" type="password"placeholder="Password"data-i18n-placeholder="password_placeholder"autocomplete="current-password" />
 
       <div class="flex items-center mt-2">
         <input id="rememberMe" type="checkbox" class="h-4 w-4 text-orange-500 bg-gray-800 border-gray-600 rounded focus:ring-orange-400" />
-        <label for="rememberMe" class="ml-2 text-sm text-gray-300">Remember me</label>
+        <label for="rememberMe" class="ml-2 text-sm text-gray-300" data-i18n="remember_me">Remember me</label>
       </div>
 
       <div style="height:12px"></div>
-      <button id="signin-btn" type="button" class="btn">Sign in</button>
-      <button id="create-btn" type="button" class="btn">Create account</button>
+      <button id="signin-btn" type="button" class="btn" data-i18n="signin_btn">Sign in</button>
+      <button id="create-btn" type="button" class="btn" data-i18n="create_btn">Create account</button>
 
       <div class="fineprint">
-        By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
-        <p class="mt-2">&copy; 2025 X-Streamify. All rights reserved.</p>
-      </div>
+  <p data-i18n="terms_line">
+    By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
+  </p>
+  <p class="mt-2" data-i18n="rights_line">© 2025 X-Streamify. All rights reserved.</p>
+</div>
     </div>
   </div>
 
   <!-- Firebase scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script type="module" src="/js/signin.mjs?v=1"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+<script src="js/ui.js"></script>
+
+
+<script type="module" src="js/signin.mjs?v=1"></script>
+
+<script src="js/i18n-engine.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const lang = localStorage.getItem('lang') || 'en';
+    document.documentElement.lang = lang;
+    i18n.translatePage(lang);
+  });
+</script>
+
 </body>
 </html>

@@ -1,28 +1,17 @@
 {
-    "appPageTitle": "App Page",
-    "welcomeVaultText": "¡Bienvenido a tu bóveda de streaming!",
+
+    
   "hero.headline": "Build your personal digital vault.",
-  "hero.subheading1": "Upload your DVDs, home videos, and photos into one secure, private streaming vault.",
+  
 "subtitle.upload": "Upload your DVDs, memories, and important documents into your own secure digital vault — yours to access anytime, permanently.",
 "hero.subheading2": "Stream what’s yours. Protect what matters. Own it — all in one place.",
 
   "connect.headline": "Everything You Own. Finally Unified",
-  "connect.subheading": "Movies, photos, documents, and memories — all in one secure Vault. One platform. One subscription. Complete control.",
-  "box1.headline": "Digitize Your DVDs",
-  "box1.subheading": "Convert your physical discs into a digital library you own and control.",
-  "box2.headline": "Organize Your Library",
-  "box2.subheading": "Browse and search your collection — by genre, title, or year.",
-  "box3.headline": "Stream Anywhere",
-  "box3.subheading": "Watch your digitized movies on any device, anytime, without limits.",
+  "connect.subheadline": "Movies, memories, and important documents — all secured inside one powerful digital Vault.",
 
-  "box1.headline": "Digitize Your DVDs",
-"box1.subheading": "Convert your physical discs into a digital library you own and control.",
+  
 
-"box2.headline": "Organize Your Library",
-"box2.subheading": "Browse and search your collection anytime — by genre, title, or year.",
-
-"box3.headline": "Stream Anywhere",
-"box3.subheading": "Watch your digitized movies on any device, anytime, without limits.",
+ 
 
   "howitworks.title": "How It Works",
   "hiw1.title": "Add Your Media: Upload or import directly into your secure Vault.",
@@ -100,7 +89,7 @@
   "footer.faq": "FAQ",
   "footer.cookies": "Cookie Preferences",
   "footer.only": "Only on X-Streamify",
-  "footer.adchoices": "Ad Choices",
+ 
   "footer.help": "Help Center",
   "footer.corporate": "Corporate Information",
   "footer.investors": "Investor Relations",
@@ -108,6 +97,84 @@
   "footer.jobs": "Jobs",
   "footer.watch": "Ways to Watch",
   "footer.privacy": "Privacy",
+  "footer.terms": "Terms of Service",
   "footer.donotsell": "Do Not Sell or Share My Personal Info",
-  "footer.speedtest": "Speed Test"
+  "footer.speedtest": "Speed Test",
+  "toggle.personal": "Personal",
+  "toggle.business": "Business",
+
+  "signin.title": "Sign in or create your account to continue.",
+"signin.email": "Email",
+"signin.password": "Password",
+"signin.remember": "Remember me",
+"signin.signin": "Sign in",
+"signin.create": "Create account",
+"signin.agree": "By continuing you agree to our Terms and Privacy Policy.",
+
+"privacy_title": "Privacy Policy",
+"privacy_last_updated": "Last updated: February 2026",
+
+"privacy_intro": "We respect your privacy. This Privacy Policy explains what information we collect, how we use it, and how we protect it when you use our platform and services.",
+
+"privacy_info_collect_title": "Information We Collect",
+"privacy_info_collect_intro": "We collect different types of information depending on how you interact with the platform, including the following categories:",
+
+"privacy_direct_info_title": "Information you provide directly",
+"privacy_direct_info_1": "Account registration details such as name, email address, and profile preferences",
+"privacy_direct_info_2": "Information submitted through forms, settings, or support communications",
+"privacy_direct_info_3": "Any other information you voluntarily choose to provide",
+
+"privacy_user_content_title": "User content",
+"privacy_user_content_1": "Media, files, or data you upload, store, or manage through the platform",
+"privacy_user_content_2": "Metadata associated with uploaded content, such as filenames or timestamps",
+"privacy_user_content_3": "Content organization preferences and usage context",
+
+"privacy_technical_info_title": "Technical and usage information",
+"privacy_technical_info_1": "Device, browser, and operating system information",
+"privacy_technical_info_2": "Log data, access times, and interaction patterns",
+"privacy_technical_info_3": "Information necessary to maintain security, performance, and reliability",
+
+"privacy_use_info_title": "How We Use Information",
+"privacy_use_info_intro": "We use the information we collect to operate, maintain, and improve the platform in a secure, reliable, and user-focused manner. Information is used for the following purposes:",
+
+"privacy_platform_ops_title": "Platform operation and functionality",
+"privacy_platform_ops_1": "Creating and managing user accounts and profiles",
+"privacy_platform_ops_2": "Providing access to features, tools, and stored content",
+"privacy_platform_ops_3": "Processing requests and actions initiated by users",
+
+"privacy_content_mgmt_title": "Content management and delivery",
+"privacy_content_mgmt_1": "Storing, organizing, and retrieving user-uploaded content",
+"privacy_content_mgmt_2": "Ensuring content is delivered accurately and securely",
+"privacy_content_mgmt_3": "Maintaining continuity of access across sessions and devices",
+
+"privacy_security_title": "Security, integrity, and compliance",
+"privacy_security_1": "Protecting against unauthorized access, misuse, or abuse",
+"privacy_security_2": "Monitoring system activity to maintain platform stability",
+"privacy_security_3": "Complying with applicable legal and operational requirements",
+
+"privacy_support_title": "Communications and support",
+"privacy_support_1": "Responding to inquiries, requests, or support issues",
+"privacy_support_2": "Sending important service-related notices or updates",
+"privacy_support_3": "Informing users about changes that affect their use of the platform",
+
+"privacy_data_sharing_title": "Data Sharing",
+"privacy_data_sharing_intro": "We do not sell personal information. We share information only when necessary to operate the platform, comply with legal obligations, or protect users and the service.",
+
+"privacy_service_providers_title": "Service providers",
+"privacy_service_providers_1": "Third-party providers that support infrastructure, hosting, storage, or security",
+"privacy_service_providers_2": "Access is limited to what is necessary to perform their services",
+"privacy_service_providers_3": "Providers are required to protect information and use it only as instructed",
+
+"privacy_legal_title": "Legal and regulatory requirements",
+"privacy_legal_1": "When required by applicable law, regulation, or legal process",
+"privacy_legal_2": "In response to lawful requests from public authorities",
+
+"privacy_rights_title": "Protection of rights and safety",
+"privacy_rights_1": "To enforce policies, terms, or agreements",
+"privacy_rights_2": "To protect the security, rights, or safety of users, third parties, or the platform",
+
+"privacy_security_measures_title": "Data Security",
+"privacy_security_measures_intro": "We implement reasonable technical, administrative, and organizational safeguards designed to protect information against unauthorized access, disclosure, alteration, or destruction.",
+
+"privacy_footer_note": "This page is provided for transparency and clarity. It applies to this platform and related services."
 }
