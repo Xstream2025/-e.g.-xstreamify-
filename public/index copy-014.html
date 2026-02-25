@@ -529,7 +529,7 @@ label.dataset.i18n = 'hiw1.learnmore';
 label.style.display = isHidden ? 'none' : 'inline';
 
 arrow.textContent = isHidden
-  ? (document.documentElement.lang === 'es' ? 'Cerrar ✖' : 'Close ✖')
+  ? (localStorage.getItem('lang') === 'es' ? 'Cerrar ×' : 'Close ×')
   : '→';
 
 applyTranslations();">
@@ -570,7 +570,7 @@ applyTranslations();">
   label.style.display = isHidden ? 'none' : 'inline';
 
   this.lastElementChild.textContent = isHidden
-    ? (document.documentElement.lang === 'es' ? ' Cerrar ✖' : ' Close ✖')
+    ? (localStorage.getItem('lang') === 'es' ? 'Cerrar ×' : 'Close ×')
     : ' →';
 
   applyTranslations();
@@ -619,7 +619,7 @@ applyTranslations();">
     label.style.display = isHidden ? 'none' : 'inline';
 
     this.lastElementChild.textContent = isHidden
-      ? (document.documentElement.lang === 'es' ? ' Cerrar ✖' : ' Close ✖')
+      ? (localStorage.getItem('lang') === 'es' ? 'Cerrar ×' : 'Close ×')
       : ' →';
 
     applyTranslations();
@@ -1440,26 +1440,7 @@ else { el.textContent = map[type]; }
   });
 </script>
 <script>
-function toggleLearnMore(el) {
-  const label = el.querySelector('.toggle-label');
-  const detail = document.getElementById('info-ans-1');
-  if (!detail || !label) return;
 
-  const isOpen = detail.style.display === 'block';
-  detail.style.display = isOpen ? 'none' : 'block';
-
-  // Use i18next's active language (fallback to <html lang> or 'en')
-  const lang = (window.i18next && i18next.language) || document.documentElement.lang || 'en';
-
-  // Set text directly so we don't depend on any page re-render
-  if (lang.startsWith('es')) {
-    label.textContent = isOpen ? 'Ver más →' : 'Cerrar ✗';
-  } else {
-    label.textContent = isOpen ? 'Learn more →' : 'Close ✗';
-  }
-  document.getElementById("vault-headline").innerHTML = translations[currentLang]["vault.title"];
-document.getElementById("stream-headline").innerHTML = translations[currentLang]["stream.title"];
-}
 
 
 </script>
@@ -1716,6 +1697,21 @@ console.log("✅ Test script running");
     attributes: true,
     attributeFilter: ['lang']
   });
+})();
+// 🔁 Initialize Learn More / Close label on page load (fix Spanish default)
+(function initLearnMoreLabel() {
+  const toggle = document.querySelector('[onclick^="toggleLearnmore"]');
+  if (!toggle) return;
+
+  const label = toggle.querySelector('.toggle-label');
+  const detail = document.getElementById('info-ans-1');
+  if (!label || !detail) return;
+
+  const isOpen = detail.style.display === 'block';
+
+  label.setAttribute('data-i18n', isOpen ? 'hiw.close' : 'hiw.learnmore');
+  label.textContent = '';
+  applyI18n();
 })();
 </script>
 </script>

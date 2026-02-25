@@ -150,7 +150,16 @@ body {
   border: 5px solid red !important;
 }
 
-
-
-
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
 }
+
+@media (max-width: 768px) {
+  .floating {
+    left: 0;
+    right: 0;
+    max-width: 100%;
+  }
+}
+
